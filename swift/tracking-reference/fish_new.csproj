@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>fish_new</AssemblyName>
+    <RootNamespace>FishNew</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="fish_decompiled\*.cs" />
+  </ItemGroup>
+</Project>

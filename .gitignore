@@ -1,0 +1,29 @@
+﻿# Build outputs
+bin/
+obj/
+build/
+build-*/
+out/
+dist/
+artifacts/
+vcpkg_installed/
+.vs/
+
+# Runtime/debug files
+*.log
+*.tmp
+*.cache
+*.pdb
+*.ilk
+*.user
+*.suo
+
+# Archives/installers
+*.zip
+*.rar
+*.7z
+*.msi
+
+# OS/editor
+.DS_Store
+Thumbs.db
