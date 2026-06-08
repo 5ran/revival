@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\..\thingy\shared-fishing-runtime\**\*.cs" Link="SharedRuntime\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Remove="Client.Tests\**" />
     <Compile Remove="Launcher\**" />
     <Compile Remove="Launcher.Tests\**" />

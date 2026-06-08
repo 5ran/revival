@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.HuntDetectView"
+             x:Name="Root"
+             x:DataType="vm:HuntDetectViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Hunt Detect"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding SelectedSummary}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+
+                <CheckBox Grid.Column="1"
+                          Content="Enabled"
+                          IsChecked="{Binding Enabled}"
+                          VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12">
+            <StackPanel Spacing="12">
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Targets"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBox Classes="app-input"
+                                     Width="180"
+                                     Height="36"
+                                     Text="{Binding SearchText}" />
+                            <TextBox Classes="app-input"
+                                     Width="180"
+                                     Height="36"
+                                     Text="{Binding NewTargetText}" />
+                            <Button Classes="app-secondary"
+                                    Content="Add"
+                                    Command="{Binding AddTargetCommand}"
+                                    Width="80"
+                                    Height="36" />
+                        </StackPanel>
+                        <CheckBox Content="Use hunt colors"
+                                  IsChecked="{Binding UseHuntColors}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Available targets"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <ScrollViewer Height="320">
+                            <ItemsControl ItemsSource="{Binding AvailableTargets}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:HuntDetectTargetOptionViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="10"
+                                                Background="{StaticResource Surface}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                            <CheckBox Content="{Binding Name}"
+                                                      IsChecked="{Binding IsSelected}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Spacing="12">
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Selected targets"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Classes="app-secondary"
+                                    Content="Unselect all"
+                                    Command="{Binding UnselectAllCommand}"
+                                    Width="110"
+                                    Height="34" />
+                        </StackPanel>
+                        <ScrollViewer Height="320">
+                            <ItemsControl ItemsSource="{Binding SelectedTargets}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:HuntDetectSelectedTargetViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="10"
+                                                Background="{StaticResource Surface}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                            <Grid ColumnDefinitions="*,Auto">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="13"
+                                                           Foreground="{StaticResource TextPrimary}" />
+                                                <Button Grid.Column="1"
+                                                        Classes="app-secondary"
+                                                        Content="Remove"
+                                                        Command="{Binding DataContext.RemoveSelectedTargetCommand, ElementName=Root}"
+                                                        CommandParameter="{Binding}"
+                                                        Width="86"
+                                                        Height="30" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+                <Border Classes="app-card">
+                    <TextBlock Text="{Binding DiscordWebhook}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

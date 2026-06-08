@@ -1,0 +1,176 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             xmlns:controls="using:Client.Controls"
+             x:Class="Client.Views.AppraiseView"
+             x:DataType="vm:AppraiseViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Appraise"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+
+                <CheckBox Grid.Column="1"
+                          Content="Enabled"
+                          IsChecked="{Binding AutoAppraiseEnabled}"
+                          VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12">
+            <StackPanel Spacing="12">
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Filters"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <CheckBox Content="Shiny" IsChecked="{Binding RequireShiny}" />
+                            <CheckBox Content="Sparkling" IsChecked="{Binding RequireSparkling}" />
+                            <CheckBox Content="Tiny" IsChecked="{Binding RequireTiny}" />
+                            <CheckBox Content="Small" IsChecked="{Binding RequireSmall}" />
+                            <CheckBox Content="Big" IsChecked="{Binding RequireBig}" />
+                            <CheckBox Content="Giant" IsChecked="{Binding RequireGiant}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBox Classes="app-input"
+                                     Width="96"
+                                     Height="36"
+                                     Text="{Binding ClickXText}" />
+                            <TextBox Classes="app-input"
+                                     Width="96"
+                                     Height="36"
+                                     Text="{Binding ClickYText}" />
+                            <Button Classes="app-secondary"
+                                    Content="Cursor"
+                                    Command="{Binding UseCursorPositionCommand}"
+                                    Width="96"
+                                    Height="36" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mutation search"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBox Classes="app-input"
+                                     Width="190"
+                                     Height="36"
+                                     Text="{Binding MutationSearchText}" />
+                            <TextBox Classes="app-input"
+                                     Width="150"
+                                     Height="36"
+                                     Text="{Binding NewMutationText}" />
+                            <Button Classes="app-secondary"
+                                    Content="Add"
+                                    Command="{Binding AddMutationCommand}"
+                                    Width="80"
+                                    Height="36" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding SelectedMutationsSummary}"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mode"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <RadioButton Content="Gamepass"
+                                         IsChecked="{Binding IsGamepassMode}" />
+                            <RadioButton Content="Normal"
+                                         IsChecked="{Binding IsNormalMode}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Speed"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       VerticalAlignment="Center" />
+                            <TextBox Classes="app-input"
+                                     Width="96"
+                                     Height="36"
+                                     Text="{Binding GamepassSpeed}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Spacing="12">
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Held fish"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <controls:ColoredTextBlock Lines="{Binding HeldFishLines}"
+                                                   FontFamily="{StaticResource DisplayFont}"
+                                                   FontSize="20"
+                                                   FontWeight="SemiBold" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Mutations"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <ScrollViewer Height="260">
+                            <ItemsControl ItemsSource="{Binding Mutations}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:AppraiseMutationOptionViewModel">
+                                        <Border Margin="0,0,0,8"
+                                                Padding="10"
+                                                Background="{StaticResource Surface}"
+                                                BorderBrush="{StaticResource Border}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <CheckBox IsChecked="{Binding IsSelected}" />
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="13"
+                                                           Foreground="{StaticResource TextPrimary}" />
+                                                <TextBlock Text="{Binding MultiText}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource TextSecondary}" />
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

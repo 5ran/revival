@@ -19,15 +19,20 @@ internal static class TestAssemblyInit
             new Dictionary<string, ulong>(System.StringComparer.OrdinalIgnoreCase)
             {
                 ["FakeDataModel.Pointer"]       = 0,
+                ["FakeDataModelPointer"]        = 0,
                 ["FakeDataModel.RealDataModel"] = 0,
                 ["Player.LocalPlayer"]          = 0,
+                ["PlayerLocalPlayer"]           = 0,
                 ["Instance.ChildrenStart"]      = 0,
+                ["InstanceChildrenStart"]       = 0,
                 ["Instance.ChildrenEnd"]        = 0,
+                ["InstanceChildrenEnd"]         = 0,
                 ["Instance.Name"]               = 0,
                 ["Instance.Parent"]             = 0,
                 ["Instance.ClassDescriptor"]    = 0,
                 ["Instance.ClassName"]          = 0,
                 ["Misc.StringLength"]           = 0,
+                ["MiscStringLength"]            = 0,
             },
             version: "test-fake-v1"));
     }

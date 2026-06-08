@@ -468,17 +468,46 @@ public sealed class UiStyleTests
     private static string FindRepoFile(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        var normalized = fileName.Replace('/', '\\');
         while (directory is not null)
         {
-            var candidate = Path.Combine(directory.FullName, fileName);
-            if (File.Exists(candidate))
+            foreach (var candidate in GetCandidatePaths(directory.FullName, normalized))
             {
-                return candidate;
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
             }
 
             directory = directory.Parent;
         }
 
         throw new FileNotFoundException($"Could not find {fileName} from {AppContext.BaseDirectory}.");
+    }
+
+    private static IEnumerable<string> GetCandidatePaths(string root, string fileName)
+    {
+        yield return Path.Combine(root, fileName);
+        yield return Path.Combine(root, "source", fileName);
+        yield return Path.Combine(root, "thingy", "shared-fishing-runtime", fileName);
+
+        if (fileName.StartsWith("Views\\", StringComparison.OrdinalIgnoreCase))
+        {
+            var stripped = fileName["Views\\".Length..];
+            var leaf = Path.GetFileName(fileName);
+
+            yield return Path.Combine(root, "source", stripped);
+            yield return Path.Combine(root, "source", "Views", leaf);
+            yield return Path.Combine(root, "source", leaf);
+        }
+
+        if (fileName.StartsWith("Services\\", StringComparison.OrdinalIgnoreCase))
+        {
+            var stripped = fileName["Services\\".Length..];
+            var leaf = Path.GetFileName(fileName);
+
+            yield return Path.Combine(root, "thingy", "shared-fishing-runtime", stripped);
+            yield return Path.Combine(root, "thingy", "shared-fishing-runtime", leaf);
+        }
     }
 }

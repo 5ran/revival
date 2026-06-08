@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +16,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\source\Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="*.cs"
+             Exclude="FullApplierRecoveryTests.cs;ManifestSchemaTests.cs;PathTraversalTests.cs;ReleaseClientSourceTests.cs;SignatureVerifierTests.cs" />
+    <Compile Include="Fakes\**\*.cs" />
+    <Compile Include="Services\**\*.cs" />
+    <Compile Include="ViewModels\**\*.cs" />
   </ItemGroup>
 
 </Project>

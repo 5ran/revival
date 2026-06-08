@@ -51,7 +51,8 @@ public sealed class MainWindowViewModel : ViewModelBase
         }
         else
         {
-            ApplyState(_appStateService.CurrentState);
+            // Skip the startup auth gate and land directly in the shell.
+            _currentView = _shellViewModel;
         }
     }
 
@@ -69,12 +70,8 @@ public sealed class MainWindowViewModel : ViewModelBase
     /// </summary>
     public Task InitializeAsync()
     {
-        if (_hasStartupLockout)
-        {
-            return Task.CompletedTask;
-        }
-
-        return _appStateService.InitializeAsync();
+        // Startup auth is intentionally bypassed so the shell opens immediately.
+        return Task.CompletedTask;
     }
 
     public bool HandleKey(Key key)

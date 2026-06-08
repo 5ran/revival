@@ -1,0 +1,99 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.OtherAutomationView"
+             x:DataType="vm:OtherAutomationViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Other Automation"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="Each automation can be enabled independently."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding ActiveAutomationTitle}"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondary}"
+                           VerticalAlignment="Center"
+                           IsVisible="{Binding HasActiveAutomation}" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1"
+              IsVisible="{Binding ShowAutomationTabs}"
+              ColumnDefinitions="*,*"
+              RowDefinitions="Auto,Auto"
+              ColumnSpacing="12"
+              RowSpacing="12">
+            <Border Classes="app-card">
+                <StackPanel Spacing="10">
+                    <CheckBox Content="Auto Angler"
+                              IsChecked="{Binding AutoAnglerEnabled}" />
+                    <TextBlock Text="Moves the quest fish helper through its click loop."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="app-card">
+                <StackPanel Spacing="10">
+                    <CheckBox Content="Enchant"
+                              IsChecked="{Binding EnchantEnabled}" />
+                    <TextBlock Text="Targets the selected enchant until it is found."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Classes="app-card">
+                <StackPanel Spacing="10">
+                    <CheckBox Content="Appraise"
+                              IsChecked="{Binding AppraiseEnabled}" />
+                    <TextBlock Text="Runs the mutation appraisal flow with the selected filters."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Grid.Column="1"
+                    Classes="app-card">
+                <StackPanel Spacing="10">
+                    <CheckBox Content="Treasure Appraise"
+                              IsChecked="{Binding TreasureAppraiseEnabled}" />
+                    <TextBlock Text="Runs the treasure appraisal click timing helper."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <ContentControl Grid.Row="1"
+                        Content="{Binding ActiveAutomation}"
+                        IsVisible="{Binding HasActiveAutomation}" />
+    </Grid>
+</UserControl>

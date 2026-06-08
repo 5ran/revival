@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.TreasureAppraiseView"
+             x:DataType="vm:TreasureAppraiseViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Treasure Appraise"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+
+                <CheckBox Grid.Column="1"
+                          Content="Enabled"
+                          IsChecked="{Binding AutoTreasureEnabled}"
+                          VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Classes="app-card">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Click delay"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBox Classes="app-input"
+                                 Width="120"
+                                 Height="36"
+                                 Text="{Binding ClickDelaySecondsText}" />
+                    </StackPanel>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Target weight"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBox Classes="app-input"
+                                 Width="120"
+                                 Height="36"
+                                 Text="{Binding TargetWeightText}" />
+                    </StackPanel>
+                </StackPanel>
+                <TextBlock Text="Use a target weight to stop on a specific fish size, or leave it blank."
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondary}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

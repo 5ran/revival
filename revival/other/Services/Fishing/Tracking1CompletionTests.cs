@@ -37,49 +37,39 @@ public sealed class Tracking1CompletionTests
         Assert.True(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: true,
             progress: null,
-            maxProgressThisCycle: 99.5,
             hasMetrics: false));
 
         Assert.False(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: true,
             progress: 99.5,
-            maxProgressThisCycle: 99.5,
             hasMetrics: false));
 
         Assert.False(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: false,
             progress: null,
-            maxProgressThisCycle: 0,
             hasMetrics: false));
 
         Assert.False(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: true,
             progress: null,
-            maxProgressThisCycle: 99.5,
             hasMetrics: true));
     }
 
     [Fact]
-    public void ShouldResetCompletionStateWhenNewMinigameStartsBeforeReelDisappears()
+    public void ShouldNotResetCompletionStateWhenMetricsRemainVisible()
     {
-        // Catch latched at 99.5%; reel ScreenGui never went invisible between
-        // catches, but progress restarted near 0 for the next fish.
-        Assert.True(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
+        Assert.False(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: true,
             progress: 5.0,
-            maxProgressThisCycle: 99.5,
             hasMetrics: true));
     }
 
     [Fact]
     public void ShouldNotResetCompletionStateOnSmallProgressDip()
     {
-        // Small fluctuations near the peak (e.g., progress bar settling) must
-        // not clear the latch — only a clear restart should.
         Assert.False(Tracking1FishingTracker.ShouldResetCompletionStateAfterReelLoss(
             completionReached: true,
             progress: 90.0,
-            maxProgressThisCycle: 99.5,
             hasMetrics: true));
     }
 }

@@ -1,0 +1,153 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             xmlns:controls="using:Client.Controls"
+             x:Class="Client.Views.FishingView"
+             x:DataType="vm:FishingViewModel"
+             Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.section-label">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
+        <Style Selector="TextBlock.section-value">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="16">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Fishing"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding AquariumStatusText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <Button Classes="app-primary"
+                            Content="Start"
+                            Command="{Binding StartCommand}"
+                            Width="96"
+                            Height="36" />
+                    <Button Classes="app-secondary"
+                            Content="Stop"
+                            Command="{Binding StopCommand}"
+                            Width="96"
+                            Height="36" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="430,12,*">
+            <StackPanel Grid.Column="0" Spacing="12">
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Tracking Method" Classes="section-label" />
+                        <ComboBox Classes="app-select"
+                                  ItemsSource="{Binding TrackerOptions}"
+                                  SelectedItem="{Binding SelectedTracker}"
+                                  Height="38">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:FishingTrackerOption">
+                                    <StackPanel Spacing="0">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontFamily="{StaticResource UIFont}"
+                                                   FontSize="13"
+                                                   Foreground="{StaticResource TextPrimary}" />
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontFamily="{StaticResource UIFont}"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource TextSecondary}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate x:DataType="vm:FishingTrackerOption">
+                                    <TextBlock Text="{Binding Title}"
+                                               FontFamily="{StaticResource UIFont}"
+                                               FontSize="13"
+                                               Foreground="{StaticResource TextPrimary}" />
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                        </ComboBox>
+
+                        <TextBlock Text="Casting" Classes="section-label" />
+                        <ComboBox Classes="app-select"
+                                  ItemsSource="{Binding CastingModes}"
+                                  SelectedItem="{Binding SelectedCastingMode}"
+                                  Height="38" />
+
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <CheckBox Content="Auto Aquarium"
+                                      IsChecked="{Binding AutoAquariumEnabled}" />
+                            <TextBox Classes="app-input"
+                                     Width="96"
+                                     Height="36"
+                                     Text="{Binding AutoAquariumCycleDelayMinutes}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <Button Classes="app-secondary"
+                                    Content="Auto Totem"
+                                    Command="{Binding NavigateToAutoTotemCommand}"
+                                    Width="120"
+                                    Height="34" />
+                            <Button Classes="app-secondary"
+                                    Content="Aquarium"
+                                    Command="{Binding NavigateToAutoAquariumCommand}"
+                                    Width="110"
+                                    Height="34" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="app-card">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Status" Classes="section-label" />
+                        <controls:AppKeyValueList Items="{Binding StatusItems}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <Border Grid.Column="2"
+                    Classes="app-card">
+                <StackPanel Spacing="12">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Fishing stats"
+                                   Classes="section-label" />
+                        <controls:AppKeyValueList Items="{Binding StatsItems}" />
+                    </StackPanel>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Rod state"
+                                   Classes="section-label" />
+                        <TextBlock Text="{Binding MasterlineRodNamesText}"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextPrimary}"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

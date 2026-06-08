@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.AutoAnglerView"
+             x:DataType="vm:AutoAnglerViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="14">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Auto Angler"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+
+                <CheckBox Grid.Column="1"
+                          Content="Enabled"
+                          IsChecked="{Binding AutoAnglerEnabled}"
+                          VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12">
+            <Border Classes="app-card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="Quest fish"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding CurrentFishText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="18"
+                               Foreground="{StaticResource TextPrimary}" />
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Classes="app-card">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBox Classes="app-input"
+                                 Width="110"
+                                 Height="36"
+                                 Text="{Binding ClickXText}" />
+                        <TextBox Classes="app-input"
+                                 Width="110"
+                                 Height="36"
+                                 Text="{Binding ClickYText}" />
+                        <Button Classes="app-secondary"
+                                Content="Use cursor"
+                                Command="{Binding UseCursorPositionCommand}"
+                                Width="120"
+                                Height="36" />
+                    </StackPanel>
+                    <TextBlock Text="Set the quest click location from the current cursor position."
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

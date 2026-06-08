@@ -114,24 +114,10 @@ public partial class MainWindow : Window
         }
     }
 
-    private async void MainWindow_OnLoaded(object? sender, RoutedEventArgs e)
+    private void MainWindow_OnLoaded(object? sender, RoutedEventArgs e)
     {
         Loaded -= MainWindow_OnLoaded;
-        AppLog.Info("MainWindow", "Loaded; initializing app state.");
-
-        try
-        {
-            await _viewModel.InitializeAsync();
-        }
-        catch (Exception ex)
-        {
-            AppLog.Error("MainWindow", "InitializeAsync bubbled unexpectedly.", ex);
-            throw;
-        }
-        finally
-        {
-            AppLog.Info("MainWindow", "Startup auth initialization finished.");
-        }
+        AppLog.Info("MainWindow", "Loaded; startup auth gate bypassed.");
     }
 
     private void TitleBar_OnPointerPressed(object? sender, PointerPressedEventArgs e)

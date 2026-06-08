@@ -1,0 +1,126 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             xmlns:controls="using:Client.Controls"
+             x:Class="Client.Views.GeneralView"
+             x:DataType="vm:GeneralViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="18">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{Binding ActiveMacroText}"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="24"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <Button Classes="app-primary"
+                            Content="{Binding StartStopButtonText}"
+                            Command="{Binding ToggleMacroCommand}"
+                            Width="120"
+                            Height="36" />
+                    <Button Classes="app-secondary"
+                            Content="{Binding RebindButtonText}"
+                            Command="{Binding RebindHotkeyCommand}"
+                            Width="120"
+                            Height="36" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Classes="app-card">
+            <Grid ColumnDefinitions="Auto,220,Auto,160"
+                  ColumnSpacing="16"
+                  RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Column="0"
+                           Grid.Row="0"
+                           Text="Hotkey"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondary}" />
+                <TextBlock Grid.Column="1"
+                           Grid.Row="0"
+                           Text="{Binding HotkeyText}"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="13"
+                           Foreground="{StaticResource TextPrimary}" />
+                <TextBlock Grid.Column="2"
+                           Grid.Row="0"
+                           Text="Rod Slot"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondary}" />
+                <ComboBox Grid.Column="3"
+                          Grid.Row="0"
+                          Classes="app-select"
+                          ItemsSource="{Binding RodSlots}"
+                          SelectedItem="{Binding SelectedRodSlot}"
+                          Height="36" />
+
+                <TextBlock Grid.Column="0"
+                           Grid.Row="1"
+                           Grid.ColumnSpan="4"
+                           Margin="0,10,0,0"
+                           Text="{Binding RunStateText}"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="12"
+                           Foreground="{StaticResource TextSecondary}" />
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,*"
+              ColumnSpacing="12">
+            <Border Classes="app-card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Run State"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding RunStateText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="18"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusMessage}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="13"
+                               Foreground="{StaticResource TextSecondary}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Column="1"
+                    Classes="app-card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Stats"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding HotkeyText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="18"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="Start/stop hotkey"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               Foreground="{StaticResource TextSecondary}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

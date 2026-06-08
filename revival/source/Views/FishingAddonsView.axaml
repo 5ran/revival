@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             xmlns:views="using:Client.Views"
+             x:Class="Client.Views.FishingAddonsView"
+             x:DataType="vm:FishingAddonsViewModel"
+             Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="Button.addon-expand">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource ButtonSecondaryForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonSecondaryBorder}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.addon-expand:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryHoverBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonSecondaryHoverBorder}" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource ButtonSecondaryForeground}" />
+        </Style>
+        <Style Selector="Button.addon-expand:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryPressedBackground}" />
+            <Setter Property="TextElement.Foreground" Value="{StaticResource ButtonSecondaryForeground}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Margin="34,0,34,34"
+          RowDefinitions="Auto,*"
+          RowSpacing="12">
+        <Border Grid.Row="0"
+                Classes="app-card">
+            <StackPanel Spacing="8">
+                <TextBlock Text="Fishing Add-ons"
+                           FontFamily="{StaticResource DisplayFont}"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" />
+                <TextBlock Text="Use the buttons below to focus one add-on at a time."
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="13"
+                           Foreground="{StaticResource TextSecondary}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1"
+              RowDefinitions="Auto,Auto,Auto,Auto"
+              RowSpacing="12">
+            <Border Classes="app-card" IsVisible="{Binding ShowAutoAquariumSection}">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Auto Aquarium" FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimary}" />
+                            <TextBlock Text="{Binding AutoAquariumEnabled}" FontFamily="{StaticResource UIFont}" FontSize="12" Foreground="{StaticResource TextSecondary}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Classes="addon-expand"
+                                Content="{Binding AutoAquariumExpandGlyph}"
+                                Command="{Binding ToggleAutoAquariumExpandedCommand}"
+                                Width="86"
+                                Height="32" />
+                    </Grid>
+                    <StackPanel IsVisible="{Binding IsAutoAquariumExpanded}" Spacing="10">
+                        <CheckBox Content="Enabled"
+                                  IsChecked="{Binding AutoAquariumEnabled}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Cycle delay"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondary}"
+                                       VerticalAlignment="Center" />
+                            <TextBox Classes="app-input"
+                                     Width="110"
+                                     Height="34"
+                                     Text="{Binding AutoAquariumCycleDelayMinutes}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Classes="app-card"
+                    IsVisible="{Binding ShowAutoTotemSection}">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Auto Totem" FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimary}" />
+                            <TextBlock Text="{Binding AutoTotemEnabled}" FontFamily="{StaticResource UIFont}" FontSize="12" Foreground="{StaticResource TextSecondary}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Classes="addon-expand"
+                                Content="{Binding AutoTotemExpandGlyph}"
+                                Command="{Binding ToggleAutoTotemExpandedCommand}"
+                                Width="86"
+                                Height="32" />
+                    </Grid>
+                    <Border IsVisible="{Binding IsAutoTotemExpanded}">
+                        <views:AutoTotemView DataContext="{Binding AutoTotem}" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="2"
+                    Classes="app-card"
+                    IsVisible="{Binding ShowAutoSovereignRechargeSection}">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Auto Sovereign Recharge" FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimary}" />
+                            <TextBlock Text="{Binding AutoSovereignRechargeEnabled}" FontFamily="{StaticResource UIFont}" FontSize="12" Foreground="{StaticResource TextSecondary}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Classes="addon-expand"
+                                Content="{Binding AutoSovereignRechargeExpandGlyph}"
+                                Command="{Binding ToggleAutoSovereignRechargeExpandedCommand}"
+                                Width="86"
+                                Height="32" />
+                    </Grid>
+                    <Border IsVisible="{Binding IsAutoSovereignRechargeExpanded}">
+                        <views:AutoSovereignRechargeView DataContext="{Binding AutoSovereignRecharge}" />
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Row="3"
+                    Classes="app-card"
+                    IsVisible="{Binding ShowHuntDetectSection}">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="Hunt Detect" FontFamily="{StaticResource UIFont}" FontSize="14" Foreground="{StaticResource TextPrimary}" />
+                            <TextBlock Text="{Binding HuntDetectEnabled}" FontFamily="{StaticResource UIFont}" FontSize="12" Foreground="{StaticResource TextSecondary}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Classes="addon-expand"
+                                Content="{Binding HuntDetectExpandGlyph}"
+                                Command="{Binding ToggleHuntDetectExpandedCommand}"
+                                Width="86"
+                                Height="32" />
+                    </Grid>
+                    <Border IsVisible="{Binding IsHuntDetectExpanded}">
+                        <views:HuntDetectView DataContext="{Binding HuntDetect}" />
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>
