@@ -4,15 +4,15 @@
              x:Class="Client.App"
              RequestedThemeVariant="Dark">
     <Application.Resources>
-        <SolidColorBrush x:Key="Background" Color="#0E0E0E" />
-        <SolidColorBrush x:Key="Surface" Color="#161616" />
-        <SolidColorBrush x:Key="Border" Color="#2A2A2A" />
-        <SolidColorBrush x:Key="Accent" Color="#A9CFCB" />
-        <SolidColorBrush x:Key="AccentHover" Color="#8FBFBB" />
-        <SolidColorBrush x:Key="AccentPressed" Color="#789F9B" />
-        <SolidColorBrush x:Key="AccentForeground" Color="#0E0E0E" />
-        <SolidColorBrush x:Key="TextPrimary" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="TextSecondary" Color="#666666" />
+        <SolidColorBrush x:Key="Background" Color="#070B11" />
+        <SolidColorBrush x:Key="Surface" Color="#0D1219" />
+        <SolidColorBrush x:Key="Border" Color="#626B78" />
+        <SolidColorBrush x:Key="Accent" Color="#DCE3EC" />
+        <SolidColorBrush x:Key="AccentHover" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="AccentPressed" Color="#B9C3D0" />
+        <SolidColorBrush x:Key="AccentForeground" Color="#080B10" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#F1F3F7" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#A4ABB7" />
         <SolidColorBrush x:Key="Success" Color="#4ADE80" />
         <SolidColorBrush x:Key="Error" Color="#F87171" />
         <LinearGradientBrush x:Key="StarlightTruffleWormGradient" StartPoint="0%,50%" EndPoint="100%,50%">
@@ -20,41 +20,41 @@
             <GradientStop Color="#9CFF9A" Offset="0.52" />
             <GradientStop Color="#86B8FF" Offset="1" />
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="InputHoverSurface" Color="#1A1A1A" />
-        <SolidColorBrush x:Key="InputHoverBorder" Color="#3A3A3A" />
-        <SolidColorBrush x:Key="InputFocusSurface" Color="#181818" />
-        <SolidColorBrush x:Key="InputFocusBorder" Color="#5F8581" />
-        <SolidColorBrush x:Key="TableSurface" Color="#141414" />
-        <SolidColorBrush x:Key="TableRowBackground" Color="#141414" />
-        <SolidColorBrush x:Key="TableGap" Color="#0E0E0E" />
-        <SolidColorBrush x:Key="TableHeaderBackground" Color="#1B1B1B" />
-        <SolidColorBrush x:Key="TableEmptyBackground" Color="#141414" />
-        <SolidColorBrush x:Key="TableRowDisabled" Color="#141414" />
-        <SolidColorBrush x:Key="SidebarItemForeground" Color="#666666" />
-        <SolidColorBrush x:Key="SidebarItemHoverForeground" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="SidebarItemHoverBackground" Color="#1D1F1F" />
-        <SolidColorBrush x:Key="SidebarItemSelectedForeground" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="SidebarItemSelectedBackground" Color="#242424" />
+        <SolidColorBrush x:Key="InputHoverSurface" Color="#171D25" />
+        <SolidColorBrush x:Key="InputHoverBorder" Color="#808895" />
+        <SolidColorBrush x:Key="InputFocusSurface" Color="#131920" />
+        <SolidColorBrush x:Key="InputFocusBorder" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="TableSurface" Color="#0A0F15" />
+        <SolidColorBrush x:Key="TableRowBackground" Color="#0A0F15" />
+        <SolidColorBrush x:Key="TableGap" Color="#070B11" />
+        <SolidColorBrush x:Key="TableHeaderBackground" Color="#121820" />
+        <SolidColorBrush x:Key="TableEmptyBackground" Color="#0A0F15" />
+        <SolidColorBrush x:Key="TableRowDisabled" Color="#0A0F15" />
+        <SolidColorBrush x:Key="SidebarItemForeground" Color="#A4ABB7" />
+        <SolidColorBrush x:Key="SidebarItemHoverForeground" Color="#F1F3F7" />
+        <SolidColorBrush x:Key="SidebarItemHoverBackground" Color="#171D25" />
+        <SolidColorBrush x:Key="SidebarItemSelectedForeground" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SidebarItemSelectedBackground" Color="#39414D" />
         <SolidColorBrush x:Key="ButtonSecondaryBackground" Color="#00000000" />
-        <SolidColorBrush x:Key="ButtonSecondaryForeground" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="ButtonSecondaryBorder" Color="#2A2A2A" />
-        <SolidColorBrush x:Key="ButtonSecondaryHoverBackground" Color="#1A1A1A" />
-        <SolidColorBrush x:Key="ButtonSecondaryHoverBorder" Color="#3A3A3A" />
-        <SolidColorBrush x:Key="ButtonSecondaryPressedBackground" Color="#181818" />
-        <SolidColorBrush x:Key="CheckboxBackground" Color="#161616" />
-        <SolidColorBrush x:Key="CheckboxBorder" Color="#666666" />
-        <SolidColorBrush x:Key="CheckboxHoverBackground" Color="#1A1A1A" />
-        <SolidColorBrush x:Key="CheckboxHoverBorder" Color="#A9CFCB" />
-        <SolidColorBrush x:Key="CheckboxCheckedBackground" Color="#A9CFCB" />
-        <SolidColorBrush x:Key="CheckboxCheckedBorder" Color="#A9CFCB" />
+        <SolidColorBrush x:Key="ButtonSecondaryForeground" Color="#DCE3EC" />
+        <SolidColorBrush x:Key="ButtonSecondaryBorder" Color="#667080" />
+        <SolidColorBrush x:Key="ButtonSecondaryHoverBackground" Color="#141A24" />
+        <SolidColorBrush x:Key="ButtonSecondaryHoverBorder" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="ButtonSecondaryPressedBackground" Color="#111720" />
+        <SolidColorBrush x:Key="CheckboxBackground" Color="#0D121B" />
+        <SolidColorBrush x:Key="CheckboxBorder" Color="#87909E" />
+        <SolidColorBrush x:Key="CheckboxHoverBackground" Color="#141A24" />
+        <SolidColorBrush x:Key="CheckboxHoverBorder" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="CheckboxCheckedBackground" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="CheckboxCheckedBorder" Color="#E8EDF5" />
         <SolidColorBrush x:Key="CheckboxCheckForeground" Color="#0E0E0E" />
         <SolidColorBrush x:Key="CheckboxLabelForeground" Color="#F0F0F0" />
         <SolidColorBrush x:Key="CheckboxLabelHoverForeground" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="ThemeCardHoverBackground" Color="#1A1A1A" />
+        <SolidColorBrush x:Key="ThemeCardHoverBackground" Color="#141A24" />
         <SolidColorBrush x:Key="ToggleHoverBackground" Color="#141A20" />
-        <SolidColorBrush x:Key="ToggleHoverBorder" Color="#273849" />
-        <SolidColorBrush x:Key="ToggleCheckedBackground" Color="#121C26" />
-        <SolidColorBrush x:Key="ToggleCheckedBorder" Color="#3A566F" />
+        <SolidColorBrush x:Key="ToggleHoverBorder" Color="#87909E" />
+        <SolidColorBrush x:Key="ToggleCheckedBackground" Color="#202936" />
+        <SolidColorBrush x:Key="ToggleCheckedBorder" Color="#E8EDF5" />
         <FontFamily x:Key="DisplayFont">avares://Client/Assets/Fonts/Satoshi/OTF#Satoshi, Inter, Segoe UI, Arial</FontFamily>
         <FontFamily x:Key="UIFont">avares://Client/Assets/Fonts/Satoshi/OTF#Satoshi, Inter, Segoe UI, Arial</FontFamily>
         <FontFamily x:Key="MonoFont">Cascadia Code, Consolas</FontFamily>
@@ -80,7 +80,7 @@
             <Setter Property="Background" Value="{StaticResource Surface}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="14" />
         </Style>
 
@@ -88,7 +88,7 @@
             <Setter Property="Background" Value="{StaticResource TableSurface}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="CornerRadius" Value="10" />
             <Setter Property="Padding" Value="14,10" />
         </Style>
 

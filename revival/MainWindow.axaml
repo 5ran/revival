@@ -9,11 +9,13 @@
         x:DataType="vm:MainWindowViewModel"
         Title="OpenMacro"
         Icon="/Assets/OpenMacro-Logo.ico"
-        Width="900"
-        Height="600"
+        Width="975"
+        Height="588"
         Topmost="True"
         CanResize="False"
-        Background="{StaticResource Background}"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        TransparencyBackgroundFallback="Transparent"
         ExtendClientAreaToDecorationsHint="True"
         WindowDecorations="None">
     <Window.DataTemplates>
@@ -27,41 +29,41 @@
 
     <Window.Styles>
         <Style Selector="Button.chrome-button">
-            <Setter Property="Width" Value="32" />
-            <Setter Property="Height" Value="32" />
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="24" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+            <Setter Property="Background" Value="#0A0F16" />
             <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="BorderBrush" Value="#222C38" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="11" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
         <Style Selector="Button.chrome-button:pointerover">
-            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="Background" Value="#18212E" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
     </Window.Styles>
 
-    <Grid RowDefinitions="32,*"
-          Background="{StaticResource Background}">
+    <Grid Background="Transparent">
+        <ContentControl Content="{Binding CurrentView}" />
+
         <Grid x:Name="TitleBar"
-              Grid.Row="0"
-              Background="{StaticResource Surface}"
+              Margin="24,10,236,0"
+              Height="32"
+              VerticalAlignment="Top"
               IsHitTestVisible="True"
               PointerPressed="TitleBar_OnPointerPressed"
               ColumnDefinitions="*,Auto">
-            <TextBlock Grid.Column="0"
-                       Text="OpenMacro Swift"
-                       Margin="14,0,0,0"
-                       VerticalAlignment="Center"
-                       FontFamily="{StaticResource DisplayFont}"
-                       FontSize="11"
-                       Foreground="{StaticResource TextPrimary}" />
-
             <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center">
                 <Button x:Name="MinimizeButton"
                         Classes="chrome-button"
                         Click="MinimizeButton_OnClick">
@@ -74,8 +76,5 @@
                 </Button>
             </StackPanel>
         </Grid>
-
-        <ContentControl Grid.Row="1"
-                        Content="{Binding CurrentView}" />
     </Grid>
 </Window>

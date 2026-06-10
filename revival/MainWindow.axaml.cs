@@ -17,8 +17,8 @@ namespace Client;
 public partial class MainWindow : Window
 {
     private const int HotkeyToggleDebounceMs = 120;
-    private const double NormalWidth = 900;
-    private const double NormalHeight = 600;
+    private const double NormalWidth = 975;
+    private const double NormalHeight = 588;
     private const double CompactWidth = 440;
     private const double CompactHeight = 280;
 

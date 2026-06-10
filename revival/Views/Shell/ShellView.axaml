@@ -4,7 +4,7 @@
              xmlns:vm="using:Client.ViewModels"
              x:Class="Client.Views.ShellView"
              x:DataType="vm:ShellViewModel"
-             Background="{StaticResource Background}">
+             Background="Transparent">
     <UserControl.DataTemplates>
         <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
             <views:GeneralView />
@@ -49,30 +49,45 @@
 
     <UserControl.Styles>
         <Style Selector="Button.nav-button">
-            <Setter Property="Height" Value="40" />
-            <Setter Property="Margin" Value="8,4" />
-            <Setter Property="Padding" Value="10,0" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Width" Value="186" />
+            <Setter Property="Height" Value="62" />
+            <Setter Property="Margin" Value="8,0,15,10" />
+            <Setter Property="Padding" Value="22,0" />
+            <Setter Property="Background" Value="#0B1017" />
+            <Setter Property="BorderBrush" Value="#2F3946" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Name="NavButtonRoot"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            Padding="{TemplateBinding Padding}">
+                    <Grid>
+                        <Path Name="NavShadow"
+                              Margin="2,3,0,0"
+                              Stretch="Fill"
+                              Fill="#40000000"
+                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
+                        <Path Name="NavGlow"
+                              Stretch="Fill"
+                              Fill="Transparent"
+                              Stroke="#00000000"
+                              StrokeThickness="5"
+                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
+                        <Path Name="NavShape"
+                              Stretch="Fill"
+                              Fill="{TemplateBinding Background}"
+                              Stroke="{TemplateBinding BorderBrush}"
+                              StrokeThickness="1"
+                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Margin="{TemplateBinding Padding}"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                    </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter>
             <Setter Property="Transitions">
@@ -80,88 +95,161 @@
             </Setter>
         </Style>
 
-        <Style Selector="Button.nav-button /template/ Border#NavButtonRoot">
+        <Style Selector="Button.nav-button /template/ Path#NavShape">
             <Setter Property="Transitions">
                 <Transitions />
             </Setter>
         </Style>
 
-        <Style Selector="Button.nav-button:pointerover /template/ Border#NavButtonRoot">
-            <Setter Property="Background" Value="{StaticResource SidebarItemHoverBackground}" />
+        <Style Selector="Button.nav-button:pointerover /template/ Path#NavShape">
+            <Setter Property="Fill" Value="#151B23" />
+            <Setter Property="Stroke" Value="#6D7581" />
         </Style>
 
         <Style Selector="Button.nav-button:pointerover">
             <Setter Property="Foreground" Value="{StaticResource SidebarItemHoverForeground}" />
         </Style>
 
+        <Style Selector="Button.nav-button.selected">
+            <Setter Property="Width" Value="209" />
+            <Setter Property="Height" Value="71" />
+            <Setter Property="Margin" Value="0,-4,0,11" />
+            <Setter Property="Padding" Value="28,0" />
+            <Setter Property="Panel.ZIndex" Value="10" />
+        </Style>
+
+        <Style Selector="Button.nav-button.selected /template/ Path#NavShape">
+            <Setter Property="Fill">
+                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                    <GradientStop Color="#515C6B" Offset="0" />
+                    <GradientStop Color="#283341" Offset="0.42" />
+                    <GradientStop Color="#101720" Offset="1" />
+                </LinearGradientBrush>
+            </Setter>
+            <Setter Property="Stroke" Value="#F5F8FC" />
+            <Setter Property="StrokeThickness" Value="1.5" />
+            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
+        </Style>
+
+        <Style Selector="Button.nav-button.selected /template/ Path#NavShadow">
+            <Setter Property="Fill" Value="#60000000" />
+            <Setter Property="Margin" Value="4,5,0,0" />
+            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
+        </Style>
+
+        <Style Selector="Button.nav-button.selected /template/ Path#NavGlow">
+            <Setter Property="Stroke" Value="#50D8E3F0" />
+            <Setter Property="StrokeThickness" Value="6" />
+            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
+        </Style>
+
     </UserControl.Styles>
 
-    <Grid Background="{StaticResource Background}">
+    <Grid Background="Transparent">
 
         <!-- Compact mode (macro running): full-width focused view -->
         <ContentControl Content="{Binding CompactViewModel}"
                         IsVisible="{Binding IsCompactMode}" />
 
-        <!-- Normal mode (macro stopped): sidebar + pages -->
-        <Grid ColumnDefinitions="168,*"
-              IsVisible="{Binding !IsCompactMode}"
-              Background="{StaticResource Background}">
-        <Border Grid.Column="0"
-                Background="{StaticResource Background}"
-                BorderBrush="{StaticResource Border}"
-                BorderThickness="0,0,1,0">
-            <ItemsControl Margin="0,8,0,8"
-                          ItemsSource="{Binding NavigationItems}">
+        <!-- Real pages remain unchanged; this grid only supplies the approved shell. -->
+        <Grid IsVisible="{Binding !IsCompactMode}"
+              Background="Transparent">
+        <Grid Margin="0,0,210,0">
+            <Border Margin="0"
+                    CornerRadius="18"
+                    BorderBrush="#D2D9E3"
+                    BorderThickness="1">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                        <GradientStop Color="#1B212A" Offset="0" />
+                        <GradientStop Color="#0C1016" Offset="0.5" />
+                        <GradientStop Color="#080B10" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Border Margin="2"
+                    CornerRadius="16"
+                    BorderBrush="#586475"
+                    BorderThickness="1"
+                    Background="Transparent" />
+
+            <Border Margin="37,40,15,18"
+                    CornerRadius="10"
+                    BorderBrush="#394555"
+                    BorderThickness="1">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                        <GradientStop Color="#10161E" Offset="0" />
+                        <GradientStop Color="#090D13" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Border Margin="45,48,23,26"
+                    CornerRadius="7"
+                    BorderBrush="#273342"
+                    BorderThickness="1"
+                    Background="Transparent" />
+
+            <Border Margin="37,40,15,18"
+                    Background="Transparent">
+            <Grid RowDefinitions="Auto,*">
+                <Border Name="RobloxBannerRoot"
+                        Grid.Row="0"
+                        MinHeight="40"
+                        Padding="24,10"
+                        Background="{StaticResource RobloxBannerBackground}"
+                        BorderBrush="{StaticResource Border}"
+                        BorderThickness="0,0,0,1"
+                        IsVisible="{Binding IsRobloxBannerVisible}">
+                    <Grid ColumnDefinitions="Auto,*,Auto"
+                          ColumnSpacing="14">
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding RobloxBannerTitle}"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding RobloxBannerSubtext}"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextSecondary}" />
+
+                        <Button Grid.Column="2"
+                                Content="Fix Guide"
+                                Command="{Binding RobloxFixGuideCommand}"
+                                IsVisible="{Binding IsRobloxFixButtonVisible}" />
+                    </Grid>
+                </Border>
+
+                <ContentControl Grid.Row="1"
+                                Content="{Binding CurrentPage}" />
+            </Grid>
+            </Border>
+        </Grid>
+
+        <ItemsControl Width="209"
+                      Margin="0,53,0,10"
+                      Background="Transparent"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Top"
+                      ItemsSource="{Binding NavigationItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ShellNavigationItemViewModel}">
                         <Button Classes="nav-button"
-                                Background="{Binding Background}"
+                                Classes.selected="{Binding IsSelected}"
                                 Foreground="{Binding Foreground}"
                                 Content="{Binding Name}"
                                 Command="{Binding NavigateCommand}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </Border>
-
-        <Grid Grid.Column="1"
-              RowDefinitions="Auto,*">
-            <Border Name="RobloxBannerRoot"
-                    Grid.Row="0"
-                    MinHeight="40"
-                    Padding="24,10"
-                    Background="{StaticResource RobloxBannerBackground}"
-                    BorderBrush="{StaticResource Border}"
-                    BorderThickness="0,0,0,1"
-                    IsVisible="{Binding IsRobloxBannerVisible}">
-                <Grid ColumnDefinitions="Auto,*,Auto"
-                      ColumnSpacing="14">
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding RobloxBannerTitle}"
-                               VerticalAlignment="Center"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}" />
-
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding RobloxBannerSubtext}"
-                               VerticalAlignment="Center"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="12"
-                               TextWrapping="Wrap"
-                               Foreground="{StaticResource TextSecondary}" />
-
-                    <Button Grid.Column="2"
-                            Content="Fix Guide"
-                            Command="{Binding RobloxFixGuideCommand}"
-                            IsVisible="{Binding IsRobloxFixButtonVisible}" />
-                </Grid>
-            </Border>
-
-            <ContentControl Grid.Row="1"
-                            Content="{Binding CurrentPage}" />
-        </Grid>
         </Grid>
     </Grid>
 </UserControl>
