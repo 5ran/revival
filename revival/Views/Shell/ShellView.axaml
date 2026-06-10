@@ -69,19 +69,19 @@
                               Margin="2,3,0,0"
                               Stretch="Fill"
                               Fill="#40000000"
-                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
+                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
                         <Path Name="NavGlow"
                               Stretch="Fill"
                               Fill="Transparent"
                               Stroke="#00000000"
                               StrokeThickness="5"
-                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
+                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
                         <Path Name="NavShape"
                               Stretch="Fill"
                               Fill="{TemplateBinding Background}"
                               Stroke="{TemplateBinding BorderBrush}"
                               StrokeThickness="1"
-                              Data="M 6 0 L 180 0 Q 186 0 186 6 L 186 56 Q 186 62 180 62 L 6 62 Q 0 62 0 56 L 0 6 Q 0 0 6 0 Z" />
+                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Margin="{TemplateBinding Padding}"
@@ -111,10 +111,6 @@
         </Style>
 
         <Style Selector="Button.nav-button.selected">
-            <Setter Property="Width" Value="209" />
-            <Setter Property="Height" Value="71" />
-            <Setter Property="Margin" Value="0,-4,0,11" />
-            <Setter Property="Padding" Value="28,0" />
             <Setter Property="Panel.ZIndex" Value="10" />
         </Style>
 
@@ -128,19 +124,16 @@
             </Setter>
             <Setter Property="Stroke" Value="#F5F8FC" />
             <Setter Property="StrokeThickness" Value="1.5" />
-            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavShadow">
             <Setter Property="Fill" Value="#60000000" />
             <Setter Property="Margin" Value="4,5,0,0" />
-            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavGlow">
             <Setter Property="Stroke" Value="#50D8E3F0" />
             <Setter Property="StrokeThickness" Value="6" />
-            <Setter Property="Data" Value="M 9 0 L 185 0 L 209 25 L 209 46 L 185 71 L 9 71 Q 0 71 0 62 L 0 9 Q 0 0 9 0 Z" />
         </Style>
 
     </UserControl.Styles>
@@ -194,51 +187,15 @@
 
             <Border Margin="37,40,15,18"
                     Background="Transparent">
-            <Grid RowDefinitions="Auto,*">
-                <Border Name="RobloxBannerRoot"
-                        Grid.Row="0"
-                        MinHeight="40"
-                        Padding="24,10"
-                        Background="{StaticResource RobloxBannerBackground}"
-                        BorderBrush="{StaticResource Border}"
-                        BorderThickness="0,0,0,1"
-                        IsVisible="{Binding IsRobloxBannerVisible}">
-                    <Grid ColumnDefinitions="Auto,*,Auto"
-                          ColumnSpacing="14">
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding RobloxBannerTitle}"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="13"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimary}" />
-
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding RobloxBannerSubtext}"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="12"
-                                   TextWrapping="Wrap"
-                                   Foreground="{StaticResource TextSecondary}" />
-
-                        <Button Grid.Column="2"
-                                Content="Fix Guide"
-                                Command="{Binding RobloxFixGuideCommand}"
-                                IsVisible="{Binding IsRobloxFixButtonVisible}" />
-                    </Grid>
-                </Border>
-
-                <ContentControl Grid.Row="1"
-                                Content="{Binding CurrentPage}" />
-            </Grid>
+                <ContentControl Content="{Binding CurrentPage}" />
             </Border>
         </Grid>
 
         <ItemsControl Width="209"
-                      Margin="0,53,0,10"
+                      Margin="0,0,8,0"
                       Background="Transparent"
                       HorizontalAlignment="Right"
-                      VerticalAlignment="Top"
+                      VerticalAlignment="Center"
                       ItemsSource="{Binding NavigationItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ShellNavigationItemViewModel}">

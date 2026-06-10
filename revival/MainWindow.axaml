@@ -48,6 +48,19 @@
             <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
+
+        <Style Selector="Button.chrome-status-action">
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Margin" Value="7,0,0,0" />
+            <Setter Property="Padding" Value="6,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#273342" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="3" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="9" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
     </Window.Styles>
 
     <Grid Background="Transparent">
@@ -60,6 +73,40 @@
               IsHitTestVisible="True"
               PointerPressed="TitleBar_OnPointerPressed"
               ColumnDefinitions="*,Auto">
+            <ContentControl Grid.Column="0"
+                            Content="{Binding CurrentView}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,8,0">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate DataType="{x:Type vm:ShellViewModel}"
+                                  x:DataType="vm:ShellViewModel">
+                        <Grid ColumnDefinitions="Auto,Auto,Auto"
+                              VerticalAlignment="Center"
+                              IsVisible="{Binding IsRobloxBannerVisible}"
+                              ToolTip.Tip="{Binding RobloxBannerSubtext}">
+                            <Ellipse Grid.Column="0"
+                                     Width="5"
+                                     Height="5"
+                                     Margin="0,0,6,0"
+                                     VerticalAlignment="Center"
+                                     Fill="{StaticResource TextSecondary}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding RobloxBannerTitle}"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
+                            <Button Grid.Column="2"
+                                    Classes="chrome-status-action"
+                                    Content="Fix"
+                                    Command="{Binding RobloxFixGuideCommand}"
+                                    IsVisible="{Binding IsRobloxFixButtonVisible}" />
+                        </Grid>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
