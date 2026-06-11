@@ -16,61 +16,6 @@
                            Foreground="{StaticResource TextPrimary}" />
 
                 <Border Classes="app-header"
-                        IsVisible="{Binding ShowAutoAquariumSection}">
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12">
-                    <TextBlock Grid.Column="0"
-                               VerticalAlignment="Center"
-                               Text="Auto Aquarium"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}" />
-                    <CheckBox Grid.Column="1"
-                              VerticalAlignment="Center"
-                              Content="On"
-                              IsChecked="{Binding AutoAquariumEnabled}"
-                              FontFamily="{StaticResource UIFont}"
-                              FontSize="12"
-                              Foreground="{StaticResource TextPrimary}" />
-                    <Button Grid.Column="2"
-                            Classes="app-primary"
-                            Width="54"
-                            Height="28"
-                            Padding="0"
-                            FontSize="11"
-                            Content="{Binding AutoAquariumExpandGlyph}"
-                            Command="{Binding ToggleAutoAquariumExpandedCommand}" />
-                </Grid>
-                </Border>
-
-                <Border IsVisible="{Binding IsAutoAquariumExpanded}"
-                        Classes="app-card">
-                <StackPanel Spacing="10">
-                    <Grid ColumnDefinitions="180,*"
-                          ColumnSpacing="14">
-                        <StackPanel Grid.Column="0"
-                                    Spacing="6">
-                            <TextBlock Text="Cycle Delay (min)"
-                                       FontFamily="{StaticResource UIFont}"
-                                       FontSize="12"
-                                       Foreground="{StaticResource TextSecondary}" />
-                            <TextBox Classes="app-input"
-                                     Width="170"
-                                     Height="34"
-                                     Text="{Binding AutoAquariumCycleDelayMinutes}" />
-                        </StackPanel>
-                        <TextBlock Grid.Column="1"
-                                   VerticalAlignment="Center"
-                                   Text="Time between aquarium runs."
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextSecondary}" />
-                    </Grid>
-                </StackPanel>
-                </Border>
-
-                <Border Classes="app-header"
                         IsVisible="{Binding ShowAutoTotemSection}">
                 <Grid ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12">

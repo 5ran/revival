@@ -37,9 +37,9 @@ public sealed class ShellNavigationItemViewModel : ViewModelBase, IDisposable
     /// </summary>
     public string Name { get; }
 
-    public bool ShowsGeneralRodIcon => Name == "General";
+    public bool ShowsGeneralRodIcon => Name == "Fishing";
 
-    public bool ShowsFishingGearRodIcon => Name == "Fishing";
+    public bool ShowsFishingGearRodIcon => false;
 
     public bool ShowsFishingAddonsIcon => Name == "Fishing Add-ons";
 

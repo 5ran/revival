@@ -52,15 +52,12 @@ public sealed class FishingViewModel : ViewModelBase
         StartCommand = new RelayCommand(_ => StartAsync(), _ => !IsRunning);
         StopCommand = new RelayCommand(_ => StopAsync(), _ => IsRunning);
         NavigateToAutoTotemCommand = new RelayCommand(_ => { NavigateToAutoTotemAction?.Invoke(); return Task.CompletedTask; });
-        NavigateToAutoAquariumCommand = new RelayCommand(_ => { NavigateToAutoAquariumAction?.Invoke(); return Task.CompletedTask; });
         _statusTimer = new Timer(_ => RefreshStatus(), null, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(50));
         _aquariumTimer = new Timer(_ => AquariumTick(), null, TimeSpan.FromMilliseconds(20), TimeSpan.FromMilliseconds(20));
         _rodTimer = new Timer(_ => RefreshEquippedRod(), null, TimeSpan.FromMilliseconds(500), TimeSpan.FromSeconds(2));
     }
 
     public Action? NavigateToAutoTotemAction { get; set; }
-
-    public Action? NavigateToAutoAquariumAction { get; set; }
 
     public IReadOnlyList<FishingTrackerOption> TrackerOptions { get; } =
     [
@@ -226,6 +223,11 @@ public sealed class FishingViewModel : ViewModelBase
         new AppKeyValueItem(RodHeaderText, EquippedRodText, ColoredLines: EquippedRodLines),
     ];
 
+    public IReadOnlyList<AppKeyValueItem> RodStatusItems =>
+    [
+        new AppKeyValueItem(RodHeaderText, EquippedRodText, ColoredLines: EquippedRodLines),
+    ];
+
     public IReadOnlyList<AppKeyValueItem> StatsItems =>
     [
         new AppKeyValueItem("Caught", _status.ReelStats.Caught.ToString()),
@@ -239,8 +241,6 @@ public sealed class FishingViewModel : ViewModelBase
     public RelayCommand StopCommand { get; }
 
     public RelayCommand NavigateToAutoTotemCommand { get; }
-
-    public RelayCommand NavigateToAutoAquariumCommand { get; }
 
     public Task StartAsync()
     {
@@ -534,6 +534,7 @@ public sealed class FishingViewModel : ViewModelBase
                 IsMasterlineEquipped = isMasterline;
                 RodHeaderText = $"Rod - {equippedState}";
                 OnPropertyChanged(nameof(StatusItems));
+                OnPropertyChanged(nameof(RodStatusItems));
             });
             return;
         }
@@ -541,6 +542,7 @@ public sealed class FishingViewModel : ViewModelBase
         IsMasterlineEquipped = isMasterline;
         RodHeaderText = $"Rod - {equippedState}";
         OnPropertyChanged(nameof(StatusItems));
+        OnPropertyChanged(nameof(RodStatusItems));
     }
 
     private void SetEquippedRodText(string value)
@@ -554,6 +556,7 @@ public sealed class FishingViewModel : ViewModelBase
         EquippedRodText = value;
         EquippedRodLines = ColoredEnchantText.BuildLines(value);
         OnPropertyChanged(nameof(StatusItems));
+        OnPropertyChanged(nameof(RodStatusItems));
     }
 
     private void UpdateAquariumSchedule(FishingTrackerStatus status)

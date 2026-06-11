@@ -64,7 +64,7 @@ public sealed class ShellViewModel : ViewModelBase
         _autoSovereignRechargeViewModel = new AutoSovereignRechargeViewModel(_fishingViewModel);
 
         _generalViewModel = new GeneralViewModel(_fishingViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel, _autoAnglerViewModel);
-        _fishingAddonsViewModel = new FishingAddonsViewModel(_fishingViewModel, _autoTotemViewModel, _autoSovereignRechargeViewModel, _huntDetectViewModel);
+        _fishingAddonsViewModel = new FishingAddonsViewModel(_autoTotemViewModel, _autoSovereignRechargeViewModel, _huntDetectViewModel);
         CompactViewModel = new CompactViewModel(_generalViewModel, _fishingViewModel, _autoTotemViewModel);
         _generalViewModel.PropertyChanged += (_, e) =>
         {
@@ -162,25 +162,17 @@ public sealed class ShellViewModel : ViewModelBase
         };
         NavigationItems = new[]
         {
-            new ShellNavigationItemViewModel("General", _generalViewModel, Navigate),
-            new ShellNavigationItemViewModel("Fishing", _fishingViewModel, Navigate),
+            new ShellNavigationItemViewModel("Fishing", _generalViewModel, Navigate),
             new ShellNavigationItemViewModel("Fishing Add-ons", _fishingAddonsViewModel, Navigate),
             new ShellNavigationItemViewModel("Other Automation", _otherAutomationViewModel, Navigate),
             new ShellNavigationItemViewModel("Settings", _settingsViewModel, Navigate),
         };
 
-        var fishingAddonsItem = NavigationItems[2];
+        var fishingAddonsItem = NavigationItems[1];
         _fishingViewModel.NavigateToAutoTotemAction = () =>
         {
             Navigate(fishingAddonsItem);
             _fishingAddonsViewModel.IsAutoTotemExpanded = true;
-            _fishingAddonsViewModel.IsAutoAquariumExpanded = false;
-        };
-        _fishingViewModel.NavigateToAutoAquariumAction = () =>
-        {
-            Navigate(fishingAddonsItem);
-            _fishingAddonsViewModel.IsAutoAquariumExpanded = true;
-            _fishingAddonsViewModel.IsAutoTotemExpanded = false;
         };
 
         _currentPage = _generalViewModel;

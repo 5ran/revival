@@ -338,7 +338,7 @@
 
             <Grid Width="186"
                   Classes="selected-overlay"
-                  Height="300"
+                  Height="240"
                   Margin="0,26,20,0"
                   ZIndex="20"
                   ClipToBounds="False"

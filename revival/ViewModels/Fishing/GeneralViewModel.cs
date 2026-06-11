@@ -139,6 +139,8 @@ public sealed class GeneralViewModel : ViewModelBase
 
     public ObservableCollection<int> RodSlots { get; }
 
+    public FishingViewModel Fishing => _fishing;
+
     public int SelectedRodSlot
     {
         get => _selectedRodSlot;

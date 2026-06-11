@@ -1,180 +1,370 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Client.ViewModels"
+             xmlns:controls="using:Client.Controls"
              x:Class="Client.Views.GeneralView"
              x:DataType="vm:GeneralViewModel"
              Background="Transparent">
     <UserControl.Styles>
-        <Style Selector="Button.general-primary">
+        <Style Selector="Border.fishing-panel">
+            <Setter Property="Background" Value="{StaticResource TableSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="Border.fishing-card">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="Border.fishing-kicker">
+            <Setter Property="Background" Value="{StaticResource ShellNavSelectedBackground}" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Padding" Value="7,3" />
+        </Style>
+
+        <Style Selector="TextBlock.fishing-eyebrow">
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
+
+        <Style Selector="TextBlock.fishing-heading">
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+
+        <Style Selector="TextBlock.fishing-copy">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
+
+        <Style Selector="TextBlock.cycle-label">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="9" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
+
+        <Style Selector="Button.fishing-primary">
             <Setter Property="Background" Value="{StaticResource Accent}" />
-            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <Style Selector="Button.general-primary /template/ ContentPresenter">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.12"/>
-                </Transitions>
-            </Setter>
+
+        <Style Selector="Button.fishing-primary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
         </Style>
-        <Style Selector="Button.general-primary:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentHover}"/>
-            <Setter Property="TextElement.Foreground" Value="{StaticResource AccentForeground}"/>
+
+        <Style Selector="Button.fishing-secondary">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
         </Style>
-        <Style Selector="Button.general-primary:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
+
+        <Style Selector="Button.fishing-secondary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
         </Style>
-        <Style Selector="Button.general-secondary">
-            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBackground}"/>
-            <Setter Property="Foreground" Value="{StaticResource ButtonSecondaryForeground}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource ButtonSecondaryBorder}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
+
+        <Style Selector="ComboBox.fishing-select">
+            <Setter Property="Background" Value="{StaticResource TableSurface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        <Style Selector="Button.general-secondary /template/ ContentPresenter">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.12"/>
-                </Transitions>
-            </Setter>
+
+        <Style Selector="ComboBox.fishing-select:pointerover">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
         </Style>
-        <Style Selector="Button.general-secondary:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentHover}"/>
-            <Setter Property="TextElement.Foreground" Value="{StaticResource AccentForeground}"/>
+
+        <Style Selector="ComboBox.fishing-select:pointerover /template/ Border">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
         </Style>
-        <Style Selector="Button.general-secondary:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
-            <Setter Property="TextElement.Foreground" Value="{StaticResource AccentForeground}"/>
-        </Style>
-        <Style Selector="ComboBox.general-select">
-            <Setter Property="Background" Value="{StaticResource Surface}"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style Selector="ComboBox.general-select:pointerover">
-            <Setter Property="Background" Value="{StaticResource InputHoverSurface}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource InputHoverBorder}"/>
-        </Style>
-        <Style Selector="ComboBox.general-select:pointerover /template/ Border">
-            <Setter Property="Background" Value="{StaticResource InputHoverSurface}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource InputHoverBorder}"/>
+
+        <Style Selector="TextBox.fishing-input">
+            <Setter Property="Background" Value="{StaticResource TableSurface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="CaretBrush" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,*"
-          Margin="24">
-        <TextBlock Grid.Row="0"
-                   Text="General"
-                   FontFamily="{StaticResource DisplayFont}"
-                   FontSize="24"
-                   FontWeight="SemiBold"
-                   Foreground="{StaticResource TextPrimary}" />
+    <Grid Margin="24,18"
+          RowDefinitions="Auto,8,78,10,76,10,72,10,48">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              VerticalAlignment="Center">
+            <TextBlock Grid.Column="0"
+                       Text="Fishing"
+                       FontFamily="{StaticResource DisplayFont}"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}" />
 
-        <Grid Grid.Row="1"
-              Width="430"
-              HorizontalAlignment="Left"
-              Margin="0,12,0,0"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-              ColumnDefinitions="*,Auto">
-            <StackPanel Grid.Row="0"
-                        Grid.Column="0"
-                        Spacing="4">
-                <TextBlock Text="{Binding ActiveMacroText}"
-                           FontFamily="{StaticResource UIFont}"
-                           FontSize="12"
-                           Foreground="{StaticResource TextSecondary}" />
-                <TextBlock Text="{Binding RunStateText}"
-                           FontFamily="{StaticResource DisplayFont}"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource TextPrimary}" />
-            </StackPanel>
-
-            <Button Grid.Row="0"
-                    Grid.Column="1"
-                    Classes="general-primary"
-                    Width="110"
-                    Height="36"
-                    Content="{Binding StartStopButtonText}"
-                    Command="{Binding ToggleMacroCommand}" />
-
-            <Rectangle Grid.Row="1"
-                       Grid.ColumnSpan="2"
-                       Height="1"
-                       Fill="{StaticResource Border}"
-                       Margin="0,16,0,16" />
-
-            <StackPanel Grid.Row="2"
-                        Grid.Column="0"
-                        Spacing="4">
-                <TextBlock Text="Hotkey"
-                           FontFamily="{StaticResource UIFont}"
-                           FontSize="12"
-                           Foreground="{StaticResource TextSecondary}" />
-                <TextBlock Text="{Binding HotkeyText}"
-                           FontFamily="{StaticResource DisplayFont}"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource TextPrimary}" />
-            </StackPanel>
-
-            <Button Grid.Row="2"
-                    Grid.Column="1"
-                    Classes="general-secondary"
-                    Width="110"
-                    Height="36"
-                    Content="{Binding RebindButtonText}"
-                    Command="{Binding RebindHotkeyCommand}" />
-
-            <Rectangle Grid.Row="3"
-                       Grid.ColumnSpan="2"
-                       Height="1"
-                       Fill="{StaticResource Border}"
-                       Margin="0,16,0,16" />
-
-            <StackPanel Grid.Row="4"
-                        Grid.Column="0"
-                        Spacing="4">
-                <TextBlock Text="Rod Location"
-                           FontFamily="{StaticResource UIFont}"
-                           FontSize="12"
-                           Foreground="{StaticResource TextSecondary}" />
-                <TextBlock Text="{Binding SelectedRodSlot}"
-                           FontFamily="{StaticResource DisplayFont}"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource TextPrimary}" />
-            </StackPanel>
-
-            <ComboBox Grid.Row="4"
-                      Grid.Column="1"
-                      Classes="general-select"
-                      Width="110"
-                      Height="36"
-                      ItemsSource="{Binding RodSlots}"
-                      SelectedItem="{Binding SelectedRodSlot}">
-                <ComboBox.SelectionBoxItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="Change" />
-                    </DataTemplate>
-                </ComboBox.SelectionBoxItemTemplate>
-            </ComboBox>
+            <TextBlock Grid.Column="1"
+                       Text="{Binding Fishing.Phase}"
+                       VerticalAlignment="Center"
+                       FontFamily="{StaticResource MonoFont}"
+                       FontSize="10"
+                       Foreground="{StaticResource TextSecondary}" />
         </Grid>
+
+        <Border Grid.Row="2"
+                Classes="fishing-panel"
+                Padding="14,10">
+            <Grid ColumnDefinitions="4,12,*,8,68,8,1,8,104,8,1,8,150">
+                <Border Grid.Column="0"
+                        Background="{StaticResource Accent}"
+                        CornerRadius="2" />
+
+                <StackPanel Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Spacing="2">
+                    <TextBlock Text="{Binding ActiveMacroText}"
+                               Classes="fishing-eyebrow" />
+                    <TextBlock Text="{Binding RunStateText}"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusMessage}"
+                               Classes="fishing-copy"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap"
+                               MaxWidth="150" />
+                </StackPanel>
+
+                <Button Grid.Column="4"
+                        Classes="fishing-primary"
+                        Height="34"
+                        Content="{Binding StartStopButtonText}"
+                        Command="{Binding ToggleMacroCommand}" />
+
+                <Border Grid.Column="6"
+                        Background="{StaticResource Border}" />
+
+                <Grid Grid.Column="8"
+                      ColumnDefinitions="*,Auto"
+                      VerticalAlignment="Center">
+                    <StackPanel Grid.Column="0"
+                                Spacing="2">
+                        <TextBlock Text="Hotkey"
+                                   Classes="fishing-eyebrow" />
+                        <TextBlock Text="{Binding HotkeyText}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                    </StackPanel>
+                    <Button Grid.Column="1"
+                            Classes="fishing-secondary"
+                            Width="62"
+                            Height="32"
+                            Content="{Binding RebindButtonText}"
+                            Command="{Binding RebindHotkeyCommand}" />
+                </Grid>
+
+                <Border Grid.Column="10"
+                        Background="{StaticResource Border}" />
+
+                <Grid Grid.Column="12"
+                      ColumnDefinitions="*,90"
+                      ColumnSpacing="6"
+                      VerticalAlignment="Center">
+                    <StackPanel Grid.Column="0"
+                                Spacing="2">
+                        <TextBlock Text="Rod Slot"
+                                   Classes="fishing-eyebrow" />
+                        <TextBlock Text="{Binding SelectedRodSlot}"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                    </StackPanel>
+                    <ComboBox Grid.Column="1"
+                              Classes="fishing-select"
+                              Height="32"
+                              ItemsSource="{Binding RodSlots}"
+                              SelectedItem="{Binding SelectedRodSlot}">
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="Change" />
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="4"
+              ColumnDefinitions="*,10,190">
+            <Border Grid.Column="0"
+                    Classes="fishing-card"
+                    Padding="13,9">
+                <Grid ColumnDefinitions="*,190"
+                      ColumnSpacing="12">
+                    <TextBlock Grid.Column="0"
+                               Text="Tracking Method"
+                               Classes="fishing-heading"
+                               VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1"
+                              Classes="fishing-select"
+                              Height="34"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding Fishing.TrackerOptions}"
+                              SelectedItem="{Binding Fishing.SelectedTracker}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="vm:FishingTrackerOption">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="5">
+                                    <TextBlock Text="{Binding Title}"
+                                               Foreground="{StaticResource TextPrimary}" />
+                                    <TextBlock Text="{Binding Description}"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                        <ComboBox.SelectionBoxItemTemplate>
+                            <DataTemplate x:DataType="vm:FishingTrackerOption">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="5">
+                                    <TextBlock Text="{Binding Title}"
+                                               Foreground="{StaticResource TextPrimary}" />
+                                    <TextBlock Text="{Binding Description}"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.SelectionBoxItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Classes="fishing-card"
+                    Padding="13,9">
+                <Grid ColumnDefinitions="*,96"
+                      ColumnSpacing="8">
+                    <TextBlock Grid.Column="0"
+                               Text="Casting"
+                               Classes="fishing-heading"
+                               VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1"
+                              Classes="fishing-select"
+                              Height="34"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding Fishing.CastingModes}"
+                              SelectedItem="{Binding Fishing.SelectedCastingMode}" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="6"
+                Classes="fishing-panel"
+                Padding="14,9">
+            <Grid ColumnDefinitions="4,12,150,*,110,12,72">
+                <Border Grid.Column="0"
+                        Background="{StaticResource Accent}"
+                        CornerRadius="2" />
+                <StackPanel Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Spacing="2">
+                    <TextBlock Text="Auto Aquarium"
+                               Classes="fishing-heading" />
+                    <TextBlock Text="{Binding Fishing.AquariumStatusText}"
+                               Classes="fishing-copy"
+                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="NoWrap" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="4"
+                            VerticalAlignment="Center"
+                            Spacing="2">
+                    <TextBlock Text="CYCLE DELAY / MIN"
+                               Classes="cycle-label" />
+                    <TextBox Classes="fishing-input"
+                             Height="30"
+                             Text="{Binding Fishing.AutoAquariumCycleDelayMinutes}"
+                             PlaceholderText="Minutes" />
+                </StackPanel>
+
+                <CheckBox Grid.Column="6"
+                          Content="Enabled"
+                          IsChecked="{Binding Fishing.AutoAquariumEnabled}"
+                          VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
+                          FontFamily="{StaticResource UIFont}"
+                          FontSize="11"
+                          FontWeight="SemiBold"
+                          Foreground="{StaticResource TextPrimary}" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="8"
+                Classes="fishing-card"
+                Padding="14,0">
+            <Grid ColumnDefinitions="Auto,12,*,Auto"
+                  VerticalAlignment="Center">
+                <TextBlock Grid.Column="0"
+                           Text="{Binding Fishing.RodHeaderText}"
+                           VerticalAlignment="Center"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="11"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" />
+
+                <controls:ColoredTextBlock Grid.Column="2"
+                                           Lines="{Binding Fishing.EquippedRodLines}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextTrimming="CharacterEllipsis"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="11"
+                                           FontWeight="SemiBold" />
+
+                <TextBlock Grid.Column="3"
+                           Text="{Binding Fishing.MasterlineRodNamesText}"
+                           IsVisible="{Binding Fishing.IsMasterlineEquipped}"
+                           Margin="12,0,0,0"
+                           MaxWidth="130"
+                           TextTrimming="CharacterEllipsis"
+                           FontFamily="{StaticResource UIFont}"
+                           FontSize="10"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource Accent}" />
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
