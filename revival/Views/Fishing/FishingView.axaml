@@ -196,7 +196,7 @@
               HorizontalAlignment="Stretch"
               VerticalAlignment="Top"
               Margin="0,10,0,0"
-              ColumnDefinitions="*,12,140">
+              ColumnDefinitions="*,12,*">
             <controls:AppKeyValueList Grid.Column="0"
                                       Items="{Binding StatusItems}" />
             <controls:AppKeyValueList Grid.Column="2"

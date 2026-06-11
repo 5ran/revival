@@ -14,7 +14,7 @@ public static class InterfaceSoundService
     private static readonly object Sync = new();
     private static readonly List<byte[]> Sources = new();
     private static volatile SoundPlayer[] _players = Array.Empty<SoundPlayer>();
-    private static int _nextPlayer = -1;
+    private static int _lastPlayer = -1;
     private static bool _initialized;
     private static bool _enabled = true;
     private static int _volume = DefaultVolume;
@@ -97,7 +97,18 @@ public static class InterfaceSoundService
             return;
         }
 
-        var index = (Interlocked.Increment(ref _nextPlayer) & int.MaxValue) % players.Length;
+        var lastPlayer = Volatile.Read(ref _lastPlayer);
+        var hasPreviousPlayer = lastPlayer >= 0 && lastPlayer < players.Length;
+        var index = players.Length == 1
+            ? 0
+            : Random.Shared.Next(hasPreviousPlayer ? players.Length - 1 : players.Length);
+
+        if (hasPreviousPlayer && index >= lastPlayer)
+        {
+            index++;
+        }
+
+        Volatile.Write(ref _lastPlayer, index);
         players[index].Play();
     }
 
