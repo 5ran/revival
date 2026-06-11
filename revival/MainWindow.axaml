@@ -9,8 +9,8 @@
         x:DataType="vm:MainWindowViewModel"
         Title="OpenMacro"
         Icon="/Assets/OpenMacro-Logo.ico"
-        Width="975"
-        Height="588"
+        Width="820"
+        Height="480"
         Topmost="True"
         CanResize="False"
         Background="Transparent"
@@ -32,9 +32,9 @@
             <Setter Property="Width" Value="28" />
             <Setter Property="Height" Value="24" />
             <Setter Property="Margin" Value="0,0,4,0" />
-            <Setter Property="Background" Value="#0A0F16" />
+            <Setter Property="Background" Value="{StaticResource ShellChromeBackground}" />
             <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
-            <Setter Property="BorderBrush" Value="#222C38" />
+            <Setter Property="BorderBrush" Value="{StaticResource ShellChromeBorder}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="4" />
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
@@ -44,7 +44,7 @@
         </Style>
 
         <Style Selector="Button.chrome-button:pointerover">
-            <Setter Property="Background" Value="#18212E" />
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
             <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
@@ -54,7 +54,7 @@
             <Setter Property="Margin" Value="7,0,0,0" />
             <Setter Property="Padding" Value="6,0" />
             <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderBrush" Value="#273342" />
+            <Setter Property="BorderBrush" Value="{StaticResource ShellChromeBorder}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="3" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
@@ -67,7 +67,7 @@
         <ContentControl Content="{Binding CurrentView}" />
 
         <Grid x:Name="TitleBar"
-              Margin="24,10,236,0"
+              Margin="24,10,8,0"
               Height="32"
               VerticalAlignment="Top"
               IsHitTestVisible="True"
@@ -110,7 +110,8 @@
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Center">
+                        VerticalAlignment="Center"
+                        Margin="0,-6,0,0">
                 <Button x:Name="MinimizeButton"
                         Classes="chrome-button"
                         Click="MinimizeButton_OnClick">

@@ -37,6 +37,16 @@ public sealed class ShellNavigationItemViewModel : ViewModelBase, IDisposable
     /// </summary>
     public string Name { get; }
 
+    public bool ShowsGeneralRodIcon => Name == "General";
+
+    public bool ShowsFishingGearRodIcon => Name == "Fishing";
+
+    public bool ShowsFishingAddonsIcon => Name == "Fishing Add-ons";
+
+    public bool ShowsAutomationIcon => Name == "Other Automation";
+
+    public bool ShowsSettingsIcon => Name == "Settings";
+
     /// <summary>
     /// Gets the page view model associated with this item.
     /// </summary>

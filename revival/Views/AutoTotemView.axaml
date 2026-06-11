@@ -13,12 +13,12 @@
         </Style>
         <Style Selector="CheckBox.totem-check">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         </Style>
         <Style Selector="TextBlock.totem-inline">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
-            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontSize" Value="12"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         </Style>
     </UserControl.Styles>
@@ -65,7 +65,7 @@
                       ColumnSpacing="10">
                     <Border Grid.Column="0"
                             Classes="app-card"
-                            Padding="12,10">
+                            Padding="8,10">
                         <CheckBox Classes="totem-check"
                                   IsChecked="{Binding UseShinyTotem}">
                             <CheckBox.Content>
@@ -83,7 +83,7 @@
                     </Border>
                     <Border Grid.Column="1"
                             Classes="app-card"
-                            Padding="12,10">
+                            Padding="8,10">
                         <CheckBox Classes="totem-check"
                                   IsChecked="{Binding UseSparklingTotem}">
                             <CheckBox.Content>
@@ -101,7 +101,7 @@
                     </Border>
                     <Border Grid.Column="2"
                             Classes="app-card"
-                            Padding="12,10">
+                            Padding="8,10">
                         <CheckBox Classes="totem-check"
                                   IsChecked="{Binding UseMutationTotem}">
                             <CheckBox.Content>
@@ -138,7 +138,7 @@
                       ColumnSpacing="10">
                     <Border Grid.Column="0"
                             Classes="app-card"
-                            Padding="12,10">
+                            Padding="8,10">
                         <CheckBox Classes="totem-check"
                                   Content="Stay Day"
                                   IsEnabled="{Binding IsTimePreferenceEditable}"
@@ -146,7 +146,7 @@
                     </Border>
                     <Border Grid.Column="1"
                             Classes="app-card"
-                            Padding="12,10">
+                            Padding="8,10">
                         <CheckBox Classes="totem-check"
                                   Content="Stay Night"
                                   IsEnabled="{Binding IsTimePreferenceEditable}"

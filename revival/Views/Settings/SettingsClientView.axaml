@@ -41,7 +41,10 @@
         <local:BoolToBorderBrushConverter x:Key="BoolToBorderBrush" />
     </UserControl.Resources>
 
-    <Grid Margin="34" RowDefinitions="Auto,Auto,Auto,*">
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+    <Grid Margin="24"
+          RowDefinitions="Auto,Auto,Auto">
         <StackPanel Grid.Row="0"
                     Spacing="8">
             <Button Classes="settings-back"
@@ -54,7 +57,7 @@
                        Foreground="{StaticResource TextPrimary}" />
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Margin="0,24,0,0">
+        <StackPanel Grid.Row="1" Margin="0,16,0,0">
             <TextBlock Text="Theme"
                        FontFamily="{StaticResource UIFont}"
                        FontSize="13"
@@ -62,20 +65,22 @@
                        Foreground="{StaticResource TextPrimary}" />
             <Rectangle Height="1"
                        Fill="{StaticResource Border}"
-                       Margin="0,8,0,0" />
+                       Margin="0,6,0,0" />
 
-            <StackPanel Orientation="Horizontal"
-                        Spacing="8"
-                        Margin="0,14,0,0">
+            <Grid ColumnDefinitions="*,*,*,*,*"
+                  ColumnSpacing="8"
+                  Margin="0,10,0,0">
                 <!-- Dark card -->
-                <Button Classes="theme-card-btn"
+                <Button Grid.Column="0"
+                        Classes="theme-card-btn"
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Cursor="Hand"
                         Command="{Binding SelectDarkCommand}">
-                    <Border Width="120"
-                            Height="64"
+                    <Border Height="54"
                             Classes="theme-card"
                             CornerRadius="6"
                             BorderThickness="1.5"
@@ -91,14 +96,16 @@
                 </Button>
 
                 <!-- Light card -->
-                <Button Classes="theme-card-btn"
+                <Button Grid.Column="1"
+                        Classes="theme-card-btn"
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Cursor="Hand"
                         Command="{Binding SelectLightCommand}">
-                    <Border Width="120"
-                            Height="64"
+                    <Border Height="54"
                             Classes="theme-card"
                             CornerRadius="6"
                             BorderThickness="1.5"
@@ -114,14 +121,16 @@
                 </Button>
 
                 <!-- Slate card -->
-                <Button Classes="theme-card-btn"
+                <Button Grid.Column="2"
+                        Classes="theme-card-btn"
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Cursor="Hand"
                         Command="{Binding SelectSlateCommand}">
-                    <Border Width="120"
-                            Height="64"
+                    <Border Height="54"
                             Classes="theme-card"
                             CornerRadius="6"
                             BorderThickness="1.5"
@@ -137,14 +146,16 @@
                 </Button>
 
                 <!-- Pink card -->
-                <Button Classes="theme-card-btn"
+                <Button Grid.Column="3"
+                        Classes="theme-card-btn"
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Cursor="Hand"
                         Command="{Binding SelectPinkCommand}">
-                    <Border Width="120"
-                            Height="64"
+                    <Border Height="54"
                             Classes="theme-card"
                             CornerRadius="6"
                             BorderThickness="1.5"
@@ -160,14 +171,16 @@
                 </Button>
 
                 <!-- Custom card -->
-                <Button Classes="theme-card-btn"
+                <Button Grid.Column="4"
+                        Classes="theme-card-btn"
                         Background="Transparent"
                         BorderThickness="0"
                         Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
                         Cursor="Hand"
                         Command="{Binding SelectCustomCommand}">
-                    <Border Width="120"
-                            Height="64"
+                    <Border Height="54"
                             Classes="theme-card"
                             CornerRadius="6"
                             BorderThickness="1.5"
@@ -204,11 +217,11 @@
                         </StackPanel>
                     </Border>
                 </Button>
-            </StackPanel>
+            </Grid>
         </StackPanel>
 
         <StackPanel Grid.Row="2"
-                    Margin="0,18,0,0"
+                    Margin="0,12,0,0"
                     IsVisible="{Binding IsCustomSelected}">
             <TextBlock Text="Customize colors"
                        FontFamily="{StaticResource UIFont}"
@@ -218,22 +231,21 @@
             <TextBlock Text="Hover, pressed, and surface tints are derived automatically."
                        FontFamily="{StaticResource UIFont}"
                        FontSize="11"
-                       Foreground="{StaticResource TextSecondary}"
-                       Margin="0,2,0,0" />
+                       Foreground="{StaticResource TextSecondary}" />
             <Rectangle Height="1"
                        Fill="{StaticResource Border}"
-                       Margin="0,8,0,0" />
+                       Margin="0,6,0,0" />
 
-            <Grid ColumnDefinitions="120,28,180"
+            <Grid ColumnDefinitions="100,24,*"
                   RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                  Margin="0,14,0,0">
+                  Margin="0,10,0,0">
                 <Grid.Styles>
                     <Style Selector="TextBlock.color-label">
                         <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
                         <Setter Property="FontSize" Value="12" />
                         <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
                         <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="0,0,0,10" />
+                        <Setter Property="Margin" Value="0,0,0,6" />
                     </Style>
                     <Style Selector="Button.color-swatch-btn">
                         <Setter Property="Background" Value="Transparent" />
@@ -241,7 +253,7 @@
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="Cursor" Value="Hand" />
                         <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="0,0,0,10" />
+                        <Setter Property="Margin" Value="0,0,0,6" />
                     </Style>
                     <Style Selector="Button.color-swatch-btn /template/ ContentPresenter">
                         <Setter Property="Background" Value="Transparent" />
@@ -272,9 +284,9 @@
                         <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
                         <Setter Property="FontSize" Value="12" />
                         <Setter Property="Padding" Value="10,0" />
-                        <Setter Property="Height" Value="30" />
+                        <Setter Property="Height" Value="26" />
                         <Setter Property="VerticalContentAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="0,0,0,10" />
+                        <Setter Property="Margin" Value="0,0,0,6" />
                     </Style>
                 </Grid.Styles>
 
@@ -335,4 +347,5 @@
             </Grid>
         </StackPanel>
     </Grid>
+    </ScrollViewer>
 </UserControl>

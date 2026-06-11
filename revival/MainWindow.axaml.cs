@@ -1,10 +1,12 @@
 using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Client.Services;
 using Client.ViewModels;
@@ -17,11 +19,10 @@ namespace Client;
 public partial class MainWindow : Window
 {
     private const int HotkeyToggleDebounceMs = 120;
-    private const double NormalWidth = 975;
-    private const double NormalHeight = 588;
+    private const double NormalWidth = 820;
+    private const double NormalHeight = 480;
     private const double CompactWidth = 440;
     private const double CompactHeight = 280;
-
     private readonly MainWindowViewModel _viewModel;
     private readonly GlobalHotkeyService _globalHotkeyService = new();
     private long _lastHotkeyToggleAt;
@@ -44,6 +45,7 @@ public partial class MainWindow : Window
         _viewModel.PropertyChanged += ViewModel_OnPropertyChanged;
         KeyDown += MainWindow_OnKeyDown;
         Loaded += MainWindow_OnLoaded;
+        AddHandler(PointerReleasedEvent, InterfaceClick_OnPointerReleased, RoutingStrategies.Bubble, handledEventsToo: true);
     }
 
     private void ViewModel_OnPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -68,6 +70,7 @@ public partial class MainWindow : Window
     {
         Width = compact ? CompactWidth : NormalWidth;
         Height = compact ? CompactHeight : NormalHeight;
+        Dispatcher.UIThread.Post(() => ApplyWindowRegion(compact), DispatcherPriority.Render);
     }
 
     private void GlobalHotkeyService_OnPressed()
@@ -116,7 +119,49 @@ public partial class MainWindow : Window
         Loaded -= MainWindow_OnLoaded;
         AppLog.Info("MainWindow", "Loaded; starting macro shell.");
         await _viewModel.InitializeAsync();
+        ApplyWindowRegion(_viewModel.IsCompactMode);
     }
+
+    private static void InterfaceClick_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton != MouseButton.Left || e.Source is not Control source)
+        {
+            return;
+        }
+
+        if (source is Button or ToggleButton or ToggleSwitch or ComboBox or Slider ||
+            source.FindAncestorOfType<Button>() is not null ||
+            source.FindAncestorOfType<ToggleButton>() is not null ||
+            source.FindAncestorOfType<ToggleSwitch>() is not null ||
+            source.FindAncestorOfType<ComboBox>() is not null ||
+            source.FindAncestorOfType<Slider>() is not null)
+        {
+            InterfaceSoundService.PlayClick();
+        }
+    }
+
+    private void ApplyWindowRegion(bool compact)
+    {
+        if (!OperatingSystem.IsWindows() || TryGetPlatformHandle()?.Handle is not { } handle || handle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var scale = RenderScaling;
+        var width = ToPixels(compact ? CompactWidth : NormalWidth, scale);
+        var height = ToPixels(compact ? CompactHeight : NormalHeight, scale);
+        var bodyCornerDiameter = ToPixels(28, scale);
+
+        if (compact)
+        {
+            SetWindowRgn(handle, CreateRoundRectRgn(0, 0, width + 1, height + 1, bodyCornerDiameter, bodyCornerDiameter), true);
+            return;
+        }
+
+        SetWindowRgn(handle, CreateRoundRectRgn(0, 0, width + 1, height + 1, bodyCornerDiameter, bodyCornerDiameter), true);
+    }
+
+    private static int ToPixels(double value, double scale) => (int)Math.Round(value * scale);
 
     private void TitleBar_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
@@ -148,4 +193,11 @@ public partial class MainWindow : Window
         _globalHotkeyService.Dispose();
         base.OnClosed(e);
     }
+
+    [DllImport("gdi32.dll")]
+    private static extern IntPtr CreateRoundRectRgn(int left, int top, int right, int bottom, int width, int height);
+
+    [DllImport("user32.dll")]
+    private static extern int SetWindowRgn(IntPtr window, IntPtr region, bool redraw);
+
 }

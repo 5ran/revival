@@ -7,7 +7,7 @@ namespace Client.Services;
 
 public sealed class UserSettingsStore
 {
-    private readonly object _sync = new();
+    private static readonly object Sync = new();
     private readonly string _path;
 
     public UserSettingsStore()
@@ -23,7 +23,7 @@ public sealed class UserSettingsStore
 
     public UserSettingsSnapshot Load()
     {
-        lock (_sync)
+        lock (Sync)
         {
             try
             {
@@ -34,7 +34,13 @@ public sealed class UserSettingsStore
 
                 var json = File.ReadAllText(_path);
                 var parsed = JsonSerializer.Deserialize(json, UserSettingsJsonContext.Default.UserSettingsSnapshot);
-                return parsed ?? new UserSettingsSnapshot();
+                if (parsed is null)
+                {
+                    return new UserSettingsSnapshot();
+                }
+
+                parsed.InterfaceSounds ??= new InterfaceSoundsSettingsSnapshot();
+                return parsed;
             }
             catch
             {
@@ -45,7 +51,7 @@ public sealed class UserSettingsStore
 
     public void Save(UserSettingsSnapshot snapshot)
     {
-        lock (_sync)
+        lock (Sync)
         {
             var directory = Path.GetDirectoryName(_path);
             if (!string.IsNullOrWhiteSpace(directory))
@@ -66,6 +72,7 @@ public sealed class UserSettingsStore
 [JsonSerializable(typeof(AutoSovereignSettingsSnapshot))]
 [JsonSerializable(typeof(GeneralSettingsSnapshot))]
 [JsonSerializable(typeof(CustomThemeSnapshot))]
+[JsonSerializable(typeof(InterfaceSoundsSettingsSnapshot))]
 internal partial class UserSettingsJsonContext : JsonSerializerContext
 {
 }
@@ -87,6 +94,15 @@ public sealed class UserSettingsSnapshot
     public string? Theme { get; set; }
 
     public CustomThemeSnapshot? CustomTheme { get; set; }
+
+    public InterfaceSoundsSettingsSnapshot? InterfaceSounds { get; set; } = new();
+}
+
+public sealed class InterfaceSoundsSettingsSnapshot
+{
+    public bool Enabled { get; set; } = true;
+
+    public int Volume { get; set; } = 24;
 }
 
 public sealed class CustomThemeSnapshot

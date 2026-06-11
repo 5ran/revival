@@ -23,6 +23,10 @@ public partial class App : Application
                 ? parsedTheme
                 : AppSettingsService.Load().Theme;
             ThemeService.Apply(theme);
+            var interfaceSounds = userSettings.InterfaceSounds ?? new InterfaceSoundsSettingsSnapshot();
+            InterfaceSoundService.Initialize(
+                interfaceSounds.Enabled,
+                interfaceSounds.Volume);
             _ = new OffsetsService();
             desktop.MainWindow = new MainWindow();
         }

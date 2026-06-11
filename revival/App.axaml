@@ -4,15 +4,15 @@
              x:Class="Client.App"
              RequestedThemeVariant="Dark">
     <Application.Resources>
-        <SolidColorBrush x:Key="Background" Color="#070B11" />
-        <SolidColorBrush x:Key="Surface" Color="#0D1219" />
-        <SolidColorBrush x:Key="Border" Color="#626B78" />
-        <SolidColorBrush x:Key="Accent" Color="#DCE3EC" />
+        <SolidColorBrush x:Key="Background" Color="#08090B" />
+        <SolidColorBrush x:Key="Surface" Color="#131519" />
+        <SolidColorBrush x:Key="Border" Color="#5F646C" />
+        <SolidColorBrush x:Key="Accent" Color="#E7E9EC" />
         <SolidColorBrush x:Key="AccentHover" Color="#FFFFFF" />
-        <SolidColorBrush x:Key="AccentPressed" Color="#B9C3D0" />
-        <SolidColorBrush x:Key="AccentForeground" Color="#080B10" />
-        <SolidColorBrush x:Key="TextPrimary" Color="#F1F3F7" />
-        <SolidColorBrush x:Key="TextSecondary" Color="#A4ABB7" />
+        <SolidColorBrush x:Key="AccentPressed" Color="#BFC3C9" />
+        <SolidColorBrush x:Key="AccentForeground" Color="#090A0C" />
+        <SolidColorBrush x:Key="TextPrimary" Color="#F5F5F6" />
+        <SolidColorBrush x:Key="TextSecondary" Color="#A7AAB0" />
         <SolidColorBrush x:Key="Success" Color="#4ADE80" />
         <SolidColorBrush x:Key="Error" Color="#F87171" />
         <LinearGradientBrush x:Key="StarlightTruffleWormGradient" StartPoint="0%,50%" EndPoint="100%,50%">
@@ -20,41 +20,54 @@
             <GradientStop Color="#9CFF9A" Offset="0.52" />
             <GradientStop Color="#86B8FF" Offset="1" />
         </LinearGradientBrush>
-        <SolidColorBrush x:Key="InputHoverSurface" Color="#171D25" />
-        <SolidColorBrush x:Key="InputHoverBorder" Color="#808895" />
-        <SolidColorBrush x:Key="InputFocusSurface" Color="#131920" />
-        <SolidColorBrush x:Key="InputFocusBorder" Color="#E8EDF5" />
-        <SolidColorBrush x:Key="TableSurface" Color="#0A0F15" />
-        <SolidColorBrush x:Key="TableRowBackground" Color="#0A0F15" />
-        <SolidColorBrush x:Key="TableGap" Color="#070B11" />
-        <SolidColorBrush x:Key="TableHeaderBackground" Color="#121820" />
-        <SolidColorBrush x:Key="TableEmptyBackground" Color="#0A0F15" />
-        <SolidColorBrush x:Key="TableRowDisabled" Color="#0A0F15" />
-        <SolidColorBrush x:Key="SidebarItemForeground" Color="#A4ABB7" />
-        <SolidColorBrush x:Key="SidebarItemHoverForeground" Color="#F1F3F7" />
-        <SolidColorBrush x:Key="SidebarItemHoverBackground" Color="#171D25" />
+        <SolidColorBrush x:Key="InputHoverSurface" Color="#202329" />
+        <SolidColorBrush x:Key="InputHoverBorder" Color="#8D929A" />
+        <SolidColorBrush x:Key="InputFocusSurface" Color="#181B20" />
+        <SolidColorBrush x:Key="InputFocusBorder" Color="#F1F2F4" />
+        <SolidColorBrush x:Key="TableSurface" Color="#101216" />
+        <SolidColorBrush x:Key="TableRowBackground" Color="#101216" />
+        <SolidColorBrush x:Key="TableGap" Color="#08090B" />
+        <SolidColorBrush x:Key="TableHeaderBackground" Color="#1A1D22" />
+        <SolidColorBrush x:Key="TableEmptyBackground" Color="#101216" />
+        <SolidColorBrush x:Key="TableRowDisabled" Color="#101216" />
+        <SolidColorBrush x:Key="SidebarItemForeground" Color="#A7AAB0" />
+        <SolidColorBrush x:Key="SidebarItemHoverForeground" Color="#F5F5F6" />
+        <SolidColorBrush x:Key="SidebarItemHoverBackground" Color="#202329" />
         <SolidColorBrush x:Key="SidebarItemSelectedForeground" Color="#FFFFFF" />
-        <SolidColorBrush x:Key="SidebarItemSelectedBackground" Color="#39414D" />
+        <SolidColorBrush x:Key="SidebarItemSelectedBackground" Color="#4B4F56" />
         <SolidColorBrush x:Key="ButtonSecondaryBackground" Color="#00000000" />
-        <SolidColorBrush x:Key="ButtonSecondaryForeground" Color="#DCE3EC" />
-        <SolidColorBrush x:Key="ButtonSecondaryBorder" Color="#667080" />
-        <SolidColorBrush x:Key="ButtonSecondaryHoverBackground" Color="#141A24" />
-        <SolidColorBrush x:Key="ButtonSecondaryHoverBorder" Color="#E8EDF5" />
-        <SolidColorBrush x:Key="ButtonSecondaryPressedBackground" Color="#111720" />
-        <SolidColorBrush x:Key="CheckboxBackground" Color="#0D121B" />
-        <SolidColorBrush x:Key="CheckboxBorder" Color="#87909E" />
-        <SolidColorBrush x:Key="CheckboxHoverBackground" Color="#141A24" />
-        <SolidColorBrush x:Key="CheckboxHoverBorder" Color="#E8EDF5" />
-        <SolidColorBrush x:Key="CheckboxCheckedBackground" Color="#E8EDF5" />
-        <SolidColorBrush x:Key="CheckboxCheckedBorder" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="ButtonSecondaryForeground" Color="#E7E9EC" />
+        <SolidColorBrush x:Key="ButtonSecondaryBorder" Color="#777C84" />
+        <SolidColorBrush x:Key="ButtonSecondaryHoverBackground" Color="#202329" />
+        <SolidColorBrush x:Key="ButtonSecondaryHoverBorder" Color="#F1F2F4" />
+        <SolidColorBrush x:Key="ButtonSecondaryPressedBackground" Color="#191C21" />
+        <SolidColorBrush x:Key="CheckboxBackground" Color="#131519" />
+        <SolidColorBrush x:Key="CheckboxBorder" Color="#92969D" />
+        <SolidColorBrush x:Key="CheckboxHoverBackground" Color="#202329" />
+        <SolidColorBrush x:Key="CheckboxHoverBorder" Color="#F1F2F4" />
+        <SolidColorBrush x:Key="CheckboxCheckedBackground" Color="#F1F2F4" />
+        <SolidColorBrush x:Key="CheckboxCheckedBorder" Color="#F1F2F4" />
         <SolidColorBrush x:Key="CheckboxCheckForeground" Color="#0E0E0E" />
         <SolidColorBrush x:Key="CheckboxLabelForeground" Color="#F0F0F0" />
         <SolidColorBrush x:Key="CheckboxLabelHoverForeground" Color="#F0F0F0" />
-        <SolidColorBrush x:Key="ThemeCardHoverBackground" Color="#141A24" />
-        <SolidColorBrush x:Key="ToggleHoverBackground" Color="#141A20" />
-        <SolidColorBrush x:Key="ToggleHoverBorder" Color="#87909E" />
-        <SolidColorBrush x:Key="ToggleCheckedBackground" Color="#202936" />
-        <SolidColorBrush x:Key="ToggleCheckedBorder" Color="#E8EDF5" />
+        <SolidColorBrush x:Key="ThemeCardHoverBackground" Color="#202329" />
+        <SolidColorBrush x:Key="ToggleHoverBackground" Color="#202329" />
+        <SolidColorBrush x:Key="ToggleHoverBorder" Color="#777C84" />
+        <SolidColorBrush x:Key="ToggleCheckedBackground" Color="#30343A" />
+        <SolidColorBrush x:Key="ToggleCheckedBorder" Color="#C6C9CE" />
+        <SolidColorBrush x:Key="ShellBackground" Color="#0C1016" />
+        <SolidColorBrush x:Key="ShellOuterBorder" Color="#05070A" />
+        <SolidColorBrush x:Key="ShellInnerBorder" Color="#7B8797" />
+        <SolidColorBrush x:Key="ShellContentBackground" Color="#090D13" />
+        <SolidColorBrush x:Key="ShellContentBorder" Color="#394555" />
+        <SolidColorBrush x:Key="ShellNavBackground" Color="#0B1017" />
+        <SolidColorBrush x:Key="ShellNavHoverBackground" Color="#151B23" />
+        <SolidColorBrush x:Key="ShellNavHoverBorder" Color="#6D7581" />
+        <SolidColorBrush x:Key="ShellNavSelectedBackground" Color="#283341" />
+        <SolidColorBrush x:Key="ShellNavSelectedBorder" Color="#F5F8FC" />
+        <SolidColorBrush x:Key="ShellNavGlow" Color="#50D8E3F0" />
+        <SolidColorBrush x:Key="ShellChromeBackground" Color="#0D0F12" />
+        <SolidColorBrush x:Key="ShellChromeBorder" Color="#373B42" />
         <FontFamily x:Key="DisplayFont">avares://Client/Assets/Fonts/Satoshi/OTF#Satoshi, Inter, Segoe UI, Arial</FontFamily>
         <FontFamily x:Key="UIFont">avares://Client/Assets/Fonts/Satoshi/OTF#Satoshi, Inter, Segoe UI, Arial</FontFamily>
         <FontFamily x:Key="MonoFont">Cascadia Code, Consolas</FontFamily>

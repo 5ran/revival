@@ -38,22 +38,22 @@
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
-            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Padding" Value="4,8" />
             <Setter Property="Margin" Value="0,0,0,8" />
             <Setter Property="Height" Value="34" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
-            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontSize" Value="11" />
         </Style>
         <Style Selector="ToggleButton.hd-target:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{StaticResource ToggleHoverBackground}" />
             <Setter Property="BorderBrush" Value="{StaticResource ToggleHoverBorder}" />
         </Style>
         <Style Selector="ToggleButton.hd-target:checked /template/ ContentPresenter">
-            <Setter Property="Background" Value="#1F2124" />
-            <Setter Property="BorderBrush" Value="#3A3D42" />
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
         </Style>
         <Style Selector="ToggleSwitch.hd-color-toggle">
             <Setter Property="OnContent" Value="" />
@@ -143,12 +143,13 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:HuntDetectTargetOptionViewModel">
                                     <ToggleButton Classes="hd-target"
-                                                  IsChecked="{Binding IsSelected}">
+                                                  IsChecked="{Binding IsSelected}"
+                                                  ToolTip.Tip="{Binding Name}">
                                         <TextBlock Text="{Binding Name}"
                                                    Foreground="{Binding Brush}"
+                                                   FontSize="11"
                                                    HorizontalAlignment="Center"
-                                                   TextAlignment="Center"
-                                                   TextTrimming="CharacterEllipsis" />
+                                                   TextAlignment="Center" />
                                     </ToggleButton>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -193,9 +194,10 @@
                                                     Margin="0">
                                                 <TextBlock Text="{Binding Name}"
                                                            FontFamily="{StaticResource UIFont}"
-                                                           FontSize="12"
+                                                           FontSize="11"
                                                            Foreground="{Binding Brush}"
-                                                           TextTrimming="CharacterEllipsis" />
+                                                           TextWrapping="Wrap"
+                                                           ToolTip.Tip="{Binding Name}" />
                                             </Border>
                                             <Button Grid.Column="1"
                                                     Classes="app-secondary"

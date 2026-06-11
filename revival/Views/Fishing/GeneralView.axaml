@@ -6,15 +6,9 @@
              Background="Transparent">
     <UserControl.Styles>
         <Style Selector="Button.general-primary">
-            <Setter Property="Background">
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#344154" Offset="0"/>
-                    <GradientStop Color="#151E2B" Offset="0.52"/>
-                    <GradientStop Color="#0B111B" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter>
-            <Setter Property="Foreground" Value="#F2F5F9"/>
-            <Setter Property="BorderBrush" Value="#DCE3EC"/>
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
@@ -37,14 +31,9 @@
             <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
         </Style>
         <Style Selector="Button.general-secondary">
-            <Setter Property="Background">
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#1C2634" Offset="0"/>
-                    <GradientStop Color="#0C131D" Offset="1"/>
-                </LinearGradientBrush>
-            </Setter>
-            <Setter Property="Foreground" Value="#DCE3EC"/>
-            <Setter Property="BorderBrush" Value="#69778B"/>
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource ButtonSecondaryForeground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ButtonSecondaryBorder}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
@@ -68,9 +57,9 @@
             <Setter Property="TextElement.Foreground" Value="{StaticResource AccentForeground}"/>
         </Style>
         <Style Selector="ComboBox.general-select">
-            <Setter Property="Background" Value="#0B121C"/>
+            <Setter Property="Background" Value="{StaticResource Surface}"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="#69778B"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
@@ -89,7 +78,7 @@
     </UserControl.Styles>
 
     <Grid RowDefinitions="Auto,Auto,*"
-          Margin="34">
+          Margin="24">
         <TextBlock Grid.Row="0"
                    Text="General"
                    FontFamily="{StaticResource DisplayFont}"
@@ -100,7 +89,7 @@
         <Grid Grid.Row="1"
               Width="430"
               HorizontalAlignment="Left"
-              Margin="0,20,0,0"
+              Margin="0,12,0,0"
               RowDefinitions="Auto,Auto,Auto,Auto,Auto"
               ColumnDefinitions="*,Auto">
             <StackPanel Grid.Row="0"

@@ -27,6 +27,7 @@
     <AvaloniaResource Include="Assets\Fonts\Satoshi\OTF\*.otf" />
     <AvaloniaResource Include="Assets\locked-out.png" />
     <AvaloniaResource Include="Assets\maintenance.png" />
+    <AvaloniaResource Include="Assets\Sounds\*.wav" />
     <None Include="offsets.hpp" Link="offsets.hpp" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
@@ -36,5 +37,6 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.2" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.2" />
     <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.0.2" />
+    <PackageReference Include="System.Windows.Extensions" Version="8.0.0" />
   </ItemGroup>
 </Project>

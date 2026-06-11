@@ -407,6 +407,11 @@ public sealed class ShellViewModel : ViewModelBase
                 ThemeService.Apply(savedTheme);
             }
 
+            var interfaceSounds = saved.InterfaceSounds ?? new InterfaceSoundsSettingsSnapshot();
+            InterfaceSoundService.Initialize(
+                interfaceSounds.Enabled,
+                interfaceSounds.Volume);
+
             _autoTotemViewModel.AutoTotemEnabled = saved.AutoTotem.Enabled;
             if (!string.IsNullOrWhiteSpace(saved.AutoTotem.TotemName))
             {
@@ -488,6 +493,11 @@ public sealed class ShellViewModel : ViewModelBase
                 Border = FormatHex(ThemeService.CustomAnchors.Border),
                 Accent = FormatHex(ThemeService.CustomAnchors.Accent),
                 TextPrimary = FormatHex(ThemeService.CustomAnchors.TextPrimary),
+            },
+            InterfaceSounds = new InterfaceSoundsSettingsSnapshot
+            {
+                Enabled = InterfaceSoundService.Enabled,
+                Volume = InterfaceSoundService.Volume,
             },
             AutoTotem = new AutoTotemSettingsSnapshot
             {

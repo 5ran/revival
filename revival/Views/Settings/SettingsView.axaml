@@ -1,1 +1,109 @@
-<UserControl xmlns="https://github.com/avaloniaui"              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"              xmlns:views="using:Client.Views"              xmlns:vm="using:Client.ViewModels"              x:Class="Client.Views.SettingsView"              x:DataType="vm:SettingsViewModel"              Background="{StaticResource Background}">     <UserControl.DataTemplates>         <DataTemplate DataType="{x:Type vm:SettingsClientViewModel}">             <views:SettingsClientView />         </DataTemplate>     </UserControl.DataTemplates>      <Panel>         <Grid Margin="34"               RowDefinitions="Auto,Auto,*"               IsVisible="{Binding IsMainViewVisible}">             <TextBlock Grid.Row="0"                        Text="Settings"                        FontFamily="{StaticResource DisplayFont}"                        FontSize="24"                        FontWeight="SemiBold"                        Foreground="{StaticResource TextPrimary}" />              <StackPanel Grid.Row="1"                         Margin="0,18,0,0"                         Spacing="0">                 <Button Classes="app-nav"                         Height="44"                         Command="{Binding NavigateToClientCommand}">                     <Grid ColumnDefinitions="*,Auto">                         <TextBlock Grid.Column="0"                                    Text="Client"                                    VerticalAlignment="Center"                                    FontFamily="{StaticResource UIFont}"                                    FontSize="13"                                    Foreground="{StaticResource TextPrimary}" />                         <Path Grid.Column="1"                               Classes="app-nav-arrow"                               Data="M 0,0 L 5,4.5 L 0,9"                               StrokeThickness="1.5"                               StrokeLineCap="Round"                               VerticalAlignment="Center" />                     </Grid>                 </Button>             </StackPanel>              <TextBlock Grid.Row="2"                        Text="{Binding AppVersionText}"                        HorizontalAlignment="Right"                        VerticalAlignment="Bottom"                        FontFamily="{StaticResource UIFont}"                        FontSize="11"                        Foreground="{StaticResource TextSecondary}" />         </Grid>          <ContentControl Content="{Binding CurrentSubView}"                         IsVisible="{Binding !IsMainViewVisible}" />     </Panel> </UserControl>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:Client.Views"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.SettingsView"
+             x:DataType="vm:SettingsViewModel"
+             Background="{StaticResource Background}">
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="{x:Type vm:SettingsClientViewModel}">
+            <views:SettingsClientView />
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
+    <Panel>
+        <Grid Margin="24"
+              RowDefinitions="Auto,Auto,*"
+              IsVisible="{Binding IsMainViewVisible}">
+            <TextBlock Grid.Row="0"
+                       Text="Settings"
+                       FontFamily="{StaticResource DisplayFont}"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}" />
+
+            <StackPanel Grid.Row="1"
+                        Margin="0,12,0,0"
+                        Spacing="14">
+                <Button Classes="app-nav"
+                        Height="44"
+                        Command="{Binding NavigateToClientCommand}">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Grid.Column="0"
+                                   Text="Client"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Path Grid.Column="1"
+                              Classes="app-nav-arrow"
+                              Data="M 0,0 L 5,4.5 L 0,9"
+                              StrokeThickness="1.5"
+                              StrokeLineCap="Round"
+                              VerticalAlignment="Center" />
+                    </Grid>
+                </Button>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Interface Sounds"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <Rectangle Height="1"
+                               Fill="{StaticResource Border}" />
+                    <Grid ColumnDefinitions="*,Auto"
+                          RowDefinitions="Auto,Auto"
+                          RowSpacing="10">
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="Enable Interface Sounds"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <ToggleSwitch Grid.Row="0"
+                                      Grid.Column="1"
+                                      IsChecked="{Binding InterfaceSoundsEnabled}" />
+
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="Interface Sound Volume"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Grid Grid.Row="1"
+                              Grid.Column="1"
+                              Width="220"
+                              ColumnDefinitions="*,42"
+                              ColumnSpacing="8">
+                            <Slider Grid.Column="0"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    Value="{Binding InterfaceSoundVolume}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding InterfaceSoundVolume, StringFormat={}{0:0}%}"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource MonoFont}"
+                                       FontSize="11"
+                                       Foreground="{StaticResource TextSecondary}" />
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+
+            <TextBlock Grid.Row="2"
+                       Text="{Binding AppVersionText}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       FontFamily="{StaticResource UIFont}"
+                       FontSize="11"
+                       Foreground="{StaticResource TextSecondary}" />
+        </Grid>
+
+        <ContentControl Content="{Binding CurrentSubView}"
+                        IsVisible="{Binding !IsMainViewVisible}" />
+    </Panel>
+</UserControl>

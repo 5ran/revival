@@ -6,9 +6,9 @@
              Background="{StaticResource Background}">
     <ScrollViewer Margin="0"
                   VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="12">
-            <StackPanel Spacing="8"
-                        Margin="34,34,34,0">
+        <StackPanel Spacing="8">
+            <StackPanel Spacing="6"
+                        Margin="24,24,24,0">
                 <TextBlock Text="{Binding ActiveAutomationTitle}"
                            FontFamily="{StaticResource DisplayFont}"
                            FontSize="24"
@@ -16,7 +16,7 @@
                            Foreground="{StaticResource TextPrimary}" />
 
                 <StackPanel IsVisible="{Binding ShowAutomationTabs}"
-                            Spacing="8">
+                            Spacing="6">
                 <Border Classes="app-header">
                     <Grid ColumnDefinitions="*,Auto"
                           ColumnSpacing="12">

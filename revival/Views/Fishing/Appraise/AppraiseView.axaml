@@ -161,11 +161,11 @@
         </Style>
         <Style Selector="RadioButton.appraise-mode:checked">
             <Setter Property="Background" Value="{StaticResource Accent}"/>
-            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
         </Style>
         <Style Selector="RadioButton.appraise-mode:checked:pointerover">
             <Setter Property="Background" Value="{StaticResource AccentHover}"/>
-            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
         </Style>
         <Style Selector="CheckBox.appraise-trait">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />

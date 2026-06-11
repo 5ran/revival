@@ -50,11 +50,11 @@
     <UserControl.Styles>
         <Style Selector="Button.nav-button">
             <Setter Property="Width" Value="186" />
-            <Setter Property="Height" Value="62" />
-            <Setter Property="Margin" Value="8,0,15,10" />
-            <Setter Property="Padding" Value="22,0" />
-            <Setter Property="Background" Value="#0B1017" />
-            <Setter Property="BorderBrush" Value="#2F3946" />
+            <Setter Property="Height" Value="54" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="Padding" Value="24,0,18,0" />
+            <Setter Property="Background" Value="{StaticResource ShellNavBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ShellContentBorder}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="12" />
@@ -69,19 +69,19 @@
                               Margin="2,3,0,0"
                               Stretch="Fill"
                               Fill="#40000000"
-                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
+                              Data="M 8 0 L 178 0 Q 186 0 186 8 L 186 46 Q 186 54 178 54 L 8 54 Q 0 54 0 46 L 0 8 Q 0 0 8 0 Z" />
                         <Path Name="NavGlow"
                               Stretch="Fill"
                               Fill="Transparent"
                               Stroke="#00000000"
                               StrokeThickness="5"
-                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
+                              Data="M 8 0 L 178 0 Q 186 0 186 8 L 186 46 Q 186 54 178 54 L 8 54 Q 0 54 0 46 L 0 8 Q 0 0 8 0 Z" />
                         <Path Name="NavShape"
                               Stretch="Fill"
                               Fill="{TemplateBinding Background}"
                               Stroke="{TemplateBinding BorderBrush}"
                               StrokeThickness="1"
-                              Data="M 7 0 L 179 0 Q 186 0 186 7 L 186 55 Q 186 62 179 62 L 7 62 Q 0 62 0 55 L 0 7 Q 0 0 7 0 Z" />
+                              Data="M 8 0 L 178 0 Q 186 0 186 8 L 186 46 Q 186 54 178 54 L 8 54 Q 0 54 0 46 L 0 8 Q 0 0 8 0 Z" />
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           Margin="{TemplateBinding Padding}"
@@ -89,9 +89,6 @@
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Grid>
                 </ControlTemplate>
-            </Setter>
-            <Setter Property="Transitions">
-                <Transitions />
             </Setter>
         </Style>
 
@@ -102,8 +99,8 @@
         </Style>
 
         <Style Selector="Button.nav-button:pointerover /template/ Path#NavShape">
-            <Setter Property="Fill" Value="#151B23" />
-            <Setter Property="Stroke" Value="#6D7581" />
+            <Setter Property="Fill" Value="{StaticResource ShellNavHoverBackground}" />
+            <Setter Property="Stroke" Value="{StaticResource ShellNavHoverBorder}" />
         </Style>
 
         <Style Selector="Button.nav-button:pointerover">
@@ -115,95 +112,190 @@
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavShape">
-            <Setter Property="Fill">
-                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                    <GradientStop Color="#515C6B" Offset="0" />
-                    <GradientStop Color="#283341" Offset="0.42" />
-                    <GradientStop Color="#101720" Offset="1" />
-                </LinearGradientBrush>
-            </Setter>
-            <Setter Property="Stroke" Value="#F5F8FC" />
+            <Setter Property="Data" Value="M 16 0 L 179 0 Q 186 0 186 7 L 186 47 Q 186 54 179 54 L 16 54 L 0 27 Z" />
+            <Setter Property="Fill" Value="{StaticResource ShellNavSelectedBackground}" />
+            <Setter Property="Stroke" Value="{StaticResource ShellNavSelectedBorder}" />
             <Setter Property="StrokeThickness" Value="1.5" />
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavShadow">
+            <Setter Property="Data" Value="M 16 0 L 179 0 Q 186 0 186 7 L 186 47 Q 186 54 179 54 L 16 54 L 0 27 Z" />
             <Setter Property="Fill" Value="#60000000" />
             <Setter Property="Margin" Value="4,5,0,0" />
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavGlow">
-            <Setter Property="Stroke" Value="#50D8E3F0" />
+            <Setter Property="Data" Value="M 16 0 L 179 0 Q 186 0 186 7 L 186 47 Q 186 54 179 54 L 16 54 L 0 27 Z" />
+            <Setter Property="Stroke" Value="{StaticResource ShellNavGlow}" />
             <Setter Property="StrokeThickness" Value="6" />
         </Style>
-
     </UserControl.Styles>
 
     <Grid Background="Transparent">
-
-        <!-- Compact mode (macro running): full-width focused view -->
         <ContentControl Content="{Binding CompactViewModel}"
                         IsVisible="{Binding IsCompactMode}" />
 
-        <!-- Real pages remain unchanged; this grid only supplies the approved shell. -->
         <Grid IsVisible="{Binding !IsCompactMode}"
               Background="Transparent">
-        <Grid Margin="0,0,210,0">
-            <Border Margin="0"
-                    CornerRadius="18"
-                    BorderBrush="#D2D9E3"
-                    BorderThickness="1">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                        <GradientStop Color="#1B212A" Offset="0" />
-                        <GradientStop Color="#0C1016" Offset="0.5" />
-                        <GradientStop Color="#080B10" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
+            <Border Margin="3"
+                    CornerRadius="13"
+                    BorderBrush="{StaticResource ShellOuterBorder}"
+                    BorderThickness="3"
+                    Background="{StaticResource ShellBackground}">
             </Border>
 
-            <Border Margin="2"
-                    CornerRadius="16"
-                    BorderBrush="#586475"
-                    BorderThickness="1"
-                    Background="Transparent" />
-
-            <Border Margin="37,40,15,18"
+            <Border Margin="6"
                     CornerRadius="10"
-                    BorderBrush="#394555"
-                    BorderThickness="1">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                        <GradientStop Color="#10161E" Offset="0" />
-                        <GradientStop Color="#090D13" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
-
-            <Border Margin="45,48,23,26"
-                    CornerRadius="7"
-                    BorderBrush="#273342"
+                    BorderBrush="{StaticResource ShellInnerBorder}"
                     BorderThickness="1"
                     Background="Transparent" />
 
-            <Border Margin="37,40,15,18"
-                    Background="Transparent">
+            <TextBlock Margin="24,14,0,0"
+                       Text="REVIVAL"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontFamily="{StaticResource DisplayFont}"
+                       FontSize="15"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}" />
+
+            <Border Margin="20,42,216,18"
+                    CornerRadius="8"
+                    BorderBrush="{StaticResource ShellContentBorder}"
+                    BorderThickness="1"
+                    ClipToBounds="True"
+                    Background="{StaticResource ShellContentBackground}">
                 <ContentControl Content="{Binding CurrentPage}" />
             </Border>
-        </Grid>
 
-        <ItemsControl Width="209"
-                      Margin="0,0,8,0"
-                      Background="Transparent"
-                      HorizontalAlignment="Right"
-                      VerticalAlignment="Center"
-                      ItemsSource="{Binding NavigationItems}">
+            <ItemsControl Width="186"
+                          Margin="0,26,14,0"
+                          Background="Transparent"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding NavigationItems}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type vm:ShellNavigationItemViewModel}">
                         <Button Classes="nav-button"
                                 Classes.selected="{Binding IsSelected}"
                                 Foreground="{Binding Foreground}"
-                                Content="{Binding Name}"
-                                Command="{Binding NavigateCommand}" />
+                                Command="{Binding NavigateCommand}">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <Viewbox Width="18"
+                                         Height="18"
+                                         IsVisible="{Binding ShowsGeneralRodIcon}">
+                                    <Canvas Width="18" Height="18">
+                                        <Path Data="M 3 15 Q 5.5 7 13.5 3 M 13.5 3 C 15.2 4.6 15.4 7.1 14.8 9.3 C 14.1 11.6 12.5 12.8 10.7 12.5"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.6"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                        <Ellipse Width="4.6"
+                                                 Height="4.6"
+                                                 Canvas.Left="2.4"
+                                                 Canvas.Top="11"
+                                                 Stroke="{Binding Foreground}"
+                                                 StrokeThickness="1.6"
+                                                 Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+
+                                <Viewbox Width="18"
+                                         Height="18"
+                                         IsVisible="{Binding ShowsFishingGearRodIcon}">
+                                    <Canvas Width="28" Height="18">
+                                        <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.6"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                        <Ellipse Width="4.6"
+                                                 Height="4.6"
+                                                 Canvas.Left="13.4"
+                                                 Canvas.Top="11"
+                                                 Stroke="{Binding Foreground}"
+                                                 StrokeThickness="1.6"
+                                                 Fill="Transparent" />
+                                        <Path Data="M 5 0.1 L 7 0.1 L 7.5 1.8 L 8.7 2.4 L 10.3 1.9 L 11.4 3.7 L 10.2 5 L 10.2 6.2 L 11.4 7.5 L 10.3 9.3 L 8.7 8.8 L 7.5 9.4 L 7 11.1 L 5 11.1 L 4.5 9.4 L 3.3 8.8 L 1.7 9.3 L 0.6 7.5 L 1.8 6.2 L 1.8 5 L 0.6 3.7 L 1.7 1.9 L 3.3 2.4 L 4.5 1.8 Z"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.55"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                        <Ellipse Width="3.8"
+                                                 Height="3.8"
+                                                 Canvas.Left="4.1"
+                                                 Canvas.Top="3.7"
+                                                 Stroke="{Binding Foreground}"
+                                                 StrokeThickness="1.55"
+                                                 Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+
+                                <Viewbox Width="18"
+                                         Height="18"
+                                         IsVisible="{Binding ShowsFishingAddonsIcon}">
+                                    <Canvas Width="28" Height="18">
+                                        <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.6"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                        <Ellipse Width="4.6"
+                                                 Height="4.6"
+                                                 Canvas.Left="13.4"
+                                                 Canvas.Top="11"
+                                                 Stroke="{Binding Foreground}"
+                                                 StrokeThickness="1.6"
+                                                 Fill="Transparent" />
+                                        <Path Data="M 6 1 L 6 10.1 M 1.5 5.55 L 10.5 5.55"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="2.2"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+
+                                <Viewbox Width="18"
+                                         Height="18"
+                                         IsVisible="{Binding ShowsAutomationIcon}">
+                                    <Canvas Width="18" Height="18">
+                                        <Path Data="M 4.3 6.2 C 5.9 3.5 10.1 2.8 12.9 5 L 14.8 6.7 M 14.8 6.7 L 14.4 3.5 M 14.8 6.7 L 11.5 7.2 M 12.9 11.8 C 11.2 14.5 7 15.2 4.2 13 L 2.3 11.3 M 2.3 11.3 L 2.7 14.5 M 2.3 11.3 L 5.6 10.8"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.6"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+
+                                <Viewbox Width="18"
+                                         Height="18"
+                                         IsVisible="{Binding ShowsSettingsIcon}">
+                                    <Canvas Width="18" Height="18">
+                                        <Path Data="M 7.7 1.2 L 10.3 1.2 L 10.9 3.3 L 12.4 4.1 L 14.4 3.5 L 15.7 5.7 L 14.2 7.3 L 14.2 8.9 L 15.7 10.5 L 14.4 12.7 L 12.4 12.1 L 10.9 12.9 L 10.3 15 L 7.7 15 L 7.1 12.9 L 5.6 12.1 L 3.6 12.7 L 2.3 10.5 L 3.8 8.9 L 3.8 7.3 L 2.3 5.7 L 3.6 3.5 L 5.6 4.1 L 7.1 3.3 Z"
+                                              Stroke="{Binding Foreground}"
+                                              StrokeThickness="1.3"
+                                              StrokeLineCap="Round"
+                                              Fill="Transparent" />
+                                        <Ellipse Width="4.8"
+                                                 Height="4.8"
+                                                 Canvas.Left="6.6"
+                                                 Canvas.Top="5.7"
+                                                 Stroke="{Binding Foreground}"
+                                                 StrokeThickness="1.3"
+                                                 Fill="Transparent" />
+                                    </Canvas>
+                                </Viewbox>
+
+                                <TextBlock Text="{Binding Name}"
+                                           VerticalAlignment="Center"
+                                           FontFamily="{StaticResource DisplayFont}"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding Foreground}" />
+                            </StackPanel>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

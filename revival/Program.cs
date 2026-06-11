@@ -24,6 +24,15 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .With(new Win32PlatformOptions
+            {
+                RenderingMode = new[] { Win32RenderingMode.AngleEgl },
+                CompositionMode = new[]
+                {
+                    Win32CompositionMode.WinUIComposition,
+                    Win32CompositionMode.DirectComposition,
+                },
+            })
             .WithInterFont()
             .LogToTrace();
 
