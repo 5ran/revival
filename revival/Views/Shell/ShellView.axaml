@@ -159,7 +159,7 @@
                        FontWeight="SemiBold"
                        Foreground="{StaticResource TextPrimary}" />
 
-            <Border Margin="20,42,216,18"
+            <Border Margin="20,42,220,20"
                     CornerRadius="8"
                     BorderBrush="{StaticResource ShellContentBorder}"
                     BorderThickness="1"
@@ -169,7 +169,7 @@
             </Border>
 
             <ItemsControl Width="186"
-                          Margin="0,26,14,0"
+                          Margin="0,26,20,0"
                           Background="Transparent"
                           HorizontalAlignment="Right"
                           VerticalAlignment="Center"

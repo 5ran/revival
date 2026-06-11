@@ -46,6 +46,7 @@ public sealed class ShellViewModel : ViewModelBase
     private string _robloxBannerTitle = string.Empty;
     private string _robloxBannerSubtext = string.Empty;
     private bool _isRobloxFixButtonVisible;
+    private IBrush _robloxStatusBrush = new SolidColorBrush(Color.Parse("#F87171"));
 
     /// <summary>
     /// Creates the logged-in shell view model.
@@ -243,6 +244,12 @@ public sealed class ShellViewModel : ViewModelBase
         }
     }
 
+    public IBrush RobloxStatusBrush
+    {
+        get => _robloxStatusBrush;
+        private set => SetProperty(ref _robloxStatusBrush, value);
+    }
+
     public ICommand RobloxFixGuideCommand => _robloxFixGuideCommand;
 
     private static void OpenRobloxFixGuide()
@@ -290,6 +297,7 @@ public sealed class ShellViewModel : ViewModelBase
         switch (check.Result)
         {
             case RobloxVersionCheckResult.Mismatch:
+                RobloxStatusBrush = new SolidColorBrush(Color.Parse("#4ADE80"));
                 RobloxBannerTitle = "Version Mismatch";
                 RobloxBannerSubtext = "Roblox outdated";
                 IsRobloxFixButtonVisible = true;
@@ -297,6 +305,7 @@ public sealed class ShellViewModel : ViewModelBase
                 break;
 
             case RobloxVersionCheckResult.UwpNotSupported:
+                RobloxStatusBrush = new SolidColorBrush(Color.Parse("#4ADE80"));
                 RobloxBannerTitle = "Unsupported Roblox version";
                 RobloxBannerSubtext = "The Microsoft Store (UWP) version of Roblox is not supported. Please install Roblox from the Roblox website.";
                 IsRobloxFixButtonVisible = false;
@@ -304,6 +313,7 @@ public sealed class ShellViewModel : ViewModelBase
                 break;
 
             case RobloxVersionCheckResult.RobloxNotFound:
+                RobloxStatusBrush = new SolidColorBrush(Color.Parse("#F87171"));
                 RobloxBannerTitle = "Roblox not found";
                 RobloxBannerSubtext = "Unable to compare Roblox version to the latest build. Restart the macro with Roblox open.";
                 IsRobloxFixButtonVisible = false;
@@ -312,6 +322,13 @@ public sealed class ShellViewModel : ViewModelBase
 
             case RobloxVersionCheckResult.Match:
             case RobloxVersionCheckResult.LatestUnknown:
+                RobloxStatusBrush = new SolidColorBrush(Color.Parse("#4ADE80"));
+                RobloxBannerTitle = "Roblox found";
+                RobloxBannerSubtext = "Roblox is running.";
+                IsRobloxFixButtonVisible = false;
+                IsRobloxBannerVisible = true;
+                break;
+
             case RobloxVersionCheckResult.NotChecked:
             default:
                 IsRobloxBannerVisible = false;

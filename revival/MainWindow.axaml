@@ -90,7 +90,7 @@
                                      Height="5"
                                      Margin="0,0,6,0"
                                      VerticalAlignment="Center"
-                                     Fill="{StaticResource TextSecondary}" />
+                                     Fill="{Binding RobloxStatusBrush}" />
                             <TextBlock Grid.Column="1"
                                        Text="{Binding RobloxBannerTitle}"
                                        VerticalAlignment="Center"
