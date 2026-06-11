@@ -5,6 +5,132 @@
              x:Class="Client.Views.ShellView"
              x:DataType="vm:ShellViewModel"
              Background="Transparent">
+    <UserControl.Resources>
+        <DataTemplate x:Key="NavigationItemTemplate"
+                      DataType="{x:Type vm:ShellNavigationItemViewModel}">
+            <Button Classes="nav-button"
+                    Classes.selected="{Binding IsSelected}"
+                    Foreground="{Binding Foreground}"
+                    Command="{Binding NavigateCommand}">
+                <StackPanel Orientation="Horizontal"
+                            Spacing="10"
+                            VerticalAlignment="Center">
+                    <Viewbox Width="18"
+                             Height="18"
+                             IsVisible="{Binding ShowsGeneralRodIcon}">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 3 15 Q 5.5 7 13.5 3 M 13.5 3 C 15.2 4.6 15.4 7.1 14.8 9.3 C 14.1 11.6 12.5 12.8 10.7 12.5"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.6"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Ellipse Width="4.6"
+                                     Height="4.6"
+                                     Canvas.Left="2.4"
+                                     Canvas.Top="11"
+                                     Stroke="{Binding Foreground}"
+                                     StrokeThickness="1.6"
+                                     Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="18"
+                             Height="18"
+                             IsVisible="{Binding ShowsFishingGearRodIcon}">
+                        <Canvas Width="28" Height="18">
+                            <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.6"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Ellipse Width="4.6"
+                                     Height="4.6"
+                                     Canvas.Left="13.4"
+                                     Canvas.Top="11"
+                                     Stroke="{Binding Foreground}"
+                                     StrokeThickness="1.6"
+                                     Fill="Transparent" />
+                            <Path Data="M 5 0.1 L 7 0.1 L 7.5 1.8 L 8.7 2.4 L 10.3 1.9 L 11.4 3.7 L 10.2 5 L 10.2 6.2 L 11.4 7.5 L 10.3 9.3 L 8.7 8.8 L 7.5 9.4 L 7 11.1 L 5 11.1 L 4.5 9.4 L 3.3 8.8 L 1.7 9.3 L 0.6 7.5 L 1.8 6.2 L 1.8 5 L 0.6 3.7 L 1.7 1.9 L 3.3 2.4 L 4.5 1.8 Z"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.55"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Ellipse Width="3.8"
+                                     Height="3.8"
+                                     Canvas.Left="4.1"
+                                     Canvas.Top="3.7"
+                                     Stroke="{Binding Foreground}"
+                                     StrokeThickness="1.55"
+                                     Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="18"
+                             Height="18"
+                             IsVisible="{Binding ShowsFishingAddonsIcon}">
+                        <Canvas Width="28" Height="18">
+                            <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.6"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Ellipse Width="4.6"
+                                     Height="4.6"
+                                     Canvas.Left="13.4"
+                                     Canvas.Top="11"
+                                     Stroke="{Binding Foreground}"
+                                     StrokeThickness="1.6"
+                                     Fill="Transparent" />
+                            <Path Data="M 6 1 L 6 10.1 M 1.5 5.55 L 10.5 5.55"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="2.2"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="18"
+                             Height="18"
+                             IsVisible="{Binding ShowsAutomationIcon}">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 4.3 6.2 C 5.9 3.5 10.1 2.8 12.9 5 L 14.8 6.7 M 14.8 6.7 L 14.4 3.5 M 14.8 6.7 L 11.5 7.2 M 12.9 11.8 C 11.2 14.5 7 15.2 4.2 13 L 2.3 11.3 M 2.3 11.3 L 2.7 14.5 M 2.3 11.3 L 5.6 10.8"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.6"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <Viewbox Width="18"
+                             Height="18"
+                             IsVisible="{Binding ShowsSettingsIcon}">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 7.7 1.2 L 10.3 1.2 L 10.9 3.3 L 12.4 4.1 L 14.4 3.5 L 15.7 5.7 L 14.2 7.3 L 14.2 8.9 L 15.7 10.5 L 14.4 12.7 L 12.4 12.1 L 10.9 12.9 L 10.3 15 L 7.7 15 L 7.1 12.9 L 5.6 12.1 L 3.6 12.7 L 2.3 10.5 L 3.8 8.9 L 3.8 7.3 L 2.3 5.7 L 3.6 3.5 L 5.6 4.1 L 7.1 3.3 Z"
+                                  Stroke="{Binding Foreground}"
+                                  StrokeThickness="1.3"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Ellipse Width="4.8"
+                                     Height="4.8"
+                                     Canvas.Left="6.6"
+                                     Canvas.Top="5.7"
+                                     Stroke="{Binding Foreground}"
+                                     StrokeThickness="1.3"
+                                     Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+
+                    <TextBlock Text="{Binding Name}"
+                               VerticalAlignment="Center"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{Binding Foreground}" />
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
     <UserControl.DataTemplates>
         <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
             <views:GeneralView />
@@ -107,8 +233,28 @@
             <Setter Property="Foreground" Value="{StaticResource SidebarItemHoverForeground}" />
         </Style>
 
+        <Style Selector="Button.nav-button">
+            <Setter Property="RenderTransform">
+                <TranslateTransform X="-12" />
+            </Setter>
+        </Style>
+
         <Style Selector="Button.nav-button.selected">
             <Setter Property="Panel.ZIndex" Value="10" />
+            <Setter Property="ClipToBounds" Value="False" />
+            <Setter Property="RenderTransform">
+                <TranslateTransform X="-28" />
+            </Setter>
+        </Style>
+
+        <Style Selector="ItemsControl.nav-underlay Button.nav-button.selected">
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <Style Selector="Grid.selected-overlay Button.nav-button.selected">
+            <Setter Property="RenderTransform">
+                <TranslateTransform X="0" />
+            </Setter>
         </Style>
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavShape">
@@ -159,146 +305,55 @@
                        FontWeight="SemiBold"
                        Foreground="{StaticResource TextPrimary}" />
 
-            <Border Margin="20,42,220,20"
+            <Border Margin="20,42,190,20"
+                    ZIndex="10"
                     CornerRadius="8"
                     BorderBrush="{StaticResource ShellContentBorder}"
                     BorderThickness="1"
                     ClipToBounds="True"
                     Background="{StaticResource ShellContentBackground}">
-                <ContentControl Content="{Binding CurrentPage}" />
+                <Grid Background="{StaticResource Background}">
+                    <ContentControl Margin="0,0,16,0"
+                                    Content="{Binding CurrentPage}" />
+                </Grid>
             </Border>
 
-            <ItemsControl Width="186"
-                          Margin="0,26,20,0"
+            <ItemsControl x:Name="NavRail"
+                          Classes="nav-underlay"
+                          Width="186"
+                          Margin="0,26,8,0"
+                          ZIndex="5"
+                          ClipToBounds="False"
                           Background="Transparent"
                           HorizontalAlignment="Right"
                           VerticalAlignment="Center"
-                          ItemsSource="{Binding NavigationItems}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type vm:ShellNavigationItemViewModel}">
-                        <Button Classes="nav-button"
-                                Classes.selected="{Binding IsSelected}"
-                                Foreground="{Binding Foreground}"
-                                Command="{Binding NavigateCommand}">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="10"
-                                        VerticalAlignment="Center">
-                                <Viewbox Width="18"
-                                         Height="18"
-                                         IsVisible="{Binding ShowsGeneralRodIcon}">
-                                    <Canvas Width="18" Height="18">
-                                        <Path Data="M 3 15 Q 5.5 7 13.5 3 M 13.5 3 C 15.2 4.6 15.4 7.1 14.8 9.3 C 14.1 11.6 12.5 12.8 10.7 12.5"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.6"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                        <Ellipse Width="4.6"
-                                                 Height="4.6"
-                                                 Canvas.Left="2.4"
-                                                 Canvas.Top="11"
-                                                 Stroke="{Binding Foreground}"
-                                                 StrokeThickness="1.6"
-                                                 Fill="Transparent" />
-                                    </Canvas>
-                                </Viewbox>
-
-                                <Viewbox Width="18"
-                                         Height="18"
-                                         IsVisible="{Binding ShowsFishingGearRodIcon}">
-                                    <Canvas Width="28" Height="18">
-                                        <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.6"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                        <Ellipse Width="4.6"
-                                                 Height="4.6"
-                                                 Canvas.Left="13.4"
-                                                 Canvas.Top="11"
-                                                 Stroke="{Binding Foreground}"
-                                                 StrokeThickness="1.6"
-                                                 Fill="Transparent" />
-                                        <Path Data="M 5 0.1 L 7 0.1 L 7.5 1.8 L 8.7 2.4 L 10.3 1.9 L 11.4 3.7 L 10.2 5 L 10.2 6.2 L 11.4 7.5 L 10.3 9.3 L 8.7 8.8 L 7.5 9.4 L 7 11.1 L 5 11.1 L 4.5 9.4 L 3.3 8.8 L 1.7 9.3 L 0.6 7.5 L 1.8 6.2 L 1.8 5 L 0.6 3.7 L 1.7 1.9 L 3.3 2.4 L 4.5 1.8 Z"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.55"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                        <Ellipse Width="3.8"
-                                                 Height="3.8"
-                                                 Canvas.Left="4.1"
-                                                 Canvas.Top="3.7"
-                                                 Stroke="{Binding Foreground}"
-                                                 StrokeThickness="1.55"
-                                                 Fill="Transparent" />
-                                    </Canvas>
-                                </Viewbox>
-
-                                <Viewbox Width="18"
-                                         Height="18"
-                                         IsVisible="{Binding ShowsFishingAddonsIcon}">
-                                    <Canvas Width="28" Height="18">
-                                        <Path Data="M 14 15 Q 16.5 7 24.5 3 M 24.5 3 C 26.2 4.6 26.4 7.1 25.8 9.3 C 25.1 11.6 23.5 12.8 21.7 12.5"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.6"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                        <Ellipse Width="4.6"
-                                                 Height="4.6"
-                                                 Canvas.Left="13.4"
-                                                 Canvas.Top="11"
-                                                 Stroke="{Binding Foreground}"
-                                                 StrokeThickness="1.6"
-                                                 Fill="Transparent" />
-                                        <Path Data="M 6 1 L 6 10.1 M 1.5 5.55 L 10.5 5.55"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="2.2"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                    </Canvas>
-                                </Viewbox>
-
-                                <Viewbox Width="18"
-                                         Height="18"
-                                         IsVisible="{Binding ShowsAutomationIcon}">
-                                    <Canvas Width="18" Height="18">
-                                        <Path Data="M 4.3 6.2 C 5.9 3.5 10.1 2.8 12.9 5 L 14.8 6.7 M 14.8 6.7 L 14.4 3.5 M 14.8 6.7 L 11.5 7.2 M 12.9 11.8 C 11.2 14.5 7 15.2 4.2 13 L 2.3 11.3 M 2.3 11.3 L 2.7 14.5 M 2.3 11.3 L 5.6 10.8"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.6"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                    </Canvas>
-                                </Viewbox>
-
-                                <Viewbox Width="18"
-                                         Height="18"
-                                         IsVisible="{Binding ShowsSettingsIcon}">
-                                    <Canvas Width="18" Height="18">
-                                        <Path Data="M 7.7 1.2 L 10.3 1.2 L 10.9 3.3 L 12.4 4.1 L 14.4 3.5 L 15.7 5.7 L 14.2 7.3 L 14.2 8.9 L 15.7 10.5 L 14.4 12.7 L 12.4 12.1 L 10.9 12.9 L 10.3 15 L 7.7 15 L 7.1 12.9 L 5.6 12.1 L 3.6 12.7 L 2.3 10.5 L 3.8 8.9 L 3.8 7.3 L 2.3 5.7 L 3.6 3.5 L 5.6 4.1 L 7.1 3.3 Z"
-                                              Stroke="{Binding Foreground}"
-                                              StrokeThickness="1.3"
-                                              StrokeLineCap="Round"
-                                              Fill="Transparent" />
-                                        <Ellipse Width="4.8"
-                                                 Height="4.8"
-                                                 Canvas.Left="6.6"
-                                                 Canvas.Top="5.7"
-                                                 Stroke="{Binding Foreground}"
-                                                 StrokeThickness="1.3"
-                                                 Fill="Transparent" />
-                                    </Canvas>
-                                </Viewbox>
-
-                                <TextBlock Text="{Binding Name}"
-                                           VerticalAlignment="Center"
-                                           FontFamily="{StaticResource DisplayFont}"
-                                           FontSize="13"
-                                           FontWeight="SemiBold"
-                                           Foreground="{Binding Foreground}" />
-                            </StackPanel>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
+                          ItemsSource="{Binding NavigationItems}"
+                          ItemTemplate="{StaticResource NavigationItemTemplate}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel ClipToBounds="False" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
             </ItemsControl>
+
+            <Grid Width="186"
+                  Classes="selected-overlay"
+                  Height="300"
+                  Margin="0,26,20,0"
+                  ZIndex="20"
+                  ClipToBounds="False"
+                  IsHitTestVisible="False"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center">
+                <ContentControl Content="{Binding SelectedNavigationItem}"
+                                ContentTemplate="{StaticResource NavigationItemTemplate}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top">
+                    <ContentControl.RenderTransform>
+                        <TranslateTransform Y="{Binding SelectedNavigationOffset}" />
+                    </ContentControl.RenderTransform>
+                </ContentControl>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

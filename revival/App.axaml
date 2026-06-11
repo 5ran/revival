@@ -105,6 +105,10 @@
             <Setter Property="Padding" Value="14,10" />
         </Style>
 
+        <Style Selector="Border.app-header TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
         <Style Selector="Button.app-primary">
             <Setter Property="Background" Value="{StaticResource Accent}" />
             <Setter Property="Foreground" Value="{StaticResource AccentForeground}" />

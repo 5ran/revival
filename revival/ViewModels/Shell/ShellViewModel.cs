@@ -47,6 +47,7 @@ public sealed class ShellViewModel : ViewModelBase
     private string _robloxBannerSubtext = string.Empty;
     private bool _isRobloxFixButtonVisible;
     private IBrush _robloxStatusBrush = new SolidColorBrush(Color.Parse("#F87171"));
+    private ShellNavigationItemViewModel _selectedNavigationItem = null!;
 
     /// <summary>
     /// Creates the logged-in shell view model.
@@ -184,6 +185,7 @@ public sealed class ShellViewModel : ViewModelBase
 
         _currentPage = _generalViewModel;
         NavigationItems[0].IsSelected = true;
+        _selectedNavigationItem = NavigationItems[0];
 
         _ = RunRobloxVersionCheckAsync();
     }
@@ -192,6 +194,10 @@ public sealed class ShellViewModel : ViewModelBase
     /// Gets the sidebar navigation items.
     /// </summary>
     public IReadOnlyList<ShellNavigationItemViewModel> NavigationItems { get; }
+
+    public ShellNavigationItemViewModel SelectedNavigationItem => _selectedNavigationItem;
+
+    public double SelectedNavigationOffset => Array.IndexOf(NavigationItems.ToArray(), _selectedNavigationItem) * 60;
 
     /// <summary>
     /// Gets the active page view model.
@@ -343,6 +349,10 @@ public sealed class ShellViewModel : ViewModelBase
         {
             navigationItem.IsSelected = ReferenceEquals(navigationItem, item);
         }
+
+        _selectedNavigationItem = item;
+        OnPropertyChanged(nameof(SelectedNavigationItem));
+        OnPropertyChanged(nameof(SelectedNavigationOffset));
 
         // Re-entering Settings should always show the main settings page, not
         // the sub-page (e.g. Client/Theme) that was open on the previous visit.
