@@ -1,20 +1,20 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Client.ViewModels"
-             x:Class="Client.Views.OtherAutomationView"
-             x:DataType="vm:OtherAutomationViewModel"
+             x:Class="Client.Views.AnglerAutomationView"
+             x:DataType="vm:AnglerAutomationViewModel"
              Background="{StaticResource Background}">
     <ScrollViewer Margin="0"
                   VerticalScrollBarVisibility="Auto">
         <StackPanel Spacing="6">
-            <TextBlock Text="Auto Enchant"
+            <TextBlock Text="Auto Angler"
                        Margin="24,24,24,0"
                        FontFamily="{StaticResource DisplayFont}"
                        FontSize="24"
                        FontWeight="SemiBold"
                        Foreground="{StaticResource TextPrimary}" />
 
-            <ContentControl Content="{Binding EnchantAutomation}" />
+            <ContentControl Content="{Binding ActiveAutomation}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>

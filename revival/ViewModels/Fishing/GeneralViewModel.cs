@@ -18,6 +18,7 @@ public sealed class GeneralViewModel : ViewModelBase
     private readonly AppraiseViewModel _appraise;
     private readonly TreasureAppraiseViewModel _treasureAppraise;
     private readonly AutoAnglerViewModel _autoAngler;
+    private readonly FishingAddonsViewModel _fishingAddons;
     private Key _startStopHotkey = Key.F3;
     private bool _isRebindingHotkey;
     private int _selectedRodSlot = 1;
@@ -32,13 +33,15 @@ public sealed class GeneralViewModel : ViewModelBase
         EnchantViewModel enchant,
         AppraiseViewModel appraise,
         TreasureAppraiseViewModel treasureAppraise,
-        AutoAnglerViewModel autoAngler)
+        AutoAnglerViewModel autoAngler,
+        FishingAddonsViewModel fishingAddons)
     {
         _fishing = fishing;
         _enchant = enchant;
         _appraise = appraise;
         _treasureAppraise = treasureAppraise;
         _autoAngler = autoAngler;
+        _fishingAddons = fishingAddons;
         RodSlots = new ObservableCollection<int>([1, 2, 3, 4, 5, 6, 7, 8, 9]);
         SelectedRodSlot = HotbarSlotSettings.RodSlot;
         ToggleMacroCommand = new RelayCommand(_ => ToggleMacroAsync());
@@ -140,6 +143,8 @@ public sealed class GeneralViewModel : ViewModelBase
     public ObservableCollection<int> RodSlots { get; }
 
     public FishingViewModel Fishing => _fishing;
+
+    public FishingAddonsViewModel FishingAddons => _fishingAddons;
 
     public int SelectedRodSlot
     {

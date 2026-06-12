@@ -20,22 +20,9 @@
             <Setter Property="CornerRadius" Value="8" />
         </Style>
 
-        <Style Selector="Border.fishing-kicker">
-            <Setter Property="Background" Value="{StaticResource ShellNavSelectedBackground}" />
-            <Setter Property="CornerRadius" Value="4" />
-            <Setter Property="Padding" Value="7,3" />
-        </Style>
-
-        <Style Selector="TextBlock.fishing-eyebrow">
-            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
-        </Style>
-
         <Style Selector="TextBlock.fishing-heading">
             <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
-            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontSize" Value="12" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
@@ -43,13 +30,6 @@
         <Style Selector="TextBlock.fishing-copy">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="10" />
-            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
-        </Style>
-
-        <Style Selector="TextBlock.cycle-label">
-            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
-            <Setter Property="FontSize" Value="9" />
-            <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
         </Style>
 
@@ -92,8 +72,8 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Padding" Value="9,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
@@ -115,256 +95,297 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="FontFamily" Value="{StaticResource MonoFont}" />
-            <Setter Property="FontSize" Value="11" />
-            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Padding" Value="9,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="ToggleButton.fish-skip-activate">
+            <Setter Property="Background" Value="{StaticResource TableSurface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="ToggleButton.fish-skip-activate:checked">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+
+        <Style Selector="CheckBox.fish-skip-choice">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="4"
+                                VerticalAlignment="Center">
+                        <Border Name="ChoiceBox"
+                                Width="15"
+                                Height="15"
+                                Background="{StaticResource TableSurface}"
+                                BorderBrush="{StaticResource Border}"
+                                BorderThickness="1"
+                                CornerRadius="3">
+                            <Path Name="ChoiceMark"
+                                  IsVisible="False"
+                                  Width="7"
+                                  Height="5"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stretch="Fill"
+                                  Stroke="{StaticResource AccentForeground}"
+                                  StrokeThickness="1.6"
+                                  StrokeLineCap="Round"
+                                  Data="M 0 2.5 L 2.5 5 L 7 0" />
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="CheckBox.fish-skip-choice:checked /template/ Border#ChoiceBox">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+
+        <Style Selector="CheckBox.fish-skip-choice:checked /template/ Path#ChoiceMark">
+            <Setter Property="IsVisible" Value="True" />
         </Style>
     </UserControl.Styles>
 
-    <Grid Margin="24,18"
-          RowDefinitions="Auto,8,78,10,76,10,72,10,48">
-        <Grid Grid.Row="0"
-              ColumnDefinitions="*,Auto"
-              VerticalAlignment="Center">
-            <TextBlock Grid.Column="0"
-                       Text="Fishing"
-                       FontFamily="{StaticResource DisplayFont}"
-                       FontSize="24"
-                       FontWeight="SemiBold"
-                       Foreground="{StaticResource TextPrimary}" />
-
-            <TextBlock Grid.Column="1"
-                       Text="{Binding Fishing.Phase}"
-                       VerticalAlignment="Center"
-                       FontFamily="{StaticResource MonoFont}"
-                       FontSize="10"
-                       Foreground="{StaticResource TextSecondary}" />
-        </Grid>
-
-        <Border Grid.Row="2"
+    <Grid Margin="22,10"
+          RowDefinitions="64,8,Auto,6,164,8,Auto,6,*">
+        <Border Grid.Row="0"
                 Classes="fishing-panel"
-                Padding="14,10">
-            <Grid ColumnDefinitions="4,12,*,8,68,8,1,8,104,8,1,8,150">
-                <Border Grid.Column="0"
-                        Background="{StaticResource Accent}"
-                        CornerRadius="2" />
+                Padding="12,8">
+            <Grid ColumnDefinitions="64,*,120"
+                  VerticalAlignment="Center">
+                <Grid Grid.Column="0"
+                      Width="40"
+                      Height="40"
+                      HorizontalAlignment="Center">
+                    <Ellipse Stroke="{StaticResource Accent}"
+                             StrokeThickness="1.5"
+                             Fill="Transparent" />
+                    <Border Width="12"
+                            Height="12"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="{StaticResource Accent}"
+                            CornerRadius="2" />
+                </Grid>
 
-                <StackPanel Grid.Column="2"
+                <StackPanel Grid.Column="1"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Spacing="2">
-                    <TextBlock Text="{Binding ActiveMacroText}"
-                               Classes="fishing-eyebrow" />
                     <TextBlock Text="{Binding RunStateText}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
                                FontFamily="{StaticResource DisplayFont}"
-                               FontSize="18"
+                               FontSize="16"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextPrimary}" />
-                    <TextBlock Text="{Binding StatusMessage}"
-                               Classes="fishing-copy"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap"
-                               MaxWidth="150" />
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Spacing="8">
+                        <TextBlock Text="{Binding Fishing.RodHeaderText}"
+                                   Classes="fishing-copy"
+                                   FontWeight="SemiBold" />
+                        <controls:ColoredTextBlock Lines="{Binding Fishing.EquippedRodLines}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   FontFamily="{StaticResource UIFont}"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold" />
+                    </StackPanel>
                 </StackPanel>
 
-                <Button Grid.Column="4"
+                <Button Grid.Column="2"
                         Classes="fishing-primary"
-                        Height="34"
+                        Width="104"
+                        Height="36"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
                         Content="{Binding StartStopButtonText}"
                         Command="{Binding ToggleMacroCommand}" />
-
-                <Border Grid.Column="6"
-                        Background="{StaticResource Border}" />
-
-                <Grid Grid.Column="8"
-                      ColumnDefinitions="*,Auto"
-                      VerticalAlignment="Center">
-                    <StackPanel Grid.Column="0"
-                                Spacing="2">
-                        <TextBlock Text="Hotkey"
-                                   Classes="fishing-eyebrow" />
-                        <TextBlock Text="{Binding HotkeyText}"
-                                   FontFamily="{StaticResource MonoFont}"
-                                   FontSize="15"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimary}" />
-                    </StackPanel>
-                    <Button Grid.Column="1"
-                            Classes="fishing-secondary"
-                            Width="62"
-                            Height="32"
-                            Content="{Binding RebindButtonText}"
-                            Command="{Binding RebindHotkeyCommand}" />
-                </Grid>
-
-                <Border Grid.Column="10"
-                        Background="{StaticResource Border}" />
-
-                <Grid Grid.Column="12"
-                      ColumnDefinitions="*,90"
-                      ColumnSpacing="6"
-                      VerticalAlignment="Center">
-                    <StackPanel Grid.Column="0"
-                                Spacing="2">
-                        <TextBlock Text="Rod Slot"
-                                   Classes="fishing-eyebrow" />
-                        <TextBlock Text="{Binding SelectedRodSlot}"
-                                   FontFamily="{StaticResource MonoFont}"
-                                   FontSize="15"
-                                   FontWeight="SemiBold"
-                                   Foreground="{StaticResource TextPrimary}" />
-                    </StackPanel>
-                    <ComboBox Grid.Column="1"
-                              Classes="fishing-select"
-                              Height="32"
-                              ItemsSource="{Binding RodSlots}"
-                              SelectedItem="{Binding SelectedRodSlot}">
-                        <ComboBox.SelectionBoxItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="Change" />
-                            </DataTemplate>
-                        </ComboBox.SelectionBoxItemTemplate>
-                    </ComboBox>
-                </Grid>
             </Grid>
         </Border>
 
-        <Grid Grid.Row="4"
-              ColumnDefinitions="*,10,190">
-            <Border Grid.Column="0"
-                    Classes="fishing-card"
-                    Padding="13,9">
-                <Grid ColumnDefinitions="*,190"
-                      ColumnSpacing="12">
-                    <TextBlock Grid.Column="0"
-                               Text="Tracking Method"
-                               Classes="fishing-heading"
-                               VerticalAlignment="Center" />
-                    <ComboBox Grid.Column="1"
-                              Classes="fishing-select"
-                              Height="34"
-                              VerticalAlignment="Center"
-                              ItemsSource="{Binding Fishing.TrackerOptions}"
-                              SelectedItem="{Binding Fishing.SelectedTracker}">
+        <TextBlock Grid.Row="2"
+                   Text="Controls"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   FontFamily="{StaticResource DisplayFont}"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource TextPrimary}" />
+
+        <Border Grid.Row="4"
+                Classes="fishing-card"
+                Width="550"
+                HorizontalAlignment="Center"
+                Padding="20,0">
+            <Grid RowDefinitions="40,1,82,1,40">
+                <Grid Grid.Row="4" ColumnDefinitions="150,60,190">
+                    <TextBlock Grid.Column="0" Text="Tracking Method" Classes="fishing-heading"
+                               HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
+                    <ComboBox Grid.Column="2" Classes="fishing-select" Height="30" VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding Fishing.TrackerOptions}" SelectedItem="{Binding Fishing.SelectedTracker}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="vm:FishingTrackerOption">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="5">
-                                    <TextBlock Text="{Binding Title}"
-                                               Foreground="{StaticResource TextPrimary}" />
-                                    <TextBlock Text="{Binding Description}"
-                                               Foreground="{StaticResource TextSecondary}" />
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource TextPrimary}" />
+                                    <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextSecondary}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                         <ComboBox.SelectionBoxItemTemplate>
                             <DataTemplate x:DataType="vm:FishingTrackerOption">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="5">
-                                    <TextBlock Text="{Binding Title}"
-                                               Foreground="{StaticResource TextPrimary}" />
-                                    <TextBlock Text="{Binding Description}"
-                                               Foreground="{StaticResource TextSecondary}" />
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding Title}" Foreground="{StaticResource TextPrimary}" />
+                                    <TextBlock Text="{Binding Description}" Foreground="{StaticResource TextSecondary}" />
                                 </StackPanel>
                             </DataTemplate>
                         </ComboBox.SelectionBoxItemTemplate>
                     </ComboBox>
                 </Grid>
+                <Border Grid.Row="1" Background="{StaticResource Border}" />
+                <Grid Grid.Row="0" ColumnDefinitions="150,60,190">
+                    <TextBlock Grid.Column="0" Text="Casting" Classes="fishing-heading"
+                               HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
+                    <ComboBox Grid.Column="2" Classes="fishing-select" Height="30" VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              ItemsSource="{Binding Fishing.CastingModes}" SelectedItem="{Binding Fishing.SelectedCastingMode}" />
+                </Grid>
+                <Border Grid.Row="3" Background="{StaticResource Border}" />
+                <Grid Grid.Row="2"
+                      RowDefinitions="Auto,3,Auto"
+                      Margin="16,6">
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Spacing="3">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Spacing="10">
+                            <TextBlock Text="Skip"
+                                       Classes="fishing-heading"
+                                       VerticalAlignment="Center" />
+                            <ToggleButton Classes="fish-skip-activate"
+                                          Width="66"
+                                          Height="26"
+                                          VerticalAlignment="Center"
+                                          Content="Activate"
+                                          IsChecked="{Binding Fishing.FishSkipEnabled}" />
+                        </StackPanel>
+                        <TextBlock Text="Select the fish you want to skip"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="10"
+                                   Foreground="{StaticResource TextSecondary}" />
+                    </StackPanel>
+                    <UniformGrid Grid.Row="2"
+                          Columns="5"
+                          Margin="0,-2,0,0"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center">
+                        <CheckBox Classes="fish-skip-choice" Content="Common"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipCommonSelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="Legendary"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipLegendarySelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="Mythic"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipMythicSelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="Exotic"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipExoticSelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="Secret"
+                                  HorizontalAlignment="Center"
+                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipSecretSelected}" />
+                    </UniformGrid>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <TextBlock Grid.Row="6"
+                   Text="Shortcuts"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   FontFamily="{StaticResource DisplayFont}"
+                   FontSize="14"
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource TextPrimary}" />
+
+        <Grid Grid.Row="8"
+              ColumnDefinitions="*,10,*,10,*">
+            <Border Grid.Column="0" Classes="fishing-card" Padding="8">
+                <Grid RowDefinitions="26,Auto,*,Auto">
+                    <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 6 1.5 L 12 1.5 L 13 5 L 13 6.5 L 16 7.5 L 14 10 L 12 10 L 12 16.5 L 6 16.5 L 6 10 L 4 10 L 2 7.5 L 5 6.5 L 5 5 Z M 7.5 3.5 L 7.5 5.5 M 10.5 3.5 L 10.5 5.5 M 7 8 L 10.5 8 L 8 10.5 L 11 10.5"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Auto Totem" Classes="fishing-heading" HorizontalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Enable automatic totem use" Classes="fishing-copy"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoTotemEnabled}" />
+                </Grid>
             </Border>
 
-            <Border Grid.Column="2"
-                    Classes="fishing-card"
-                    Padding="13,9">
-                <Grid ColumnDefinitions="*,96"
-                      ColumnSpacing="8">
-                    <TextBlock Grid.Column="0"
-                               Text="Casting"
-                               Classes="fishing-heading"
-                               VerticalAlignment="Center" />
-                    <ComboBox Grid.Column="1"
-                              Classes="fishing-select"
-                              Height="34"
-                              VerticalAlignment="Center"
-                              ItemsSource="{Binding Fishing.CastingModes}"
-                              SelectedItem="{Binding Fishing.SelectedCastingMode}" />
+            <Border Grid.Column="2" Classes="fishing-card" Padding="8">
+                <Grid RowDefinitions="26,Auto,*,Auto">
+                    <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 4 5 L 14 5 L 13.2 16.5 L 4.8 16.5 Z M 3 5 L 5 1.5 L 13 1.5 L 15 5 Z M 5 1.5 L 6 5 M 13 1.5 L 12 5 M 6 10.5 C 7.3 9.1 10 9 11.7 10.4 C 10.3 11.9 7.5 12 6 10.5 Z M 11.7 10.4 L 14 8.8 L 13.6 11.8 Z M 7.8 9.8 L 7 8.5 M 8.2 10.2 L 8.2 10.3"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Auto Aquarium" Classes="fishing-heading" HorizontalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Feed aquarium while macroing" Classes="fishing-copy"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoAquariumEnabled}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="4" Classes="fishing-card" Padding="8">
+                <Grid RowDefinitions="26,Auto,*,Auto">
+                    <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 9 1 L 11.2 5.2 L 14.6 2.8 L 13.2 7.2 L 17 8.4 L 13.3 10.6 L 15.5 15.6 L 10.8 13.1 L 9 17 L 7.2 13.1 L 2.5 15.6 L 4.7 10.6 L 1 8.4 L 4.8 7.2 L 3.4 2.8 L 6.8 5.2 Z M 9 4.6 L 11.8 8.8 L 9 13.4 L 6.2 8.8 Z M 4.8 7.2 L 6.2 8.8 M 13.2 7.2 L 11.8 8.8 M 4.7 10.6 L 7.2 13.1 M 13.3 10.6 L 10.8 13.1"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Sov Recharge" Classes="fishing-heading" HorizontalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Recharge between catches" Classes="fishing-copy"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoSovereignRechargeEnabled}" />
                 </Grid>
             </Border>
         </Grid>
-
-        <Border Grid.Row="6"
-                Classes="fishing-panel"
-                Padding="14,9">
-            <Grid ColumnDefinitions="4,12,150,*,110,12,72">
-                <Border Grid.Column="0"
-                        Background="{StaticResource Accent}"
-                        CornerRadius="2" />
-                <StackPanel Grid.Column="2"
-                            VerticalAlignment="Center"
-                            Spacing="2">
-                    <TextBlock Text="Auto Aquarium"
-                               Classes="fishing-heading" />
-                    <TextBlock Text="{Binding Fishing.AquariumStatusText}"
-                               Classes="fishing-copy"
-                               TextTrimming="CharacterEllipsis"
-                               TextWrapping="NoWrap" />
-                </StackPanel>
-
-                <StackPanel Grid.Column="4"
-                            VerticalAlignment="Center"
-                            Spacing="2">
-                    <TextBlock Text="CYCLE DELAY / MIN"
-                               Classes="cycle-label" />
-                    <TextBox Classes="fishing-input"
-                             Height="30"
-                             Text="{Binding Fishing.AutoAquariumCycleDelayMinutes}"
-                             PlaceholderText="Minutes" />
-                </StackPanel>
-
-                <CheckBox Grid.Column="6"
-                          Content="Enabled"
-                          IsChecked="{Binding Fishing.AutoAquariumEnabled}"
-                          VerticalAlignment="Center"
-                          HorizontalAlignment="Right"
-                          FontFamily="{StaticResource UIFont}"
-                          FontSize="11"
-                          FontWeight="SemiBold"
-                          Foreground="{StaticResource TextPrimary}" />
-            </Grid>
-        </Border>
-
-        <Border Grid.Row="8"
-                Classes="fishing-card"
-                Padding="14,0">
-            <Grid ColumnDefinitions="Auto,12,*,Auto"
-                  VerticalAlignment="Center">
-                <TextBlock Grid.Column="0"
-                           Text="{Binding Fishing.RodHeaderText}"
-                           VerticalAlignment="Center"
-                           FontFamily="{StaticResource UIFont}"
-                           FontSize="11"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource TextPrimary}" />
-
-                <controls:ColoredTextBlock Grid.Column="2"
-                                           Lines="{Binding Fishing.EquippedRodLines}"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Right"
-                                           TextAlignment="Right"
-                                           TextTrimming="CharacterEllipsis"
-                                           FontFamily="{StaticResource UIFont}"
-                                           FontSize="11"
-                                           FontWeight="SemiBold" />
-
-                <TextBlock Grid.Column="3"
-                           Text="{Binding Fishing.MasterlineRodNamesText}"
-                           IsVisible="{Binding Fishing.IsMasterlineEquipped}"
-                           Margin="12,0,0,0"
-                           MaxWidth="130"
-                           TextTrimming="CharacterEllipsis"
-                           FontFamily="{StaticResource UIFont}"
-                           FontSize="10"
-                           FontWeight="SemiBold"
-                           Foreground="{StaticResource Accent}" />
-            </Grid>
-        </Border>
     </Grid>
 </UserControl>

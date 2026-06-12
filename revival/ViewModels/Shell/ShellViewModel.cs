@@ -37,6 +37,8 @@ public sealed class ShellViewModel : ViewModelBase
     private readonly TreasureAppraiseViewModel _treasureAppraiseViewModel = new();
     private readonly EnchantViewModel _enchantViewModel = new();
     private readonly OtherAutomationViewModel _otherAutomationViewModel;
+    private readonly AnglerAutomationViewModel _anglerAutomationViewModel;
+    private readonly AppraiseAutomationViewModel _appraiseAutomationViewModel;
     private readonly SettingsViewModel _settingsViewModel = new();
     private readonly UserSettingsStore _userSettingsStore = new();
     private bool _applyingSavedSettings;
@@ -63,8 +65,9 @@ public sealed class ShellViewModel : ViewModelBase
             _ => IsRobloxFixButtonVisible);
         _autoSovereignRechargeViewModel = new AutoSovereignRechargeViewModel(_fishingViewModel);
 
-        _generalViewModel = new GeneralViewModel(_fishingViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel, _autoAnglerViewModel);
-        _fishingAddonsViewModel = new FishingAddonsViewModel(_autoTotemViewModel, _autoSovereignRechargeViewModel, _huntDetectViewModel);
+        _fishingAddonsViewModel = new FishingAddonsViewModel(_fishingViewModel, _autoTotemViewModel, _autoSovereignRechargeViewModel);
+        _generalViewModel = new GeneralViewModel(_fishingViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel, _autoAnglerViewModel, _fishingAddonsViewModel);
+        _fishingAddonsViewModel.AttachGeneral(_generalViewModel);
         CompactViewModel = new CompactViewModel(_generalViewModel, _fishingViewModel, _autoTotemViewModel);
         _generalViewModel.PropertyChanged += (_, e) =>
         {
@@ -73,7 +76,9 @@ public sealed class ShellViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsCompactMode));
             }
         };
-        _otherAutomationViewModel = new OtherAutomationViewModel(_autoAnglerViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel);
+        _otherAutomationViewModel = new OtherAutomationViewModel(_enchantViewModel);
+        _anglerAutomationViewModel = new AnglerAutomationViewModel(_autoAnglerViewModel);
+        _appraiseAutomationViewModel = new AppraiseAutomationViewModel(_appraiseViewModel, _treasureAppraiseViewModel);
         LoadSavedSettings();
         HookSettingsPersistence();
         _enchantViewModel.PropertyChanged += (_, e) =>
@@ -163,16 +168,21 @@ public sealed class ShellViewModel : ViewModelBase
         NavigationItems = new[]
         {
             new ShellNavigationItemViewModel("Fishing", _generalViewModel, Navigate),
-            new ShellNavigationItemViewModel("Fishing Add-ons", _fishingAddonsViewModel, Navigate),
-            new ShellNavigationItemViewModel("Other Automation", _otherAutomationViewModel, Navigate),
-            new ShellNavigationItemViewModel("Settings", _settingsViewModel, Navigate),
+            new ShellNavigationItemViewModel("Fishing Settings", _fishingAddonsViewModel, Navigate),
+            new ShellNavigationItemViewModel("Auto Enchant", _otherAutomationViewModel, Navigate),
+            new ShellNavigationItemViewModel("Auto Appraise", _appraiseAutomationViewModel, Navigate),
+            new ShellNavigationItemViewModel("Auto Angler", _anglerAutomationViewModel, Navigate),
+            new ShellNavigationItemViewModel("Hunt Detect", _huntDetectViewModel, Navigate),
+            new ShellNavigationItemViewModel("Edit", _settingsViewModel, Navigate),
         };
+        MainNavigationItems = NavigationItems.Take(5).ToArray();
+        HuntDetectNavigationItem = NavigationItems[5];
+        EditNavigationItem = NavigationItems[6];
 
         var fishingAddonsItem = NavigationItems[1];
         _fishingViewModel.NavigateToAutoTotemAction = () =>
         {
             Navigate(fishingAddonsItem);
-            _fishingAddonsViewModel.IsAutoTotemExpanded = true;
         };
 
         _currentPage = _generalViewModel;
@@ -187,9 +197,19 @@ public sealed class ShellViewModel : ViewModelBase
     /// </summary>
     public IReadOnlyList<ShellNavigationItemViewModel> NavigationItems { get; }
 
+    public IReadOnlyList<ShellNavigationItemViewModel> MainNavigationItems { get; }
+
+    public ShellNavigationItemViewModel HuntDetectNavigationItem { get; }
+
+    public ShellNavigationItemViewModel EditNavigationItem { get; }
+
     public ShellNavigationItemViewModel SelectedNavigationItem => _selectedNavigationItem;
 
-    public double SelectedNavigationOffset => Array.IndexOf(NavigationItems.ToArray(), _selectedNavigationItem) * 60;
+    public bool IsMainNavigationSelected =>
+        !ReferenceEquals(_selectedNavigationItem, HuntDetectNavigationItem) &&
+        !ReferenceEquals(_selectedNavigationItem, EditNavigationItem);
+
+    public double SelectedNavigationOffset => Array.IndexOf(MainNavigationItems.ToArray(), _selectedNavigationItem) * 60;
 
     /// <summary>
     /// Gets the active page view model.
@@ -345,6 +365,7 @@ public sealed class ShellViewModel : ViewModelBase
         _selectedNavigationItem = item;
         OnPropertyChanged(nameof(SelectedNavigationItem));
         OnPropertyChanged(nameof(SelectedNavigationOffset));
+        OnPropertyChanged(nameof(IsMainNavigationSelected));
 
         // Re-entering Settings should always show the main settings page, not
         // the sub-page (e.g. Client/Theme) that was open on the previous visit.
@@ -396,6 +417,18 @@ public sealed class ShellViewModel : ViewModelBase
             {
                 _fishingViewModel.SelectedCastingMode = castingMode;
             }
+
+            if (!string.IsNullOrWhiteSpace(saved.Fishing.FishSkipMode) &&
+                _fishingViewModel.FishSkipModes.Contains(saved.Fishing.FishSkipMode, StringComparer.OrdinalIgnoreCase))
+            {
+                _fishingViewModel.SelectedFishSkipMode = _fishingViewModel.FishSkipModes.First(
+                    mode => string.Equals(mode, saved.Fishing.FishSkipMode, StringComparison.OrdinalIgnoreCase));
+            }
+            _fishingViewModel.FishSkipCommonSelected = saved.Fishing.FishSkipCommonSelected;
+            _fishingViewModel.FishSkipLegendarySelected = saved.Fishing.FishSkipLegendarySelected;
+            _fishingViewModel.FishSkipMythicSelected = saved.Fishing.FishSkipMythicSelected;
+            _fishingViewModel.FishSkipExoticSelected = saved.Fishing.FishSkipExoticSelected;
+            _fishingViewModel.FishSkipSecretSelected = saved.Fishing.FishSkipSecretSelected;
 
             _fishingViewModel.AutoAquariumEnabled = saved.Fishing.AutoAquariumEnabled;
             _fishingViewModel.AutoAquariumCycleDelayMinutes = saved.Fishing.AutoAquariumCycleDelayMinutes;
@@ -496,6 +529,12 @@ public sealed class ShellViewModel : ViewModelBase
             {
                 TrackerMode = _fishingViewModel.SelectedMode.ToString(),
                 CastingMode = _fishingViewModel.SelectedCastingMode.ToString(),
+                FishSkipMode = _fishingViewModel.SelectedFishSkipMode,
+                FishSkipCommonSelected = _fishingViewModel.FishSkipCommonSelected,
+                FishSkipLegendarySelected = _fishingViewModel.FishSkipLegendarySelected,
+                FishSkipMythicSelected = _fishingViewModel.FishSkipMythicSelected,
+                FishSkipExoticSelected = _fishingViewModel.FishSkipExoticSelected,
+                FishSkipSecretSelected = _fishingViewModel.FishSkipSecretSelected,
                 AutoAquariumEnabled = _fishingViewModel.AutoAquariumEnabled,
                 AutoAquariumCycleDelayMinutes = _fishingViewModel.AutoAquariumCycleDelayMinutes,
             },

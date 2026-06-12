@@ -65,9 +65,27 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid Margin="34,0,34,34"
-          RowDefinitions="Auto,*">
-        <Border Grid.Row="0"
+    <Grid Margin="24,18,24,34"
+          RowDefinitions="Auto,12,Auto,*">
+        <Grid Grid.Row="0"
+              ColumnDefinitions="*,Auto"
+              VerticalAlignment="Center">
+            <TextBlock Grid.Column="0"
+                       Text="Hunt Detect"
+                       FontFamily="{StaticResource DisplayFont}"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}" />
+            <CheckBox Grid.Column="1"
+                      Content="On"
+                      IsChecked="{Binding Enabled}"
+                      FontFamily="{StaticResource UIFont}"
+                      FontSize="12"
+                      FontWeight="SemiBold"
+                      Foreground="{StaticResource TextPrimary}" />
+        </Grid>
+
+        <Border Grid.Row="2"
                 Classes="app-card"
                 Padding="16">
             <Grid RowDefinitions="Auto,Auto"
@@ -89,7 +107,7 @@
             </Grid>
         </Border>
 
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="3"
               Margin="0,12,0,0"
               ColumnDefinitions="3*,0.9*"
               ColumnSpacing="12"

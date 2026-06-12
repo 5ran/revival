@@ -5,77 +5,63 @@ namespace Client.ViewModels;
 
 public sealed class FishingAddonsViewModel : ViewModelBase
 {
+    private readonly FishingViewModel _fishingViewModel;
     private readonly AutoTotemViewModel _autoTotemViewModel;
     private readonly AutoSovereignRechargeViewModel _autoSovereignRechargeViewModel;
-    private readonly HuntDetectViewModel _huntDetectViewModel;
-    private bool _isAutoTotemExpanded;
-    private bool _isAutoSovereignRechargeExpanded;
-    private bool _isHuntDetectExpanded;
+
+    public GeneralViewModel General { get; private set; } = null!;
+
+    public void AttachGeneral(GeneralViewModel general)
+    {
+        General = general;
+        OnPropertyChanged(nameof(General));
+    }
 
     public FishingAddonsViewModel(
+        FishingViewModel fishingViewModel,
         AutoTotemViewModel autoTotemViewModel,
-        AutoSovereignRechargeViewModel autoSovereignRechargeViewModel,
-        HuntDetectViewModel? huntDetectViewModel = null)
+        AutoSovereignRechargeViewModel autoSovereignRechargeViewModel)
     {
+        _fishingViewModel = fishingViewModel;
         _autoTotemViewModel = autoTotemViewModel;
         _autoSovereignRechargeViewModel = autoSovereignRechargeViewModel;
-        _huntDetectViewModel = huntDetectViewModel ?? new HuntDetectViewModel();
-        _isAutoTotemExpanded = false;
-        _isAutoSovereignRechargeExpanded = false;
-        _isHuntDetectExpanded = false;
 
-        ToggleAutoTotemExpandedCommand = new RelayCommand(_ =>
-        {
-            if (IsAutoTotemExpanded)
-            {
-                IsAutoTotemExpanded = false;
-            }
-            else
-            {
-                IsAutoTotemExpanded = true;
-                IsAutoSovereignRechargeExpanded = false;
-                IsHuntDetectExpanded = false;
-            }
-
-            return Task.CompletedTask;
-        });
-
-        ToggleAutoSovereignRechargeExpandedCommand = new RelayCommand(_ =>
-        {
-            if (IsAutoSovereignRechargeExpanded)
-            {
-                IsAutoSovereignRechargeExpanded = false;
-            }
-            else
-            {
-                IsAutoSovereignRechargeExpanded = true;
-                IsAutoTotemExpanded = false;
-                IsHuntDetectExpanded = false;
-            }
-
-            return Task.CompletedTask;
-        });
-
-        ToggleHuntDetectExpandedCommand = new RelayCommand(_ =>
-        {
-            if (IsHuntDetectExpanded)
-            {
-                IsHuntDetectExpanded = false;
-            }
-            else
-            {
-                IsHuntDetectExpanded = true;
-                IsAutoTotemExpanded = false;
-                IsAutoSovereignRechargeExpanded = false;
-            }
-
-            return Task.CompletedTask;
-        });
-
+        _fishingViewModel.PropertyChanged += HandleFishingPropertyChanged;
         _autoTotemViewModel.PropertyChanged += HandleTotemPropertyChanged;
         _autoSovereignRechargeViewModel.PropertyChanged += HandleSovereignRechargePropertyChanged;
-        _huntDetectViewModel.PropertyChanged += HandleHuntDetectPropertyChanged;
     }
+
+    public bool AutoAquariumEnabled
+    {
+        get => _fishingViewModel.AutoAquariumEnabled;
+        set
+        {
+            if (_fishingViewModel.AutoAquariumEnabled == value)
+            {
+                return;
+            }
+
+            _fishingViewModel.AutoAquariumEnabled = value;
+            OnPropertyChanged(nameof(AutoAquariumEnabled));
+        }
+    }
+
+    public double AutoAquariumCycleDelayMinutes
+    {
+        get => _fishingViewModel.AutoAquariumCycleDelayMinutes;
+        set
+        {
+            if (_fishingViewModel.AutoAquariumCycleDelayMinutes == value)
+            {
+                return;
+            }
+
+            _fishingViewModel.AutoAquariumCycleDelayMinutes = value;
+            OnPropertyChanged(nameof(AutoAquariumCycleDelayMinutes));
+        }
+    }
+
+    public string AutoAquariumStatusText => _fishingViewModel.AquariumStatusText;
 
     public bool AutoTotemEnabled
     {
@@ -111,89 +97,23 @@ public sealed class FishingAddonsViewModel : ViewModelBase
 
     public AutoSovereignRechargeViewModel AutoSovereignRecharge => _autoSovereignRechargeViewModel;
 
-    public bool HuntDetectEnabled
-    {
-        get => _huntDetectViewModel.Enabled;
-        set
-        {
-            if (_huntDetectViewModel.Enabled == value)
-            {
-                return;
-            }
+    public string ActiveAddonTitle => "Fishing Settings";
 
-            _huntDetectViewModel.Enabled = value;
-            OnPropertyChanged(nameof(HuntDetectEnabled));
+    private void HandleFishingPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(FishingViewModel.AutoAquariumEnabled))
+        {
+            OnPropertyChanged(nameof(AutoAquariumEnabled));
+        }
+        else if (e.PropertyName is nameof(FishingViewModel.AutoAquariumCycleDelayMinutes))
+        {
+            OnPropertyChanged(nameof(AutoAquariumCycleDelayMinutes));
+        }
+        else if (e.PropertyName is nameof(FishingViewModel.AquariumStatusText))
+        {
+            OnPropertyChanged(nameof(AutoAquariumStatusText));
         }
     }
-
-    public HuntDetectViewModel HuntDetect => _huntDetectViewModel;
-
-    public bool IsAutoTotemExpanded
-    {
-        get => _isAutoTotemExpanded;
-        set
-        {
-            if (!SetProperty(ref _isAutoTotemExpanded, value))
-            {
-                return;
-            }
-
-            RaiseAddonVisibilityStateChanged();
-            OnPropertyChanged(nameof(AutoTotemExpandGlyph));
-        }
-    }
-
-    public bool IsAutoSovereignRechargeExpanded
-    {
-        get => _isAutoSovereignRechargeExpanded;
-        set
-        {
-            if (!SetProperty(ref _isAutoSovereignRechargeExpanded, value))
-            {
-                return;
-            }
-
-            RaiseAddonVisibilityStateChanged();
-            OnPropertyChanged(nameof(AutoSovereignRechargeExpandGlyph));
-        }
-    }
-
-    public bool IsHuntDetectExpanded
-    {
-        get => _isHuntDetectExpanded;
-        set
-        {
-            if (!SetProperty(ref _isHuntDetectExpanded, value))
-            {
-                return;
-            }
-
-            RaiseAddonVisibilityStateChanged();
-            OnPropertyChanged(nameof(HuntDetectExpandGlyph));
-        }
-    }
-
-    public bool HasOpenAddon => IsAutoTotemExpanded || IsAutoSovereignRechargeExpanded || IsHuntDetectExpanded;
-
-    public bool ShowAutoTotemSection => IsAutoTotemExpanded || !HasOpenAddon;
-    public bool ShowAutoSovereignRechargeSection => IsAutoSovereignRechargeExpanded || !HasOpenAddon;
-    public bool ShowHuntDetectSection => IsHuntDetectExpanded || !HasOpenAddon;
-
-    public string AutoTotemExpandGlyph => IsAutoTotemExpanded ? "Hide" : "Open";
-    public string AutoSovereignRechargeExpandGlyph => IsAutoSovereignRechargeExpanded ? "Hide" : "Open";
-    public string HuntDetectExpandGlyph => IsHuntDetectExpanded ? "Hide" : "Open";
-
-    public string ActiveAddonTitle => IsAutoTotemExpanded
-            ? "Fishing Add-ons - Auto Totem"
-            : IsAutoSovereignRechargeExpanded
-                ? "Fishing Add-ons - Auto Sovereign Recharge"
-                : IsHuntDetectExpanded
-                    ? "Fishing Add-ons - Hunt Detect"
-            : "Fishing Add-ons";
-
-    public RelayCommand ToggleAutoTotemExpandedCommand { get; }
-    public RelayCommand ToggleAutoSovereignRechargeExpandedCommand { get; }
-    public RelayCommand ToggleHuntDetectExpandedCommand { get; }
 
     private void HandleTotemPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
@@ -211,20 +131,4 @@ public sealed class FishingAddonsViewModel : ViewModelBase
         }
     }
 
-    private void HandleHuntDetectPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName is nameof(HuntDetectViewModel.Enabled))
-        {
-            OnPropertyChanged(nameof(HuntDetectEnabled));
-        }
-    }
-
-    private void RaiseAddonVisibilityStateChanged()
-    {
-        OnPropertyChanged(nameof(HasOpenAddon));
-        OnPropertyChanged(nameof(ShowAutoTotemSection));
-        OnPropertyChanged(nameof(ShowAutoSovereignRechargeSection));
-        OnPropertyChanged(nameof(ShowHuntDetectSection));
-        OnPropertyChanged(nameof(ActiveAddonTitle));
-    }
 }

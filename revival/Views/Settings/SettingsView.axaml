@@ -16,7 +16,7 @@
               RowDefinitions="Auto,Auto,*"
               IsVisible="{Binding IsMainViewVisible}">
             <TextBlock Grid.Row="0"
-                       Text="Settings"
+                       Text="Edit"
                        FontFamily="{StaticResource DisplayFont}"
                        FontSize="24"
                        FontWeight="SemiBold"

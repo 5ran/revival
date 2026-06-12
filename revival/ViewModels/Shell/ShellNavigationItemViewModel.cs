@@ -39,13 +39,19 @@ public sealed class ShellNavigationItemViewModel : ViewModelBase, IDisposable
 
     public bool ShowsGeneralRodIcon => Name == "Fishing";
 
-    public bool ShowsFishingGearRodIcon => false;
+    public bool ShowsFishingGearRodIcon => Name == "Fishing Settings";
 
-    public bool ShowsFishingAddonsIcon => Name == "Fishing Add-ons";
+    public bool ShowsFishingAddonsIcon => false;
 
-    public bool ShowsAutomationIcon => Name == "Other Automation";
+    public bool ShowsAutomationIcon => Name == "Auto Enchant";
 
-    public bool ShowsSettingsIcon => Name == "Settings";
+    public bool ShowsAnglerIcon => Name == "Auto Angler";
+
+    public bool ShowsAppraiseIcon => Name == "Auto Appraise";
+
+    public bool ShowsHuntDetectIcon => Name == "Hunt Detect";
+
+    public bool ShowsEditIcon => Name == "Edit";
 
     /// <summary>
     /// Gets the page view model associated with this item.

@@ -71,6 +71,21 @@ public sealed class AutoTotemViewModel : ViewModelBase
 
     public ObservableCollection<string> WeatherOptions { get; }
 
+    public IReadOnlyList<string> SpecialOptions { get; } =
+    [
+        "None",
+        "Shiny",
+        "Sparkling",
+        "Mutation",
+    ];
+
+    public IReadOnlyList<string> CycleLockOptions { get; } =
+    [
+        "Auto",
+        "Stay Day",
+        "Stay Night",
+    ];
+
     public bool AutoTotemEnabled
     {
         get => _autoTotemEnabled;
@@ -122,6 +137,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
                         : UseMutationTotem
                             ? AutoTotemSpecial.Mutation
                             : AutoTotemSpecial.None;
+                OnPropertyChanged(nameof(SelectedSpecialOption));
                 RefreshStatus();
             }
         }
@@ -147,6 +163,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
                         : UseMutationTotem
                             ? AutoTotemSpecial.Mutation
                             : AutoTotemSpecial.None;
+                OnPropertyChanged(nameof(SelectedSpecialOption));
                 RefreshStatus();
             }
         }
@@ -172,6 +189,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
                         : UseSparklingTotem
                             ? AutoTotemSpecial.Sparkling
                             : AutoTotemSpecial.None;
+                OnPropertyChanged(nameof(SelectedSpecialOption));
                 RefreshStatus();
             }
         }
@@ -199,6 +217,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
                     : StayNight
                         ? AutoTotemTimePreference.Night
                         : AutoTotemTimePreference.None;
+                OnPropertyChanged(nameof(SelectedCycleLockOption));
                 RefreshStatus();
             }
         }
@@ -226,12 +245,48 @@ public sealed class AutoTotemViewModel : ViewModelBase
                     : StayDay
                         ? AutoTotemTimePreference.Day
                         : AutoTotemTimePreference.None;
+                OnPropertyChanged(nameof(SelectedCycleLockOption));
                 RefreshStatus();
             }
         }
     }
 
     public bool IsTimePreferenceEditable => _forcedTimePreference is null;
+
+    public string SelectedSpecialOption
+    {
+        get => UseShinyTotem
+            ? "Shiny"
+            : UseSparklingTotem
+                ? "Sparkling"
+                : UseMutationTotem
+                    ? "Mutation"
+                    : "None";
+        set
+        {
+            UseShinyTotem = string.Equals(value, "Shiny", StringComparison.OrdinalIgnoreCase);
+            UseSparklingTotem = string.Equals(value, "Sparkling", StringComparison.OrdinalIgnoreCase);
+            UseMutationTotem = string.Equals(value, "Mutation", StringComparison.OrdinalIgnoreCase);
+            OnPropertyChanged(nameof(SelectedSpecialOption));
+        }
+    }
+
+    public string SelectedCycleLockOption
+    {
+        get => StayDay ? "Stay Day" : StayNight ? "Stay Night" : "Auto";
+        set
+        {
+            if (!IsTimePreferenceEditable)
+            {
+                OnPropertyChanged(nameof(SelectedCycleLockOption));
+                return;
+            }
+
+            StayDay = string.Equals(value, "Stay Day", StringComparison.OrdinalIgnoreCase);
+            StayNight = string.Equals(value, "Stay Night", StringComparison.OrdinalIgnoreCase);
+            OnPropertyChanged(nameof(SelectedCycleLockOption));
+        }
+    }
 
     /// <summary>Day/Night/Auto cycle string most recently read from the world. Updated by the status timer.</summary>
     public string CurrentCycle => _currentCycle;
@@ -477,6 +532,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
         OnPropertyChanged(nameof(IsTimePreferenceEditable));
         OnPropertyChanged(nameof(StayDay));
         OnPropertyChanged(nameof(StayNight));
+        OnPropertyChanged(nameof(SelectedCycleLockOption));
 
         if (forced == AutoTotemTimePreference.Day)
         {

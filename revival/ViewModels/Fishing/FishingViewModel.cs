@@ -29,6 +29,12 @@ public sealed class FishingViewModel : ViewModelBase
     private readonly Timer _rodTimer;
     private FishingTrackerOption _selectedTracker;
     private FishingCastingMode _selectedCastingMode = FishingCastingMode.Normal;
+    private string _selectedFishSkipMode = "Off";
+    private bool _fishSkipCommonSelected = true;
+    private bool _fishSkipLegendarySelected = true;
+    private bool _fishSkipMythicSelected = true;
+    private bool _fishSkipExoticSelected = true;
+    private bool _fishSkipSecretSelected = true;
     private FishingTrackerStatus _status = new(false, "OFF", "Ready.", null, false);
     private bool _autoAquariumEnabled;
     private bool _aquariumPending;
@@ -70,6 +76,12 @@ public sealed class FishingViewModel : ViewModelBase
     [
         FishingCastingMode.Normal,
         FishingCastingMode.Perfect,
+    ];
+
+    public IReadOnlyList<string> FishSkipModes { get; } =
+    [
+        "Off",
+        "On",
     ];
 
     public FishingTrackerOption SelectedTracker
@@ -116,6 +128,54 @@ public sealed class FishingViewModel : ViewModelBase
 
             RefreshStatus();
         }
+    }
+
+    public string SelectedFishSkipMode
+    {
+        get => _selectedFishSkipMode;
+        set
+        {
+            if (SetProperty(ref _selectedFishSkipMode, value))
+            {
+                OnPropertyChanged(nameof(FishSkipEnabled));
+            }
+        }
+    }
+
+    public bool FishSkipEnabled
+    {
+        get => string.Equals(SelectedFishSkipMode, "On", StringComparison.OrdinalIgnoreCase);
+        set => SelectedFishSkipMode = value ? "On" : "Off";
+    }
+
+    public bool FishSkipCommonSelected
+    {
+        get => _fishSkipCommonSelected;
+        set => SetProperty(ref _fishSkipCommonSelected, value);
+    }
+
+    public bool FishSkipLegendarySelected
+    {
+        get => _fishSkipLegendarySelected;
+        set => SetProperty(ref _fishSkipLegendarySelected, value);
+    }
+
+    public bool FishSkipMythicSelected
+    {
+        get => _fishSkipMythicSelected;
+        set => SetProperty(ref _fishSkipMythicSelected, value);
+    }
+
+    public bool FishSkipExoticSelected
+    {
+        get => _fishSkipExoticSelected;
+        set => SetProperty(ref _fishSkipExoticSelected, value);
+    }
+
+    public bool FishSkipSecretSelected
+    {
+        get => _fishSkipSecretSelected;
+        set => SetProperty(ref _fishSkipSecretSelected, value);
     }
 
     public bool IsRunning => _macroRequestedRunning || _status.IsRunning || _aquariumPending || _aquariumActive;

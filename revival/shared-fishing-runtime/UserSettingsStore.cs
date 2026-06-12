@@ -120,6 +120,18 @@ public sealed class FishingSettingsSnapshot
 
     public string? CastingMode { get; set; }
 
+    public string? FishSkipMode { get; set; }
+
+    public bool FishSkipCommonSelected { get; set; } = true;
+
+    public bool FishSkipLegendarySelected { get; set; } = true;
+
+    public bool FishSkipMythicSelected { get; set; } = true;
+
+    public bool FishSkipExoticSelected { get; set; } = true;
+
+    public bool FishSkipSecretSelected { get; set; } = true;
+
     public bool AutoAquariumEnabled { get; set; }
 
     public double AutoAquariumCycleDelayMinutes { get; set; } = 65;

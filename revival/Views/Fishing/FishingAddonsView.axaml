@@ -15,112 +15,247 @@
                            FontWeight="SemiBold"
                            Foreground="{StaticResource TextPrimary}" />
 
-                <Border Classes="app-header"
-                        IsVisible="{Binding ShowAutoTotemSection}">
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12">
-                    <TextBlock Grid.Column="0"
-                               VerticalAlignment="Center"
-                               TextWrapping="Wrap"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}">
-                        <Run Text="Auto Totem" />
-                        <Run Text=" - Leave roblox chat open"
-                             Foreground="{StaticResource TextSecondary}" />
-                    </TextBlock>
-                    <CheckBox Grid.Column="1"
-                              VerticalAlignment="Center"
-                              Content="On"
-                              IsChecked="{Binding AutoTotemEnabled}"
-                              FontFamily="{StaticResource UIFont}"
-                              FontSize="12"
-                              Foreground="{StaticResource TextPrimary}" />
-                    <Button Grid.Column="2"
-                            Classes="app-primary"
-                            Width="54"
-                            Height="28"
-                            Padding="0"
-                            FontSize="11"
-                            Content="{Binding AutoTotemExpandGlyph}"
-                            Command="{Binding ToggleAutoTotemExpandedCommand}" />
-                </Grid>
-                </Border>
+                <TextBlock Text="Fishing Setup"
+                           Margin="4,6,0,0"
+                           FontFamily="{StaticResource DisplayFont}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" />
 
                 <Border Classes="app-header"
-                        IsVisible="{Binding ShowAutoSovereignRechargeSection}">
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12">
-                    <TextBlock Grid.Column="0"
-                               VerticalAlignment="Center"
-                               TextWrapping="Wrap"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}">
-                        <Run Text="Auto Sovereign Recharge" />
-                        <Run Text=" - Gamepass enchant required"
-                             Foreground="{StaticResource TextSecondary}" />
-                    </TextBlock>
-                    <CheckBox Grid.Column="1"
-                              VerticalAlignment="Center"
-                              Content="On"
-                              IsChecked="{Binding AutoSovereignRechargeEnabled}"
-                              FontFamily="{StaticResource UIFont}"
-                              FontSize="12"
-                              Foreground="{StaticResource TextPrimary}" />
-                    <Button Grid.Column="2"
-                            Classes="app-primary"
-                            Width="54"
-                            Height="28"
-                            Padding="0"
-                            FontSize="11"
-                            Content="{Binding AutoSovereignRechargeExpandGlyph}"
-                            Command="{Binding ToggleAutoSovereignRechargeExpandedCommand}" />
-                </Grid>
+                        Padding="14,8">
+                    <Grid ColumnDefinitions="*,Auto,72,8,68,40,Auto,8,80,*"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="1"
+                                   Text="Hotkey"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="10"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding General.HotkeyText}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Button Grid.Column="4"
+                                Classes="app-secondary"
+                                Height="30"
+                                Padding="6,0"
+                                FontSize="10"
+                                Content="{Binding General.RebindButtonText}"
+                                Command="{Binding General.RebindHotkeyCommand}" />
+
+                        <TextBlock Grid.Column="6"
+                                   Text="Rod Slot"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="10"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <ComboBox Grid.Column="8"
+                                  Classes="app-select"
+                                  Height="30"
+                                  ItemsSource="{Binding General.RodSlots}"
+                                  SelectedItem="{Binding General.SelectedRodSlot}" />
+                    </Grid>
                 </Border>
 
-                <Border Classes="app-header"
-                        IsVisible="{Binding ShowHuntDetectSection}">
-                <Grid ColumnDefinitions="*,Auto,Auto"
-                      ColumnSpacing="12">
-                    <TextBlock Grid.Column="0"
-                               VerticalAlignment="Center"
-                               TextWrapping="Wrap"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}">
-                        <Run Text="Hunt Detect" />
-                        <Run Text=" - Leave roblox chat open"
-                             Foreground="{StaticResource TextSecondary}" />
-                    </TextBlock>
-                    <CheckBox Grid.Column="1"
-                              VerticalAlignment="Center"
-                              Content="On"
-                              IsChecked="{Binding HuntDetectEnabled}"
-                              FontFamily="{StaticResource UIFont}"
-                              FontSize="12"
-                              Foreground="{StaticResource TextPrimary}" />
-                    <Button Grid.Column="2"
-                            Classes="app-primary"
-                            Width="54"
-                            Height="28"
-                            Padding="0"
-                            FontSize="11"
-                            Content="{Binding HuntDetectExpandGlyph}"
-                            Command="{Binding ToggleHuntDetectExpandedCommand}" />
-                </Grid>
+                <TextBlock Text="Automation Settings"
+                           Margin="4,6,0,0"
+                           FontFamily="{StaticResource DisplayFont}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" />
+
+                <Border Classes="app-header">
+                    <Grid ColumnDefinitions="Auto,*,64"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Auto Totem"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+
+                        <Grid Grid.Column="1"
+                              ColumnDefinitions="*,10,*,10,*"
+                              Width="330"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center">
+                            <StackPanel Grid.Column="0"
+                                        Spacing="4">
+                                <TextBlock Text="Totem"
+                                           HorizontalAlignment="Center"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="9"
+                                           Foreground="{StaticResource TextSecondary}" />
+                                <ComboBox Classes="app-select"
+                                          Height="30"
+                                          ItemsSource="{Binding AutoTotem.TotemOptions}"
+                                          SelectedItem="{Binding AutoTotem.SelectedTotem}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="0">
+                                                <TextBlock Text="{Binding DisplayPrimary}"
+                                                           Foreground="{Binding Brush}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                    <ComboBox.SelectionBoxItemTemplate>
+                                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="0">
+                                                <TextBlock Text="{Binding DisplayPrimary}"
+                                                           Foreground="{Binding Brush}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.SelectionBoxItemTemplate>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2"
+                                        Spacing="4">
+                                <TextBlock Text="Special"
+                                           HorizontalAlignment="Center"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="9"
+                                           Foreground="{StaticResource TextSecondary}" />
+                                <ComboBox Classes="app-select"
+                                          HorizontalAlignment="Stretch"
+                                          Height="30"
+                                          ItemsSource="{Binding AutoTotem.SpecialOptions}"
+                                          SelectedItem="{Binding AutoTotem.SelectedSpecialOption}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="4"
+                                        Spacing="4">
+                                <TextBlock Text="Cycle Lock"
+                                           HorizontalAlignment="Center"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="9"
+                                           Foreground="{StaticResource TextSecondary}" />
+                                <ComboBox Classes="app-select"
+                                          HorizontalAlignment="Stretch"
+                                          Height="30"
+                                          IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
+                                          ItemsSource="{Binding AutoTotem.CycleLockOptions}"
+                                          SelectedItem="{Binding AutoTotem.SelectedCycleLockOption}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <CheckBox Grid.Column="2"
+                                  Width="48"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="On"
+                                  IsChecked="{Binding AutoTotemEnabled}"
+                                  FontFamily="{StaticResource UIFont}"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
                 </Border>
+
+                <Border Classes="app-header">
+                    <Grid ColumnDefinitions="160,*,64"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Auto Aquarium"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Grid Grid.Column="1"
+                              ColumnDefinitions="142,52,10,58"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center">
+                            <TextBlock Grid.Column="1"
+                                       Text="Cycle delay"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
+                            <TextBox Grid.Column="3"
+                                     Classes="app-input"
+                                     Height="30"
+                                     MaxLength="3"
+                                     HorizontalContentAlignment="Center"
+                                     Text="{Binding AutoAquariumCycleDelayMinutes}"
+                                     PlaceholderText="Min" />
+                        </Grid>
+                        <CheckBox Grid.Column="2"
+                                  Width="48"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="On"
+                                  IsChecked="{Binding AutoAquariumEnabled}"
+                                  FontFamily="{StaticResource UIFont}"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
+                </Border>
+
+                <Border Classes="app-header">
+                    <Grid ColumnDefinitions="160,*,64"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Auto Sovereign Recharge"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="NoWrap"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Grid Grid.Column="1"
+                              ColumnDefinitions="32,42,10,58,10,42,10,58"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center">
+                            <TextBlock Grid.Column="1"
+                                       Text="Min %"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
+                            <TextBox Grid.Column="3"
+                                     Classes="app-input"
+                                     Height="30"
+                                     MaxLength="3"
+                                     HorizontalContentAlignment="Center"
+                                     Text="{Binding AutoSovereignRecharge.MinimumPercentText}" />
+                            <TextBlock Grid.Column="5"
+                                       Text="Max %"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
+                            <TextBox Grid.Column="7"
+                                     Classes="app-input"
+                                     Height="30"
+                                     MaxLength="3"
+                                     HorizontalContentAlignment="Center"
+                                     Text="{Binding AutoSovereignRecharge.MaximumPercentText}" />
+                        </Grid>
+                        <CheckBox Grid.Column="2"
+                                  Width="48"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="On"
+                                  IsChecked="{Binding AutoSovereignRechargeEnabled}"
+                                  FontFamily="{StaticResource UIFont}"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
+                </Border>
+
             </StackPanel>
 
-            <ContentControl IsVisible="{Binding IsAutoTotemExpanded}"
-                            Content="{Binding AutoTotem}" />
-            <ContentControl IsVisible="{Binding IsAutoSovereignRechargeExpanded}"
-                            Content="{Binding AutoSovereignRecharge}" />
-            <ContentControl IsVisible="{Binding IsHuntDetectExpanded}"
-                            Content="{Binding HuntDetect}" />
         </StackPanel>
     </ScrollViewer>
 </UserControl>
