@@ -36,6 +36,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
     private int _tickInProgress;
     private DateTimeOffset _nextSelfTestAt = DateTimeOffset.MinValue;
     private int _completingDotPhase;
+    private bool _suppressAutoToggle;
 
     public AutoAnglerViewModel()
     {
@@ -53,9 +54,16 @@ public sealed class AutoAnglerViewModel : ViewModelBase
                 return;
             }
 
+            AppLog.Fishing("AutoAnglerVM", $"AutoAnglerEnabled changed -> {value}");
             if (!value && IsRunning)
             {
+                AppLog.Fishing("AutoAnglerVM", "Checkbox disabled while running; stopping.");
                 _ = StopAsync();
+            }
+            else if (value && !_suppressAutoToggle && !IsRunning)
+            {
+                AppLog.Fishing("AutoAnglerVM", "Checkbox enabled; starting angler automatically.");
+                _ = StartAsync();
             }
             else if (!IsRunning)
             {
@@ -109,19 +117,41 @@ public sealed class AutoAnglerViewModel : ViewModelBase
     public Task StartAsync()
     {
         AppLog.Info("MacroMode", "AutoAngler StartAsync requested.");
+        if (IsRunning)
+        {
+            AppLog.Fishing("AutoAnglerVM", "StartAsync ignored because angler is already running.");
+            return Task.CompletedTask;
+        }
+
+        var settings = BuildSettings();
+        AppLog.Fishing("AutoAnglerVM", $"StartAsync settings click=({settings.ClickX},{settings.ClickY}) enabled={AutoAnglerEnabled} running={IsRunning}");
+        if (settings.ClickX <= 0 || settings.ClickY <= 0)
+        {
+            _suppressAutoToggle = true;
+            AutoAnglerEnabled = true;
+            _suppressAutoToggle = false;
+            IsRunning = false;
+            StatusText = "Set a click point first.";
+            AppLog.Fishing("AutoAnglerVM", "StartAsync aborted: click point missing.");
+            return Task.CompletedTask;
+        }
+
+        _suppressAutoToggle = true;
         AutoAnglerEnabled = true;
+        _suppressAutoToggle = false;
         _runner.Reset();
         IsRunning = true;
-        StatusText = "---";
+        StatusText = "Starting...";
         try
         {
             var initialFish = _runner.ReadCurrentQuestFish();
             var displayFish = GetDisplayFish(initialFish);
             CurrentFishText = displayFish;
+            AppLog.Fishing("AutoAnglerVM", $"StartAsync initial fish={displayFish}");
         }
         catch
         {
-            // Tick loop will retry.
+            AppLog.Fishing("AutoAnglerVM", "StartAsync initial fish read failed; tick loop will retry.");
         }
 
         AppLog.Info("MacroMode", $"AutoAngler started. currentFish={CurrentFishText}");
@@ -131,10 +161,18 @@ public sealed class AutoAnglerViewModel : ViewModelBase
     public Task StopAsync()
     {
         AppLog.Info("MacroMode", "AutoAngler StopAsync requested.");
+        if (!IsRunning)
+        {
+            AppLog.Fishing("AutoAnglerVM", "StopAsync ignored because angler is already stopped.");
+            AutoAnglerEnabled = false;
+            return Task.CompletedTask;
+        }
+
         IsRunning = false;
         _runner.Reset();
         StatusText = "---";
         CurrentFishText = "None";
+        AppLog.Fishing("AutoAnglerVM", "Auto Angler stopped and runner reset.");
         AppLog.Info("MacroMode", "AutoAngler stopped.");
         return Task.CompletedTask;
     }
@@ -148,6 +186,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
 
         try
         {
+            AppLog.Fishing("AutoAnglerVM", $"Tick enter running={IsRunning} enabled={AutoAnglerEnabled} status={StatusText} click=({ClickXText},{ClickYText})");
             Dispatcher.UIThread.Post(TryCaptureClickPoint);
 
             if (!IsRunning)
@@ -182,11 +221,12 @@ public sealed class AutoAnglerViewModel : ViewModelBase
             }
             catch
             {
-                // Ignore transient memory read failures between steps.
+                AppLog.Fishing("AutoAnglerVM", "Tick fish diagnostic read failed; continuing.");
             }
 
             var settings = BuildSettings();
             var result = _runner.Step(settings);
+            AppLog.Fishing("AutoAnglerVM", $"Tick step result failed={result.Failed} status={result.Status} fish={result.CurrentFish}");
             Dispatcher.UIThread.Post(() =>
             {
                 var displayFish = GetDisplayFish(result.CurrentFish);
@@ -203,6 +243,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
+            AppLog.FishingError("AutoAnglerVM", $"Tick failed: {ex.Message}", ex);
             Dispatcher.UIThread.Post(() =>
             {
                 IsRunning = false;
@@ -228,6 +269,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
         _captureNextClick = true;
         _lastLeftDown = NativeMouse.IsLeftButtonDown();
         StatusText = "Click once to set.";
+        AppLog.Fishing("AutoAnglerVM", "Cursor capture armed.");
         return Task.CompletedTask;
     }
 
@@ -246,6 +288,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
             ClickYText = y.ToString();
             _captureNextClick = false;
             StatusText = $"Click Location set: {x}, {y}.";
+            AppLog.Fishing("AutoAnglerVM", $"Click point captured at {x},{y}.");
         }
 
         _lastLeftDown = isDown;
@@ -268,10 +311,11 @@ public sealed class AutoAnglerViewModel : ViewModelBase
             var fish = _runner.ReadCurrentQuestFish();
             var displayFish = GetDisplayFish(fish);
             CurrentFishText = displayFish;
+            AppLog.Fishing("AutoAnglerVM", $"Preview fish refresh -> {displayFish}");
         }
         catch
         {
-            // Keep UI stable if memory read is transiently unavailable.
+            AppLog.Fishing("AutoAnglerVM", "Preview fish refresh failed.");
         }
     }
 
@@ -290,10 +334,12 @@ public sealed class AutoAnglerViewModel : ViewModelBase
             AppLog.Info("AutoAnglerSelfTest", $"{diagnostic.Summary} -> fish={diagnostic.Fish}");
             StatusText = "---";
             CurrentFishText = GetDisplayFish(diagnostic.Fish);
+            AppLog.Fishing("AutoAnglerVM", $"Self-test probe -> {diagnostic.Summary}");
         }
         catch (Exception ex)
         {
             AppLog.Info("AutoAnglerSelfTest", $"probe-failed: {ex.Message}");
+            AppLog.FishingError("AutoAnglerVM", $"Self-test probe failed: {ex.Message}", ex);
         }
     }
 

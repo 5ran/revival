@@ -14,7 +14,7 @@ internal sealed record AutoAnglerQuestDiagnostic(string Fish, string Summary);
 
 internal sealed class AutoAnglerRunner : IDisposable
 {
-    private const int CompletingDelayPaddingMs = 200;
+    private static readonly TimeSpan StepDelay = TimeSpan.FromMilliseconds(1500);
     private readonly RobloxMemory _memory = new(OffsetsSourceProvider.Current);
     private string _state = "START";
     private DateTimeOffset _nextStepAt = DateTimeOffset.MinValue;
@@ -26,6 +26,7 @@ internal sealed class AutoAnglerRunner : IDisposable
 
     public void Reset()
     {
+        AppLog.Fishing("AutoAnglerRunner", $"Reset from state={_state} currentFish={_currentFish}");
         _state = "START";
         _nextStepAt = DateTimeOffset.MinValue;
         _currentFish = "None";
@@ -36,8 +37,12 @@ internal sealed class AutoAnglerRunner : IDisposable
 
     public AutoAnglerStepResult Step(AutoAnglerSettings settings)
     {
+        AppLog.Fishing(
+            "AutoAnglerRunner",
+            $"Step enter state={_state} nextStepAt={_nextStepAt:O} click=({settings.ClickX},{settings.ClickY}) currentFish={_currentFish}");
         if (settings.ClickX <= 0 || settings.ClickY <= 0)
         {
+            AppLog.Fishing("AutoAnglerRunner", "Step aborted: click point not configured.");
             return new AutoAnglerStepResult(true, "Set a click point before starting Auto Angler.", "None");
         }
 
@@ -47,47 +52,51 @@ internal sealed class AutoAnglerRunner : IDisposable
         var now = DateTimeOffset.UtcNow;
         if (now < _nextStepAt)
         {
-            if (string.Equals(_state, "START", StringComparison.Ordinal))
+            var remaining = (int)Math.Ceiling((_nextStepAt - now).TotalSeconds);
+            if (remaining < 0)
             {
-                var remaining = (int)Math.Ceiling((_nextStepAt - now).TotalSeconds);
-                if (remaining < 0)
-                {
-                    remaining = 0;
-                }
-
-                return new AutoAnglerStepResult(false, $"COUNTDOWN:{remaining}", _currentFish);
+                remaining = 0;
             }
 
-            return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
+            AppLog.Fishing("AutoAnglerRunner", $"Waiting state={_state} remaining={remaining}s liveFish={liveFish}");
+            return new AutoAnglerStepResult(false, $"COUNTDOWN:{remaining}", _currentFish);
         }
 
         switch (_state)
         {
             case "START":
+                AppLog.Fishing("AutoAnglerRunner", "Action START: pressing E.");
                 NativeKeyboard.PressE(_memory.WindowHandle);
                 _state = "CLICK_POINT_A";
-                _nextStepAt = now.AddSeconds(2).AddMilliseconds(CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "CLICK_POINT_A":
+                AppLog.Fishing("AutoAnglerRunner", $"Action CLICK_POINT_A at {settings.ClickX},{settings.ClickY}");
                 NativeMouse.ClickAt(settings.ClickX, settings.ClickY);
                 _state = "READ_FISH";
-                _nextStepAt = now.AddSeconds(1).AddMilliseconds(CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "READ_FISH":
                 _currentFish = liveFish;
+                AppLog.Fishing("AutoAnglerRunner", $"Action READ_FISH current={_currentFish}");
                 NativeKeyboard.PressG(_memory.WindowHandle);
                 _state = "SEARCH_FISH";
-                _nextStepAt = now.AddMilliseconds(200 + CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "SEARCH_FISH":
                 if (!EnsureInventoryTargets())
                 {
+                    AppLog.Fishing("AutoAnglerRunner", "Inventory targets not found.");
                     return new AutoAnglerStepResult(true, "Inventory search targets not found.", _currentFish);
                 }
 
+                AppLog.Fishing("AutoAnglerRunner", $"Action SEARCH_FISH searchFrame=0x{_searchFrame:X} itemContainer=0x{_itemContainer:X}");
                 ClickGuiCenter(_searchFrame);
                 Thread.Sleep(100);
                 NativeKeyboard.PressCtrlA(_memory.WindowHandle);
@@ -98,7 +107,8 @@ internal sealed class AutoAnglerRunner : IDisposable
                 }
 
                 _state = "CLICK_SEARCH_RESULT";
-                _nextStepAt = now.AddMilliseconds(500 + CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "CLICK_SEARCH_RESULT":
@@ -107,30 +117,39 @@ internal sealed class AutoAnglerRunner : IDisposable
                     var target = FindInventoryItemTarget(_itemContainer, _currentFish);
                     if (target == 0)
                     {
+                        AppLog.Fishing("AutoAnglerRunner", $"Could not find '{_currentFish}' in inventory list.");
                         return new AutoAnglerStepResult(true, $"Could not find '{_currentFish}' in inventory list.", _currentFish);
                     }
 
+                    AppLog.Fishing("AutoAnglerRunner", $"Action CLICK_SEARCH_RESULT target=0x{target:X} fish={_currentFish}");
                     ClickGuiCenter(target);
                 }
 
+                AppLog.Fishing("AutoAnglerRunner", "Action CLICK_SEARCH_RESULT: pressing G.");
                 NativeKeyboard.PressG(_memory.WindowHandle);
                 _state = "PRESS_E_AGAIN";
-                _nextStepAt = now.AddMilliseconds(200 + CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "PRESS_E_AGAIN":
+                AppLog.Fishing("AutoAnglerRunner", "Action PRESS_E_AGAIN: pressing E.");
                 NativeKeyboard.PressE(_memory.WindowHandle);
                 _state = "CLICK_POINT_B";
-                _nextStepAt = now.AddSeconds(1).AddMilliseconds(CompletingDelayPaddingMs);
+                _nextStepAt = now.Add(StepDelay);
+                AppLog.Fishing("AutoAnglerRunner", $"Transition -> {_state}, next in {StepDelay.TotalSeconds:0}s");
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
 
             case "CLICK_POINT_B":
+                AppLog.Fishing("AutoAnglerRunner", $"Action CLICK_POINT_B at {settings.ClickX},{settings.ClickY}");
                 NativeMouse.ClickAt(settings.ClickX, settings.ClickY);
                 _state = "START";
                 _nextStepAt = now.AddSeconds(124);
+                AppLog.Fishing("AutoAnglerRunner", "Transition -> START, next in 124s");
                 return new AutoAnglerStepResult(false, "COUNTDOWN:124", _currentFish);
 
             default:
+                AppLog.Fishing("AutoAnglerRunner", $"Unexpected state '{_state}', resetting.");
                 Reset();
                 return new AutoAnglerStepResult(false, "COMPLETING", _currentFish);
         }
@@ -142,6 +161,7 @@ internal sealed class AutoAnglerRunner : IDisposable
         var quest = ResolveAnglerQuestFolder();
         if (quest == 0)
         {
+            AppLog.Fishing("AutoAnglerRunner", "Quest folder not found.");
             return "None";
         }
 
@@ -164,6 +184,7 @@ internal sealed class AutoAnglerRunner : IDisposable
         // Quest inactive: do not keep stale fish display.
         if (!tracking)
         {
+            AppLog.Fishing("AutoAnglerRunner", "Quest is not tracking; reporting None.");
             return "None";
         }
 
@@ -179,7 +200,9 @@ internal sealed class AutoAnglerRunner : IDisposable
 
                 if (!ReadBoolValue(child))
                 {
-                    return ResolveFishName(child);
+                    var fish = ResolveFishName(child);
+                    AppLog.Fishing("AutoAnglerRunner", $"Quest bool selection -> {fish}");
+                    return fish;
                 }
             }
         }
@@ -189,6 +212,7 @@ internal sealed class AutoAnglerRunner : IDisposable
             !string.Equals(questValueText, "true", StringComparison.OrdinalIgnoreCase) &&
             !string.Equals(questValueText, "false", StringComparison.OrdinalIgnoreCase))
         {
+            AppLog.Fishing("AutoAnglerRunner", $"Quest value text -> {questValueText}");
             return questValueText;
         }
 
@@ -203,6 +227,7 @@ internal sealed class AutoAnglerRunner : IDisposable
             if (ReadBoolValue(child))
             {
                 var fishName = _memory.ReadName(child).Trim();
+                AppLog.Fishing("AutoAnglerRunner", $"Quest child bool true -> {(fishName.Length == 0 ? "None" : fishName)}");
                 return fishName.Length == 0 ? "None" : fishName;
             }
 
@@ -211,10 +236,12 @@ internal sealed class AutoAnglerRunner : IDisposable
             if (childValue.Length > 0 &&
                 !string.Equals(childValue, "false", StringComparison.OrdinalIgnoreCase))
             {
+                AppLog.Fishing("AutoAnglerRunner", $"Quest child value text -> {childValue}");
                 return childValue;
             }
         }
 
+        AppLog.Fishing("AutoAnglerRunner", "Quest fish could not be resolved; returning None.");
         return "None";
     }
 
@@ -224,6 +251,7 @@ internal sealed class AutoAnglerRunner : IDisposable
         var quest = ResolveAnglerQuestFolder();
         if (quest == 0)
         {
+            AppLog.Fishing("AutoAnglerRunner", "Diagnostic quest not found.");
             return new AutoAnglerQuestDiagnostic("None", "quest=not-found");
         }
 
@@ -243,6 +271,7 @@ internal sealed class AutoAnglerRunner : IDisposable
 
         var summary = $"quest=0x{quest:X} bools=[{string.Join(", ", entries)}]";
         AppLog.Info("AutoAnglerDiag", $"{summary} -> fish={fish}");
+        AppLog.Fishing("AutoAnglerRunner", $"Diagnostic: {summary} -> fish={fish}");
         return new AutoAnglerQuestDiagnostic(fish, summary);
     }
 
@@ -256,11 +285,15 @@ internal sealed class AutoAnglerRunner : IDisposable
         _inventoryFrame = ResolveInventoryFrame();
         if (_inventoryFrame == 0)
         {
+            AppLog.Fishing("AutoAnglerRunner", "Inventory frame not found.");
             return false;
         }
 
         _searchFrame = ResolveInventorySearchFrame(_inventoryFrame);
         _itemContainer = ResolveInventoryItemContainer(_inventoryFrame);
+        AppLog.Fishing(
+            "AutoAnglerRunner",
+            $"Inventory targets resolved inventory=0x{_inventoryFrame:X} search=0x{_searchFrame:X} itemContainer=0x{_itemContainer:X}");
         return _searchFrame != 0 && _itemContainer != 0;
     }
 
@@ -582,6 +615,12 @@ internal sealed class AutoAnglerRunner : IDisposable
     private ulong FindInventoryItemTarget(ulong itemContainer, string name)
     {
         var needle = NormalizeLoose(name);
+        ulong bestExact = 0;
+        float bestExactY = float.MaxValue;
+        float bestExactX = float.MaxValue;
+        ulong bestPartial = 0;
+        float bestPartialY = float.MaxValue;
+        float bestPartialX = float.MaxValue;
         foreach (var node in Traverse(itemContainer, 32))
         {
             var cls = _memory.ReadClass(node);
@@ -605,11 +644,37 @@ internal sealed class AutoAnglerRunner : IDisposable
             var clickable = FindClickableAncestor(node, itemContainer);
             if (clickable != 0)
             {
-                return clickable;
+                var bounds = _memory.ReadGuiBounds(clickable, false);
+                if (bounds is null)
+                {
+                    continue;
+                }
+
+                if (text.Equals(needle, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (bounds.Value.Y < bestExactY ||
+                        (Math.Abs(bounds.Value.Y - bestExactY) < 0.001f && bounds.Value.X < bestExactX))
+                    {
+                        bestExact = clickable;
+                        bestExactY = bounds.Value.Y;
+                        bestExactX = bounds.Value.X;
+                    }
+                }
+                else if (bestExact == 0 &&
+                    (bounds.Value.Y < bestPartialY ||
+                     (Math.Abs(bounds.Value.Y - bestPartialY) < 0.001f && bounds.Value.X < bestPartialX)))
+                {
+                    bestPartial = clickable;
+                    bestPartialY = bounds.Value.Y;
+                    bestPartialX = bounds.Value.X;
+                }
             }
         }
 
-        return 0;
+        AppLog.Fishing(
+            "AutoAnglerRunner",
+            $"Inventory target selection fish={name} exact=0x{bestExact:X} partial=0x{bestPartial:X} chosen=0x{(bestExact != 0 ? bestExact : bestPartial):X}");
+        return bestExact != 0 ? bestExact : bestPartial;
     }
 
     private ulong FindClickableAncestor(ulong node, ulong stopRoot)
@@ -733,12 +798,14 @@ internal sealed class AutoAnglerRunner : IDisposable
         var bounds = _memory.ReadGuiBounds(address, false);
         if (bounds is null)
         {
+            AppLog.Fishing("AutoAnglerRunner", $"ClickGuiCenter skipped for 0x{address:X}: no bounds.");
             return;
         }
 
         var origin = GetClientScreenOrigin();
         var x = (int)Math.Round(origin.X + bounds.Value.X + bounds.Value.Width * 0.5f);
         var y = (int)Math.Round(origin.Y + bounds.Value.Y + bounds.Value.Height * 0.5f);
+        AppLog.Fishing("AutoAnglerRunner", $"ClickGuiCenter address=0x{address:X} -> {x},{y}");
         NativeMouse.ClickAt(x, y);
     }
 
