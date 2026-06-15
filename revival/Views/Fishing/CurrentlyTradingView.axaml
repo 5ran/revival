@@ -1,0 +1,104 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.CurrentlyTradingView"
+             x:DataType="vm:CurrentlyTradingViewModel"
+             Background="{StaticResource Background}">
+    <Grid Margin="34,34,34,0"
+          RowDefinitions="Auto,Auto,Auto,*"
+          RowSpacing="10">
+        <Border Classes="app-header">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="12">
+                <TextBlock Grid.Column="0"
+                           VerticalAlignment="Center"
+                           Text="Currently Trading"
+                           FontFamily="{StaticResource DisplayFont}"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimary}" />
+                <CheckBox Grid.Column="1"
+                          VerticalAlignment="Center"
+                          Content="On"
+                          IsChecked="{Binding Enabled}"
+                          FontFamily="{StaticResource UIFont}"
+                          FontSize="12"
+                          Foreground="{StaticResource TextPrimary}" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Classes="app-header">
+            <Grid ColumnDefinitions="*,Auto"
+                  ColumnSpacing="10">
+                <StackPanel Spacing="6">
+                    <TextBlock Classes="label"
+                               Text="Search" />
+                    <TextBox Text="{Binding SearchQuery, Mode=TwoWay}"
+                             PlaceholderText="Search name, offer, booth, slot"
+                             FontFamily="{StaticResource UIFont}"
+                             FontSize="13" />
+                </StackPanel>
+                <Button Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        Padding="12,0"
+                        MinWidth="84"
+                        Content="Refresh"
+                        Command="{Binding RefreshCommand}" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2"
+                Classes="app-header">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="label"
+                           Text="Status" />
+                <TextBlock Classes="value-strong"
+                           Text="{Binding StatusText}" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3"
+                Classes="app-header">
+            <StackPanel Spacing="6">
+                <Grid ColumnDefinitions="*,180"
+                      ColumnSpacing="10">
+                    <TextBlock Classes="label"
+                               Text="Name" />
+                    <TextBlock Grid.Column="1"
+                               Classes="label"
+                               Text="Offer" />
+                </Grid>
+
+                <ListBox ItemsSource="{Binding FilteredEntries}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:CurrentlyTradingEntryViewModel">
+                            <Border Padding="8,5"
+                                    Margin="0,0,0,5"
+                                    Background="{StaticResource Surface}"
+                                    BorderBrush="{StaticResource Border}"
+                                    BorderThickness="1"
+                                    CornerRadius="4">
+                                <Grid ColumnDefinitions="*,180"
+                                      ColumnSpacing="10">
+                                    <TextBlock Grid.Column="0"
+                                               Classes="value-strong"
+                                               Text="{Binding Name}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1"
+                                               Classes="value"
+                                               Text="{Binding Offer}"
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

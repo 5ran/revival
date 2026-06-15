@@ -9,6 +9,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
     private readonly AppraiseViewModel _appraiseViewModel;
     private readonly TreasureAppraiseViewModel _treasureAppraiseViewModel;
     private readonly TraderViewModel _traderViewModel = new();
+    private readonly CurrentlyTradingViewModel _currentlyTradingViewModel = new();
     private object? _activeAutomation;
 
     public OtherAutomationViewModel(
@@ -27,6 +28,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         _appraiseViewModel.PropertyChanged += HandleAppraisePropertyChanged;
         _treasureAppraiseViewModel.PropertyChanged += HandleTreasurePropertyChanged;
         _traderViewModel.PropertyChanged += HandleTraderPropertyChanged;
+        _currentlyTradingViewModel.PropertyChanged += HandleCurrentlyTradingPropertyChanged;
         UpdateActiveAutomation();
     }
 
@@ -116,6 +118,28 @@ public sealed class OtherAutomationViewModel : ViewModelBase
 
     public TraderViewModel Trader => _traderViewModel;
 
+    public bool CurrentlyTradingEnabled
+    {
+        get => _currentlyTradingViewModel.Enabled;
+        set
+        {
+            Client.Services.AppLog.Info("TraderMode", $"CurrentlyTradingEnabled set request -> {value} (current={_currentlyTradingViewModel.Enabled})");
+            if (_currentlyTradingViewModel.Enabled == value)
+            {
+                Client.Services.AppLog.Info("TraderMode", "CurrentlyTradingEnabled unchanged; skipping.");
+                return;
+            }
+
+            _currentlyTradingViewModel.Enabled = value;
+            OnPropertyChanged(nameof(CurrentlyTradingEnabled));
+            Client.Services.AppLog.Info("TraderMode", $"CurrentlyTradingEnabled now={_currentlyTradingViewModel.Enabled}; activeBefore={_activeAutomation?.GetType().Name ?? "none"}");
+            UpdateActiveAutomation();
+            Client.Services.AppLog.Info("TraderMode", $"CurrentlyTradingEnabled complete; activeAfter={_activeAutomation?.GetType().Name ?? "none"}");
+        }
+    }
+
+    public CurrentlyTradingViewModel CurrentlyTrading => _currentlyTradingViewModel;
+
     public bool HasActiveAutomation => _activeAutomation is not null;
 
     public bool ShowAutomationTabs => !HasActiveAutomation;
@@ -129,6 +153,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         AppraiseViewModel => "Other Automation - Appraise",
         TreasureAppraiseViewModel => "Other Automation - Treasure Appraise",
         TraderViewModel => "Other Automation - Trader",
+        CurrentlyTradingViewModel => "Other Automation - Currently Trading",
         _ => "Other Automation",
     };
 
@@ -177,6 +202,15 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         }
     }
 
+    private void HandleCurrentlyTradingPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(CurrentlyTradingViewModel.Enabled))
+        {
+            OnPropertyChanged(nameof(CurrentlyTradingEnabled));
+            UpdateActiveAutomation();
+        }
+    }
+
     private void UpdateActiveAutomation()
     {
         object? next = null;
@@ -202,6 +236,10 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         else if (_traderViewModel.TraderEnabled)
         {
             next = _traderViewModel;
+        }
+        else if (_currentlyTradingViewModel.Enabled)
+        {
+            next = _currentlyTradingViewModel;
         }
 
         if (ReferenceEquals(_activeAutomation, next))

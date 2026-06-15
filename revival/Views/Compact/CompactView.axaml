@@ -179,7 +179,15 @@
                        TextTrimming="CharacterEllipsis" />
         </StackPanel>
 
-        <Border Grid.Row="6" />
+        <StackPanel Grid.Row="6"
+                    Orientation="Horizontal"
+                    Spacing="6"
+                    IsVisible="{Binding CurrentTradingEnabled}">
+            <TextBlock Classes="label" Text="Currently Trading" />
+            <TextBlock Classes="value"
+                       Text="{Binding CurrentTradingStatusText}"
+                       TextTrimming="CharacterEllipsis" />
+        </StackPanel>
 
         <Grid Grid.Row="7"
               ColumnDefinitions="*,Auto"

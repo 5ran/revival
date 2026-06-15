@@ -457,6 +457,8 @@ public sealed class ShellViewModel : ViewModelBase
             _huntDetectViewModel.RestoreSelectedTargets(saved.HuntDetect.SelectedTargets);
             _otherAutomationViewModel.Trader.ImportSettings(saved.Trader);
             _otherAutomationViewModel.TraderEnabled = saved.Trader.Enabled;
+            _otherAutomationViewModel.CurrentlyTradingEnabled = saved.CurrentlyTrading.Enabled;
+            _otherAutomationViewModel.CurrentlyTrading.SearchQuery = saved.CurrentlyTrading.SearchQuery ?? string.Empty;
         }
         finally
         {
@@ -473,7 +475,7 @@ public sealed class ShellViewModel : ViewModelBase
         _huntDetectViewModel.PropertyChanged += (_, _) => SaveSettings();
         _otherAutomationViewModel.PropertyChanged += (_, e) =>
         {
-            if (e.PropertyName == nameof(OtherAutomationViewModel.TraderEnabled))
+            if (e.PropertyName is nameof(OtherAutomationViewModel.TraderEnabled) or nameof(OtherAutomationViewModel.CurrentlyTradingEnabled))
             {
                 SaveSettings();
             }
@@ -481,6 +483,13 @@ public sealed class ShellViewModel : ViewModelBase
         _otherAutomationViewModel.Trader.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName is nameof(TraderViewModel.TraderEnabled) or nameof(TraderViewModel.SearchEntries))
+            {
+                SaveSettings();
+            }
+        };
+        _otherAutomationViewModel.CurrentlyTrading.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(CurrentlyTradingViewModel.Enabled) or nameof(CurrentlyTradingViewModel.SearchQuery))
             {
                 SaveSettings();
             }
@@ -551,6 +560,11 @@ public sealed class ShellViewModel : ViewModelBase
                 SelectedTargets = _huntDetectViewModel.GetSelectedTargetNames().ToArray(),
             },
             Trader = _otherAutomationViewModel.Trader.ExportSettings(),
+            CurrentlyTrading = new CurrentlyTradingSettingsSnapshot
+            {
+                Enabled = _otherAutomationViewModel.CurrentlyTradingEnabled,
+                SearchQuery = _otherAutomationViewModel.CurrentlyTrading.SearchQuery,
+            },
         };
 
         _userSettingsStore.Save(snapshot);

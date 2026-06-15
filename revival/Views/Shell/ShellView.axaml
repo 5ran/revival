@@ -42,6 +42,9 @@
         <DataTemplate DataType="{x:Type vm:TraderViewModel}">
             <views:TraderView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CurrentlyTradingViewModel}">
+            <views:CurrentlyTradingView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
             <views:SettingsView />
         </DataTemplate>

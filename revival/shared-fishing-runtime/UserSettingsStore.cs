@@ -67,6 +67,7 @@ public sealed class UserSettingsStore
 [JsonSerializable(typeof(GeneralSettingsSnapshot))]
 [JsonSerializable(typeof(CustomThemeSnapshot))]
 [JsonSerializable(typeof(TraderSettingsSnapshot))]
+[JsonSerializable(typeof(CurrentlyTradingSettingsSnapshot))]
 internal partial class UserSettingsJsonContext : JsonSerializerContext
 {
 }
@@ -86,6 +87,8 @@ public sealed class UserSettingsSnapshot
     public GeneralSettingsSnapshot General { get; set; } = new();
 
     public TraderSettingsSnapshot Trader { get; set; } = new();
+
+    public CurrentlyTradingSettingsSnapshot CurrentlyTrading { get; set; } = new();
 
     public string? Theme { get; set; }
 
@@ -163,6 +166,13 @@ public sealed class TraderSettingsSnapshot
     public bool Enabled { get; set; }
 
     public TraderSearchEntrySnapshot[] SearchEntries { get; set; } = Array.Empty<TraderSearchEntrySnapshot>();
+}
+
+public sealed class CurrentlyTradingSettingsSnapshot
+{
+    public bool Enabled { get; set; }
+
+    public string? SearchQuery { get; set; }
 }
 
 public sealed class TraderSearchEntrySnapshot

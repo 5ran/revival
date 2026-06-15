@@ -38,8 +38,9 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
 
     // ─────────────── Tier 1 — always visible ───────────────
 
-    public string ActiveMacroText => TraderEnabled ? "Trader" : _general.ActiveMacroText;
+    public string ActiveMacroText => TraderEnabled ? "Trader" : CurrentTradingEnabled ? "Currently Trading" : _general.ActiveMacroText;
     public string TraderMacroText => TraderEnabled ? "Trader" : string.Empty;
+    public string CurrentTradingMacroText => CurrentTradingEnabled ? "Currently Trading" : string.Empty;
 
     public string Phase => _fishing.Phase;
 
@@ -147,6 +148,8 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
 
     public bool TraderEnabled => _otherAutomation.TraderEnabled;
     public string TraderStatusText => _otherAutomation.Trader.StatusText;
+    public bool CurrentTradingEnabled => _otherAutomation.CurrentlyTradingEnabled;
+    public string CurrentTradingStatusText => _otherAutomation.CurrentlyTrading.StatusText;
 
     // ─────────────── Tier 4 — health ───────────────
 
@@ -225,6 +228,9 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(AquariumStatusText));
         OnPropertyChanged(nameof(TraderEnabled));
         OnPropertyChanged(nameof(TraderStatusText));
+        OnPropertyChanged(nameof(CurrentTradingEnabled));
+        OnPropertyChanged(nameof(CurrentTradingStatusText));
+        OnPropertyChanged(nameof(CurrentTradingMacroText));
     }
 
     private static string ResolveOffsetsVersion()
