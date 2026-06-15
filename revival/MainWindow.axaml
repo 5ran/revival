@@ -9,8 +9,8 @@
         x:DataType="vm:MainWindowViewModel"
         Title="OpenMacro"
         Icon="/Assets/OpenMacro-Logo.ico"
-        Width="820"
-        Height="480"
+        Width="984"
+        Height="576"
         Topmost="True"
         CanResize="False"
         Background="Transparent"
@@ -63,7 +63,16 @@
         </Style>
     </Window.Styles>
 
-    <Grid Background="Transparent">
+    <Grid x:Name="MacroScaleRoot"
+          Width="820"
+          Height="480"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          RenderTransformOrigin="0,0"
+          Background="Transparent">
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
+        </Grid.RenderTransform>
         <ContentControl Content="{Binding CurrentView}" />
 
         <Grid x:Name="TitleBar"

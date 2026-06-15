@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using System.Runtime.InteropServices;
@@ -19,8 +20,11 @@ namespace Client;
 public partial class MainWindow : Window
 {
     private const int HotkeyToggleDebounceMs = 120;
-    private const double NormalWidth = 820;
-    private const double NormalHeight = 480;
+    private const double NormalScale = 1.2;
+    private const double NormalDesignWidth = 820;
+    private const double NormalDesignHeight = 480;
+    private const double NormalWidth = NormalDesignWidth * NormalScale;
+    private const double NormalHeight = NormalDesignHeight * NormalScale;
     private const double CompactWidth = 440;
     private const double CompactHeight = 280;
     private readonly MainWindowViewModel _viewModel;
@@ -68,6 +72,11 @@ public partial class MainWindow : Window
 
     private void ApplyCompactSize(bool compact)
     {
+        MacroScaleRoot.Width = compact ? CompactWidth : NormalDesignWidth;
+        MacroScaleRoot.Height = compact ? CompactHeight : NormalDesignHeight;
+        MacroScaleRoot.RenderTransform = compact
+            ? new ScaleTransform(1, 1)
+            : new ScaleTransform(NormalScale, NormalScale);
         Width = compact ? CompactWidth : NormalWidth;
         Height = compact ? CompactHeight : NormalHeight;
         Dispatcher.UIThread.Post(() => ApplyWindowRegion(compact), DispatcherPriority.Render);
@@ -150,7 +159,7 @@ public partial class MainWindow : Window
         var scale = RenderScaling;
         var width = ToPixels(compact ? CompactWidth : NormalWidth, scale);
         var height = ToPixels(compact ? CompactHeight : NormalHeight, scale);
-        var bodyCornerDiameter = ToPixels(28, scale);
+        var bodyCornerDiameter = ToPixels(compact ? 28 : 28 * NormalScale, scale);
 
         if (compact)
         {

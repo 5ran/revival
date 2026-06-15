@@ -31,10 +31,9 @@ public sealed class FishingViewModel : ViewModelBase
     private FishingCastingMode _selectedCastingMode = FishingCastingMode.Normal;
     private string _selectedFishSkipMode = "Off";
     private bool _fishSkipCommonSelected = true;
-    private bool _fishSkipLegendarySelected = true;
-    private bool _fishSkipMythicSelected = true;
-    private bool _fishSkipExoticSelected = true;
-    private bool _fishSkipSecretSelected = true;
+    private bool _fishSkipLegendaryMythicSelected = true;
+    private bool _fishSkipExoticSecretSelected = true;
+    private bool _fishSkipSpecialSelected = true;
     private FishingTrackerStatus _status = new(false, "OFF", "Ready.", null, false);
     private bool _autoAquariumEnabled;
     private bool _aquariumPending;
@@ -138,6 +137,7 @@ public sealed class FishingViewModel : ViewModelBase
             if (SetProperty(ref _selectedFishSkipMode, value))
             {
                 OnPropertyChanged(nameof(FishSkipEnabled));
+                OnPropertyChanged(nameof(FishSkipToggleText));
             }
         }
     }
@@ -148,34 +148,30 @@ public sealed class FishingViewModel : ViewModelBase
         set => SelectedFishSkipMode = value ? "On" : "Off";
     }
 
+    public string FishSkipToggleText => FishSkipEnabled ? "On" : "Off";
+
     public bool FishSkipCommonSelected
     {
         get => _fishSkipCommonSelected;
         set => SetProperty(ref _fishSkipCommonSelected, value);
     }
 
-    public bool FishSkipLegendarySelected
+    public bool FishSkipLegendaryMythicSelected
     {
-        get => _fishSkipLegendarySelected;
-        set => SetProperty(ref _fishSkipLegendarySelected, value);
+        get => _fishSkipLegendaryMythicSelected;
+        set => SetProperty(ref _fishSkipLegendaryMythicSelected, value);
     }
 
-    public bool FishSkipMythicSelected
+    public bool FishSkipExoticSecretSelected
     {
-        get => _fishSkipMythicSelected;
-        set => SetProperty(ref _fishSkipMythicSelected, value);
+        get => _fishSkipExoticSecretSelected;
+        set => SetProperty(ref _fishSkipExoticSecretSelected, value);
     }
 
-    public bool FishSkipExoticSelected
+    public bool FishSkipSpecialSelected
     {
-        get => _fishSkipExoticSelected;
-        set => SetProperty(ref _fishSkipExoticSelected, value);
-    }
-
-    public bool FishSkipSecretSelected
-    {
-        get => _fishSkipSecretSelected;
-        set => SetProperty(ref _fishSkipSecretSelected, value);
+        get => _fishSkipSpecialSelected;
+        set => SetProperty(ref _fishSkipSpecialSelected, value);
     }
 
     public bool IsRunning => _macroRequestedRunning || _status.IsRunning || _aquariumPending || _aquariumActive;
@@ -233,6 +229,8 @@ public sealed class FishingViewModel : ViewModelBase
         get => _equippedRodText;
         private set => SetProperty(ref _equippedRodText, value);
     }
+
+    public bool HasEquippedRodDisplay => !string.Equals(EquippedRodText, "---", StringComparison.Ordinal);
 
     public IReadOnlyList<ColoredTextLineViewModel> EquippedRodLines
     {
@@ -615,6 +613,7 @@ public sealed class FishingViewModel : ViewModelBase
 
         EquippedRodText = value;
         EquippedRodLines = ColoredEnchantText.BuildLines(value);
+        OnPropertyChanged(nameof(HasEquippedRodDisplay));
         OnPropertyChanged(nameof(StatusItems));
         OnPropertyChanged(nameof(RodStatusItems));
     }

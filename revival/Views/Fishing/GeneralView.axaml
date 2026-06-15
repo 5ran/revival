@@ -102,32 +102,57 @@
 
         <Style Selector="ToggleButton.fish-skip-activate">
             <Setter Property="Background" Value="{StaticResource TableSurface}" />
-            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
             <Setter Property="FontSize" Value="10" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
             <Setter Property="Cursor" Value="Hand" />
         </Style>
 
+        <Style Selector="ToggleButton.fish-skip-activate /template/ ContentPresenter">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style Selector="ToggleButton.fish-skip-activate:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ToggleHoverBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleHoverBorder}" />
+        </Style>
+
         <Style Selector="ToggleButton.fish-skip-activate:checked">
-            <Setter Property="Background" Value="{StaticResource Accent}" />
-            <Setter Property="Foreground" Value="{StaticResource AccentForeground}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
+        </Style>
+
+        <Style Selector="ToggleButton.fish-skip-activate:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
+        </Style>
+
+        <Style Selector="ToggleButton.fish-skip-activate:checked:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
         </Style>
 
         <Style Selector="CheckBox.fish-skip-choice">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <ControlTemplate>
                     <StackPanel Orientation="Horizontal"
                                 Spacing="4"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center">
                         <Border Name="ChoiceBox"
                                 Width="15"
@@ -170,12 +195,13 @@
         <Border Grid.Row="0"
                 Classes="fishing-panel"
                 Padding="12,8">
-            <Grid ColumnDefinitions="64,*,120"
+            <Grid ColumnDefinitions="120,*,120"
                   VerticalAlignment="Center">
-                <Grid Grid.Column="0"
+                <Grid Grid.Column="2"
                       Width="40"
                       Height="40"
-                      HorizontalAlignment="Center">
+                      HorizontalAlignment="Right"
+                      Margin="0,0,8,0">
                     <Ellipse Stroke="{StaticResource Accent}"
                              StrokeThickness="1.5"
                              Fill="Transparent" />
@@ -205,6 +231,7 @@
                                    Classes="fishing-copy"
                                    FontWeight="SemiBold" />
                         <controls:ColoredTextBlock Lines="{Binding Fishing.EquippedRodLines}"
+                                                   IsVisible="{Binding Fishing.HasEquippedRodDisplay}"
                                                    TextTrimming="CharacterEllipsis"
                                                    FontFamily="{StaticResource UIFont}"
                                                    FontSize="10"
@@ -212,7 +239,7 @@
                     </StackPanel>
                 </StackPanel>
 
-                <Button Grid.Column="2"
+                <Button Grid.Column="0"
                         Classes="fishing-primary"
                         Width="104"
                         Height="36"
@@ -238,7 +265,7 @@
                 HorizontalAlignment="Center"
                 Padding="20,0">
             <Grid RowDefinitions="40,1,82,1,40">
-                <Grid Grid.Row="4" ColumnDefinitions="150,60,190">
+                <Grid Grid.Row="4" ColumnDefinitions="225,60,225">
                     <TextBlock Grid.Column="0" Text="Tracking Method" Classes="fishing-heading"
                                HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
                     <ComboBox Grid.Column="2" Classes="fishing-select" Height="30" VerticalAlignment="Center"
@@ -263,7 +290,7 @@
                     </ComboBox>
                 </Grid>
                 <Border Grid.Row="1" Background="{StaticResource Border}" />
-                <Grid Grid.Row="0" ColumnDefinitions="150,60,190">
+                <Grid Grid.Row="0" ColumnDefinitions="225,60,225">
                     <TextBlock Grid.Column="0" Text="Casting" Classes="fishing-heading"
                                HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
                     <ComboBox Grid.Column="2" Classes="fishing-select" Height="30" VerticalAlignment="Center"
@@ -288,7 +315,7 @@
                                           Width="66"
                                           Height="26"
                                           VerticalAlignment="Center"
-                                          Content="Activate"
+                                          Content="{Binding Fishing.FishSkipToggleText}"
                                           IsChecked="{Binding Fishing.FishSkipEnabled}" />
                         </StackPanel>
                         <TextBlock Text="Select the fish you want to skip"
@@ -299,30 +326,26 @@
                                    Foreground="{StaticResource TextSecondary}" />
                     </StackPanel>
                     <UniformGrid Grid.Row="2"
-                          Columns="5"
+                          Columns="4"
                           Margin="0,-2,0,0"
                           HorizontalAlignment="Stretch"
                           VerticalAlignment="Center">
-                        <CheckBox Classes="fish-skip-choice" Content="Common"
-                                  HorizontalAlignment="Center"
+                        <CheckBox Classes="fish-skip-choice" Content="common"
                                   IsEnabled="{Binding Fishing.FishSkipEnabled}"
+                                  IsHitTestVisible="{Binding Fishing.FishSkipEnabled}"
                                   IsChecked="{Binding Fishing.FishSkipCommonSelected}" />
-                        <CheckBox Classes="fish-skip-choice" Content="Legendary"
-                                  HorizontalAlignment="Center"
+                        <CheckBox Classes="fish-skip-choice" Content="legendary / mythic"
                                   IsEnabled="{Binding Fishing.FishSkipEnabled}"
-                                  IsChecked="{Binding Fishing.FishSkipLegendarySelected}" />
-                        <CheckBox Classes="fish-skip-choice" Content="Mythic"
-                                  HorizontalAlignment="Center"
+                                  IsHitTestVisible="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipLegendaryMythicSelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="exotic / secret"
                                   IsEnabled="{Binding Fishing.FishSkipEnabled}"
-                                  IsChecked="{Binding Fishing.FishSkipMythicSelected}" />
-                        <CheckBox Classes="fish-skip-choice" Content="Exotic"
-                                  HorizontalAlignment="Center"
+                                  IsHitTestVisible="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipExoticSecretSelected}" />
+                        <CheckBox Classes="fish-skip-choice" Content="special"
                                   IsEnabled="{Binding Fishing.FishSkipEnabled}"
-                                  IsChecked="{Binding Fishing.FishSkipExoticSelected}" />
-                        <CheckBox Classes="fish-skip-choice" Content="Secret"
-                                  HorizontalAlignment="Center"
-                                  IsEnabled="{Binding Fishing.FishSkipEnabled}"
-                                  IsChecked="{Binding Fishing.FishSkipSecretSelected}" />
+                                  IsHitTestVisible="{Binding Fishing.FishSkipEnabled}"
+                                  IsChecked="{Binding Fishing.FishSkipSpecialSelected}" />
                     </UniformGrid>
                 </Grid>
             </Grid>
@@ -359,7 +382,7 @@
                 <Grid RowDefinitions="26,Auto,*,Auto">
                     <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
                         <Canvas Width="18" Height="18">
-                            <Path Data="M 4 5 L 14 5 L 13.2 16.5 L 4.8 16.5 Z M 3 5 L 5 1.5 L 13 1.5 L 15 5 Z M 5 1.5 L 6 5 M 13 1.5 L 12 5 M 6 10.5 C 7.3 9.1 10 9 11.7 10.4 C 10.3 11.9 7.5 12 6 10.5 Z M 11.7 10.4 L 14 8.8 L 13.6 11.8 Z M 7.8 9.8 L 7 8.5 M 8.2 10.2 L 8.2 10.3"
+                            <Path Data="M 4.2 6 L 13.8 6 L 13.2 16.5 L 4.8 16.5 Z M 4.2 6 L 5.4 2 L 12.6 2 L 13.8 6 M 5.4 2 L 7 4 L 11 4 L 12.6 2 M 4.8 16.5 L 6 15 M 13.2 16.5 L 12 15 M 6.2 10.5 C 7.5 8.9 10.4 8.8 12 10.4 C 10.5 12 7.6 12.1 6.2 10.5 Z M 12 10.4 L 14.2 8.7 L 13.8 11.9 Z M 8 9.6 L 7 8.2 M 8.4 10.1 L 8.4 10.2"
                                   Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
                         </Canvas>
                     </Viewbox>

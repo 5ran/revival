@@ -425,10 +425,9 @@ public sealed class ShellViewModel : ViewModelBase
                     mode => string.Equals(mode, saved.Fishing.FishSkipMode, StringComparison.OrdinalIgnoreCase));
             }
             _fishingViewModel.FishSkipCommonSelected = saved.Fishing.FishSkipCommonSelected;
-            _fishingViewModel.FishSkipLegendarySelected = saved.Fishing.FishSkipLegendarySelected;
-            _fishingViewModel.FishSkipMythicSelected = saved.Fishing.FishSkipMythicSelected;
-            _fishingViewModel.FishSkipExoticSelected = saved.Fishing.FishSkipExoticSelected;
-            _fishingViewModel.FishSkipSecretSelected = saved.Fishing.FishSkipSecretSelected;
+            _fishingViewModel.FishSkipLegendaryMythicSelected = saved.Fishing.FishSkipLegendaryMythicSelected;
+            _fishingViewModel.FishSkipExoticSecretSelected = saved.Fishing.FishSkipExoticSecretSelected;
+            _fishingViewModel.FishSkipSpecialSelected = saved.Fishing.FishSkipSpecialSelected;
 
             _fishingViewModel.AutoAquariumEnabled = saved.Fishing.AutoAquariumEnabled;
             _fishingViewModel.AutoAquariumCycleDelayMinutes = saved.Fishing.AutoAquariumCycleDelayMinutes;
@@ -531,10 +530,9 @@ public sealed class ShellViewModel : ViewModelBase
                 CastingMode = _fishingViewModel.SelectedCastingMode.ToString(),
                 FishSkipMode = _fishingViewModel.SelectedFishSkipMode,
                 FishSkipCommonSelected = _fishingViewModel.FishSkipCommonSelected,
-                FishSkipLegendarySelected = _fishingViewModel.FishSkipLegendarySelected,
-                FishSkipMythicSelected = _fishingViewModel.FishSkipMythicSelected,
-                FishSkipExoticSelected = _fishingViewModel.FishSkipExoticSelected,
-                FishSkipSecretSelected = _fishingViewModel.FishSkipSecretSelected,
+                FishSkipLegendaryMythicSelected = _fishingViewModel.FishSkipLegendaryMythicSelected,
+                FishSkipExoticSecretSelected = _fishingViewModel.FishSkipExoticSecretSelected,
+                FishSkipSpecialSelected = _fishingViewModel.FishSkipSpecialSelected,
                 AutoAquariumEnabled = _fishingViewModel.AutoAquariumEnabled,
                 AutoAquariumCycleDelayMinutes = _fishingViewModel.AutoAquariumCycleDelayMinutes,
             },

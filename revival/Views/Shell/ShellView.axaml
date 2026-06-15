@@ -333,7 +333,7 @@
         <Style Selector="Button.edit-tag">
             <Setter Property="Width" Value="78" />
             <Setter Property="Height" Value="28" />
-            <Setter Property="Padding" Value="8,0,8,8" />
+            <Setter Property="Padding" Value="0,0,0,8" />
             <Setter Property="Background" Value="{StaticResource ShellNavBackground}" />
             <Setter Property="BorderBrush" Value="{StaticResource ShellContentBorder}" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -425,6 +425,7 @@
                     Command="{Binding EditNavigationItem.NavigateCommand}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="5"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Viewbox Width="12"
                              Height="12">
@@ -442,7 +443,9 @@
                         </Canvas>
                     </Viewbox>
                     <TextBlock Text="Edit"
+                               HorizontalAlignment="Center"
                                VerticalAlignment="Center"
+                               TextAlignment="Center"
                                FontFamily="{StaticResource DisplayFont}"
                                FontSize="10"
                                FontWeight="SemiBold"
@@ -461,6 +464,7 @@
                     Command="{Binding HuntDetectNavigationItem.NavigateCommand}">
                 <StackPanel Orientation="Horizontal"
                             Spacing="5"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <Viewbox Width="12"
                              Height="12">
@@ -487,7 +491,9 @@
                         </Canvas>
                     </Viewbox>
                     <TextBlock Text="Hunt Detect"
+                               HorizontalAlignment="Center"
                                VerticalAlignment="Center"
+                               TextAlignment="Center"
                                FontFamily="{StaticResource DisplayFont}"
                                FontSize="10"
                                FontWeight="SemiBold"
