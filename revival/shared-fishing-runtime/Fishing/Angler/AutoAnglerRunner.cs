@@ -615,12 +615,8 @@ internal sealed class AutoAnglerRunner : IDisposable
     private ulong FindInventoryItemTarget(ulong itemContainer, string name)
     {
         var needle = NormalizeLoose(name);
-        ulong bestExact = 0;
-        float bestExactY = float.MaxValue;
-        float bestExactX = float.MaxValue;
-        ulong bestPartial = 0;
-        float bestPartialY = float.MaxValue;
-        float bestPartialX = float.MaxValue;
+        var exactMatches = new List<(ulong Target, float Y, float X)>();
+        var partialMatches = new List<(ulong Target, float Y, float X)>();
         foreach (var node in Traverse(itemContainer, 32))
         {
             var cls = _memory.ReadClass(node);
@@ -652,25 +648,38 @@ internal sealed class AutoAnglerRunner : IDisposable
 
                 if (text.Equals(needle, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (bounds.Value.Y < bestExactY ||
-                        (Math.Abs(bounds.Value.Y - bestExactY) < 0.001f && bounds.Value.X < bestExactX))
-                    {
-                        bestExact = clickable;
-                        bestExactY = bounds.Value.Y;
-                        bestExactX = bounds.Value.X;
-                    }
+                    exactMatches.Add((clickable, bounds.Value.Y, bounds.Value.X));
                 }
-                else if (bestExact == 0 &&
-                    (bounds.Value.Y < bestPartialY ||
-                     (Math.Abs(bounds.Value.Y - bestPartialY) < 0.001f && bounds.Value.X < bestPartialX)))
+                else
                 {
-                    bestPartial = clickable;
-                    bestPartialY = bounds.Value.Y;
-                    bestPartialX = bounds.Value.X;
+                    partialMatches.Add((clickable, bounds.Value.Y, bounds.Value.X));
                 }
             }
         }
 
+        static ulong PickTopMost(List<(ulong Target, float Y, float X)> matches)
+        {
+            if (matches.Count == 0)
+            {
+                return 0;
+            }
+
+            matches.Sort((left, right) =>
+            {
+                var yComparison = left.Y.CompareTo(right.Y);
+                if (yComparison != 0)
+                {
+                    return yComparison;
+                }
+
+                return left.X.CompareTo(right.X);
+            });
+
+            return matches[0].Target;
+        }
+
+        var bestExact = PickTopMost(exactMatches);
+        var bestPartial = bestExact != 0 ? 0 : PickTopMost(partialMatches);
         AppLog.Fishing(
             "AutoAnglerRunner",
             $"Inventory target selection fish={name} exact=0x{bestExact:X} partial=0x{bestPartial:X} chosen=0x{(bestExact != 0 ? bestExact : bestPartial):X}");
