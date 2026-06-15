@@ -14,8 +14,11 @@ namespace Client.ViewModels;
 public sealed class AutoTotemViewModel : ViewModelBase
 {
     private bool _autoTotemEnabled;
-    private TotemOptionViewModel _selectedTotem;
+    private TotemOptionViewModel _selectedWeather;
+    private TotemOptionViewModel _selectedSecondaryWeather;
     private string _currentWeather = string.Empty;
+    private string _currentSecondaryWeather = string.Empty;
+    private string _currentEvent = string.Empty;
     private IReadOnlyList<ColoredTextLineViewModel> _statusLines = BuildStatusLines(string.Empty);
     private bool _useShinyTotem;
     private bool _useSparklingTotem;
@@ -32,34 +35,25 @@ public sealed class AutoTotemViewModel : ViewModelBase
 
     public AutoTotemViewModel()
     {
-        TotemOptions = new ObservableCollection<TotemOptionViewModel>
+        WeatherOptions = new ObservableCollection<TotemOptionViewModel>
         {
             new("None", "None"),
             new("Clearcast Totem", "Clear"),
             new("Tempest Totem", "Rain"),
             new("Windset Totem", "Windy"),
-            new("Aurora Totem", "Aurora Borealis"),
             new("Smokescreen Totem", "Foggy"),
+        };
+        SecondaryWeatherOptions = new ObservableCollection<TotemOptionViewModel>
+        {
+            new("Aurora Totem", "Aurora Borealis"),
             new("Eclipse Totem", "Eclipse"),
             new("Starfall Totem", "Starfall"),
+            new("Rainbow Totem", "Rainbow"),
         };
-        _selectedTotem = TotemOptions[0];
-        WeatherOptions = new ObservableCollection<string>
-        {
-            "Clear",
-            "Foggy",
-            "Windy",
-            "Rain",
-            "Eclipse",
-            "Starfall",
-            "Aurora Borealis",
-            "Rainbow",
-            "Shiny Surge",
-            "Sparkling Surge",
-            "Mutation Surge",
-        };
+        _selectedWeather = WeatherOptions[0];
+        _selectedSecondaryWeather = SecondaryWeatherOptions[0];
         AutoTotemSettings.Mode = AutoTotemMode.Expire;
-        AutoTotemSettings.TotemName = _selectedTotem.Name;
+        AutoTotemSettings.TotemName = _selectedWeather.Name;
         AutoTotemSettings.Enabled = _autoTotemEnabled;
         AutoTotemSettings.Special = AutoTotemSpecial.None;
         AutoTotemSettings.TimePreference = AutoTotemTimePreference.None;
@@ -67,9 +61,11 @@ public sealed class AutoTotemViewModel : ViewModelBase
         RefreshStatus();
     }
 
-    public ObservableCollection<TotemOptionViewModel> TotemOptions { get; }
+    public ObservableCollection<TotemOptionViewModel> WeatherOptions { get; }
 
-    public ObservableCollection<string> WeatherOptions { get; }
+    public ObservableCollection<TotemOptionViewModel> SecondaryWeatherOptions { get; }
+
+    public ObservableCollection<TotemOptionViewModel> TotemOptions => WeatherOptions;
 
     public bool AutoTotemEnabled
     {
@@ -86,20 +82,53 @@ public sealed class AutoTotemViewModel : ViewModelBase
         }
     }
 
-    public TotemOptionViewModel SelectedTotem
+    public TotemOptionViewModel SelectedWeather
     {
-        get => _selectedTotem;
+        get => _selectedWeather;
         set
         {
-            if (!SetProperty(ref _selectedTotem, value))
+            if (!SetProperty(ref _selectedWeather, value))
             {
                 return;
             }
 
             AutoTotemSettings.TotemName = value.Name;
+            if (WeatherOptions.Contains(value))
+            {
+                _selectedSecondaryWeather = SecondaryWeatherOptions[0];
+                OnPropertyChanged(nameof(SelectedSecondaryWeather));
+            }
             ApplyAutomaticTimePreference(value.Name);
             RefreshStatus();
         }
+    }
+
+    public TotemOptionViewModel SelectedSecondaryWeather
+    {
+        get => _selectedSecondaryWeather;
+        set
+        {
+            if (!SetProperty(ref _selectedSecondaryWeather, value))
+            {
+                return;
+            }
+
+            AutoTotemSettings.TotemName = value.Name;
+            if (SecondaryWeatherOptions.Contains(value))
+            {
+                _selectedWeather = WeatherOptions[0];
+                OnPropertyChanged(nameof(SelectedWeather));
+            }
+
+            ApplyAutomaticTimePreference(value.Name);
+            RefreshStatus();
+        }
+    }
+
+    public TotemOptionViewModel SelectedTotem
+    {
+        get => SelectedWeather;
+        set => SelectedWeather = value;
     }
 
     public bool UseShinyTotem
@@ -273,59 +302,42 @@ public sealed class AutoTotemViewModel : ViewModelBase
 
         var segments = new List<ColoredTextSegmentViewModel>();
 
-        var hasPrefix = false;
+        var surgeSegments = new List<ColoredTextSegmentViewModel>();
         if (_activeShinySurge)
         {
-            segments.Add(new ColoredTextSegmentViewModel("Shiny", GetWeatherBrush("Shiny Surge")));
-            hasPrefix = true;
+            surgeSegments.Add(new ColoredTextSegmentViewModel("Shiny", GetWeatherBrush("Shiny Surge")));
         }
 
         if (_activeSparklingSurge)
         {
-            if (hasPrefix)
+            if (surgeSegments.Count > 0)
             {
-                segments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
+                surgeSegments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
             }
 
-            segments.Add(new ColoredTextSegmentViewModel("Sparkling", GetWeatherBrush("Sparkling Surge")));
-            hasPrefix = true;
+            surgeSegments.Add(new ColoredTextSegmentViewModel("Sparkling", GetWeatherBrush("Sparkling Surge")));
         }
 
         if (_activeMutationSurge)
         {
-            if (hasPrefix)
+            if (surgeSegments.Count > 0)
             {
-                segments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
+                surgeSegments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
             }
 
-            segments.Add(new ColoredTextSegmentViewModel("Mutation", GetWeatherBrush("Mutation Surge")));
-            hasPrefix = true;
+            surgeSegments.Add(new ColoredTextSegmentViewModel("Mutation", GetWeatherBrush("Mutation Surge")));
         }
 
-        if (hasPrefix)
+        if (surgeSegments.Count > 0)
         {
-            if (!string.IsNullOrWhiteSpace(CurrentWeather) || !string.IsNullOrWhiteSpace(_currentCycle))
-            {
-                segments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
-            }
+            AddStatusGroup(segments, surgeSegments);
         }
 
-        var hasWeather = !string.IsNullOrWhiteSpace(CurrentWeather);
-        var hasCycle = !string.IsNullOrWhiteSpace(_currentCycle);
-        if (hasWeather)
-        {
-            segments.Add(new ColoredTextSegmentViewModel(CurrentWeather, GetWeatherBrush(CurrentWeather)));
-        }
+        AddStatusGroup(segments, _currentEvent, GetWeatherBrush(_currentEvent));
+        AddStatusGroup(segments, _currentSecondaryWeather, GetWeatherBrush(_currentSecondaryWeather));
+        AddStatusGroup(segments, _currentWeather, GetWeatherBrush(_currentWeather));
 
-        if (hasWeather && hasCycle)
-        {
-            segments.Add(new ColoredTextSegmentViewModel(", ", GetTextPrimary()));
-        }
-
-        if (hasCycle)
-        {
-            segments.Add(new ColoredTextSegmentViewModel(_currentCycle, GetTextPrimary()));
-        }
+        AddStatusGroup(segments, _currentCycle, GetTextPrimary());
 
         if (segments.Count == 0)
         {
@@ -337,7 +349,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
 
     private void RefreshFromMemory()
     {
-        if (!_statusReader.TryRead(out var weather, out var cycle, out var shinySurge, out var sparklingSurge, out var mutationSurge))
+        if (!_statusReader.TryRead(out var weather, out var secondaryWeather, out var eventWeather, out var cycle, out var shinySurge, out var sparklingSurge, out var mutationSurge))
         {
             Dispatcher.UIThread.Post(() =>
             {
@@ -360,7 +372,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
         {
             AppLog.Info(
                 "AutoTotemStatus",
-                $"reader: weather='{weather}', cycle='{cycle}', shiny={shinySurge}, sparkling={sparklingSurge}, mutation={mutationSurge}");
+                $"reader: weather='{weather}', secondary='{secondaryWeather}', event='{eventWeather}', cycle='{cycle}', shiny={shinySurge}, sparkling={sparklingSurge}, mutation={mutationSurge}");
             var changed = false;
             if (!string.Equals(_currentCycle, cycle, StringComparison.OrdinalIgnoreCase))
             {
@@ -397,11 +409,25 @@ public sealed class AutoTotemViewModel : ViewModelBase
                 changed = true;
             }
 
+            if (!string.Equals(_currentSecondaryWeather, secondaryWeather, StringComparison.OrdinalIgnoreCase))
+            {
+                _currentSecondaryWeather = secondaryWeather;
+                OnPropertyChanged(nameof(CurrentSecondaryWeather));
+                changed = true;
+            }
+
+            if (!string.Equals(_currentEvent, eventWeather, StringComparison.OrdinalIgnoreCase))
+            {
+                _currentEvent = eventWeather;
+                OnPropertyChanged(nameof(CurrentEvent));
+                changed = true;
+            }
+
             if (changed)
             {
                 AppLog.Info(
                     "AutoTotemStatus",
-                    $"ui-updated: weather='{_currentWeather}', cycle='{_currentCycle}', shiny={_activeShinySurge}, sparkling={_activeSparklingSurge}, mutation={_activeMutationSurge}");
+                    $"ui-updated: weather='{_currentWeather}', secondary='{_currentSecondaryWeather}', event='{_currentEvent}', cycle='{_currentCycle}', shiny={_activeShinySurge}, sparkling={_activeSparklingSurge}, mutation={_activeMutationSurge}");
                 RefreshStatus();
             }
         });
@@ -421,6 +447,110 @@ public sealed class AutoTotemViewModel : ViewModelBase
         return [new ColoredTextLineViewModel([segment])];
     }
 
+    public string CurrentSecondaryWeather
+    {
+        get => _currentSecondaryWeather;
+        set
+        {
+            if (SetProperty(ref _currentSecondaryWeather, value))
+            {
+                RefreshStatus();
+            }
+        }
+    }
+
+    public string CurrentEvent
+    {
+        get => _currentEvent;
+        set
+        {
+            if (SetProperty(ref _currentEvent, value))
+            {
+                RefreshStatus();
+            }
+        }
+    }
+
+    private static void AddStatusGroup(
+        ICollection<ColoredTextSegmentViewModel> segments,
+        string label,
+        string? value,
+        IBrush? brush = null)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        if (segments.Count > 0)
+        {
+            segments.Add(new ColoredTextSegmentViewModel(" • ", GetTextPrimary()));
+        }
+
+        segments.Add(new ColoredTextSegmentViewModel($"{label}: ", GetTextPrimary()));
+        segments.Add(new ColoredTextSegmentViewModel(value.Trim(), brush ?? GetTextPrimary()));
+    }
+
+    private static void AddStatusGroup(
+        ICollection<ColoredTextSegmentViewModel> segments,
+        string? value,
+        IBrush? brush = null)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        if (segments.Count > 0)
+        {
+            segments.Add(new ColoredTextSegmentViewModel(" • ", GetTextPrimary()));
+        }
+
+        segments.Add(new ColoredTextSegmentViewModel(value.Trim(), brush ?? GetTextPrimary()));
+    }
+
+    private static void AddStatusGroup(
+        ICollection<ColoredTextSegmentViewModel> segments,
+        IReadOnlyList<ColoredTextSegmentViewModel> valueSegments)
+    {
+        if (valueSegments.Count == 0)
+        {
+            return;
+        }
+
+        if (segments.Count > 0)
+        {
+            segments.Add(new ColoredTextSegmentViewModel(" • ", GetTextPrimary()));
+        }
+
+        foreach (var segment in valueSegments)
+        {
+            segments.Add(segment);
+        }
+    }
+
+    private static void AddStatusGroup(
+        ICollection<ColoredTextSegmentViewModel> segments,
+        string label,
+        IReadOnlyList<ColoredTextSegmentViewModel> valueSegments)
+    {
+        if (valueSegments.Count == 0)
+        {
+            return;
+        }
+
+        if (segments.Count > 0)
+        {
+            segments.Add(new ColoredTextSegmentViewModel(" • ", GetTextPrimary()));
+        }
+
+        segments.Add(new ColoredTextSegmentViewModel($"{label}: ", GetTextPrimary()));
+        foreach (var segment in valueSegments)
+        {
+            segments.Add(segment);
+        }
+    }
+
     private static IBrush GetWeatherBrush(string weather)
     {
         return weather switch
@@ -433,6 +563,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
             "Starfall" => new SolidColorBrush(Color.FromArgb(255, 170, 120, 255)),
             "Aurora Borealis" => new SolidColorBrush(Color.FromArgb(255, 120, 255, 220)),
             "Rainbow" => new SolidColorBrush(Color.FromArgb(255, 255, 140, 200)),
+            "Sparkling" => new SolidColorBrush(Color.FromArgb(255, 255, 240, 170)),
             "Shiny Surge" => new SolidColorBrush(Color.FromArgb(255, 255, 245, 180)),
             "Sparkling Surge" => new SolidColorBrush(Color.FromArgb(255, 255, 240, 170)),
             "Mutation Surge" => new SolidColorBrush(Color.FromArgb(255, 120, 255, 120)),

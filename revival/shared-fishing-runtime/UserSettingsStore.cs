@@ -66,6 +66,7 @@ public sealed class UserSettingsStore
 [JsonSerializable(typeof(AutoSovereignSettingsSnapshot))]
 [JsonSerializable(typeof(GeneralSettingsSnapshot))]
 [JsonSerializable(typeof(CustomThemeSnapshot))]
+[JsonSerializable(typeof(TraderSettingsSnapshot))]
 internal partial class UserSettingsJsonContext : JsonSerializerContext
 {
 }
@@ -83,6 +84,8 @@ public sealed class UserSettingsSnapshot
     public HuntDetectSettingsSnapshot HuntDetect { get; set; } = new();
 
     public GeneralSettingsSnapshot General { get; set; } = new();
+
+    public TraderSettingsSnapshot Trader { get; set; } = new();
 
     public string? Theme { get; set; }
 
@@ -107,6 +110,8 @@ public sealed class FishingSettingsSnapshot
     public bool AutoAquariumEnabled { get; set; }
 
     public double AutoAquariumCycleDelayMinutes { get; set; } = 65;
+
+    public double AutoAquariumPendingThresholdMinutes { get; set; } = 5;
 }
 
 public sealed class AutoTotemSettingsSnapshot
@@ -151,4 +156,20 @@ public sealed class GeneralSettingsSnapshot
     public int RodSlot { get; set; } = 1;
 
     public string? StartStopHotkey { get; set; }
+}
+
+public sealed class TraderSettingsSnapshot
+{
+    public bool Enabled { get; set; }
+
+    public TraderSearchEntrySnapshot[] SearchEntries { get; set; } = Array.Empty<TraderSearchEntrySnapshot>();
+}
+
+public sealed class TraderSearchEntrySnapshot
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string Price { get; set; } = string.Empty;
+
+    public bool IsSelected { get; set; }
 }

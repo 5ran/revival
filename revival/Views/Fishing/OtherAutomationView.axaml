@@ -96,6 +96,26 @@
                                   Foreground="{StaticResource TextPrimary}" />
                     </Grid>
                 </Border>
+
+                <Border Classes="app-header">
+                    <Grid ColumnDefinitions="*,Auto"
+                          ColumnSpacing="12">
+                        <TextBlock Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Text="Trader"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <CheckBox Grid.Column="1"
+                                  VerticalAlignment="Center"
+                                  Content="On"
+                                  IsChecked="{Binding TraderEnabled}"
+                                  FontFamily="{StaticResource UIFont}"
+                                  FontSize="12"
+                                  Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
+                </Border>
                 </StackPanel>
             </StackPanel>
 

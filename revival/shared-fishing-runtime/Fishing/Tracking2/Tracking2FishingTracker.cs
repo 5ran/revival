@@ -987,13 +987,86 @@ public sealed class Tracking2FishingTracker : IFishingTracker
 
     private bool IsNightCycle()
     {
-        return GetWorldStatusTexts("4_cycle", visibleOnly: true)
-            .Any(text => text.Contains("night", StringComparison.OrdinalIgnoreCase));
+        return GetCurrentCycleText().Contains("night", StringComparison.OrdinalIgnoreCase);
     }
 
     private bool IsAuroraActive()
     {
-        return IsWorldStatusMatchVisible("2_event", "aurora") || IsWorldStatusMatchVisible("3_weather", "aurora");
+        return GetCurrentEventText().Contains("aurora", StringComparison.OrdinalIgnoreCase) ||
+            GetCurrentWeatherText().Contains("aurora", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private string GetCurrentWeatherText()
+    {
+        return ReadWorldConfigValue("weather");
+    }
+
+    private string GetCurrentEventText()
+    {
+        return ReadWorldConfigValue("event");
+    }
+
+    private string GetCurrentCycleText()
+    {
+        return ReadWorldConfigValue("cycle");
+    }
+
+    private string ReadWorldConfigValue(string name)
+    {
+        var world = ResolveWorldConfig();
+        if (world == 0)
+        {
+            return string.Empty;
+        }
+
+        var value = _memory.FindChildByName(world, name);
+        return value == 0 ? string.Empty : ReadWorldStringValue(value);
+    }
+
+    private ulong ResolveWorldConfig()
+    {
+        var dataModel = _memory.GetDataModel();
+        if (dataModel == 0)
+        {
+            return 0;
+        }
+
+        var replicatedStorage = _memory.FindChildByClass(dataModel, "ReplicatedStorage");
+        if (replicatedStorage == 0)
+        {
+            return 0;
+        }
+
+        return _memory.FindChildByName(replicatedStorage, "world");
+    }
+
+    private string ReadWorldStringValue(ulong instanceAddr)
+    {
+        if (instanceAddr == 0)
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            var valueOffset = _memory.GetOffset("Value");
+            var embedded = Normalize(_memory.ReadString(instanceAddr + valueOffset));
+            if (embedded.Length > 0)
+            {
+                return embedded;
+            }
+
+            var ptr = _memory.ReadPtr(instanceAddr + valueOffset);
+            if (ptr != 0)
+            {
+                return Normalize(_memory.ReadString(ptr));
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
     }
 
     private bool IsWorldStatusMatchVisible(string statusName, string needle)

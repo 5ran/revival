@@ -39,6 +39,7 @@ public sealed class FishingViewModel : ViewModelBase
     private bool _wasInMinigame;
     private DateTimeOffset? _nextAquariumAt;
     private double _autoAquariumCycleDelayMinutes = 65;
+    private double _autoAquariumPendingThresholdMinutes = 5;
     private string _aquariumStatusText = "Auto Aquarium off.";
     private string _equippedRodText = "---";
     private string _rodHeaderText = "Rod - Unequipped";
@@ -165,6 +166,19 @@ public sealed class FishingViewModel : ViewModelBase
         }
     }
 
+    public double AutoAquariumPendingThresholdMinutes
+    {
+        get => _autoAquariumPendingThresholdMinutes;
+        set
+        {
+            var normalized = Math.Clamp(value, 0, 1440);
+            if (SetProperty(ref _autoAquariumPendingThresholdMinutes, normalized))
+            {
+                UpdateAquariumStatusText();
+            }
+        }
+    }
+
     public string AquariumStatusText
     {
         get => _aquariumStatusText;
@@ -250,11 +264,6 @@ public sealed class FishingViewModel : ViewModelBase
         _wasInMinigame = false;
         StartCurrentTracker();
         AppLog.Fishing("FlowVM", "StartAsync tracker started");
-        if (AutoAquariumEnabled)
-        {
-            AppLog.Fishing("FlowVM", "StartAsync auto-queueing aquarium (aquarium enabled at start)");
-            QueueAquariumRun();
-        }
 
         RefreshStatus();
         OnPropertyChanged(nameof(IsRunning));
@@ -574,6 +583,24 @@ public sealed class FishingViewModel : ViewModelBase
             return;
         }
 
+        if (AutoAquariumPendingThresholdMinutes > 0 &&
+            _aquariumRunner.TryReadNextRemaining(out var liveRemaining) &&
+            liveRemaining <= TimeSpan.FromMinutes(AutoAquariumPendingThresholdMinutes))
+        {
+            AppLog.Fishing("Schedule", $"DECISION=queue-live-threshold | liveNext={liveRemaining.TotalSeconds:0.0}s threshold={AutoAquariumPendingThresholdMinutes:0.##}m");
+            _nextAquariumAt = DateTimeOffset.UtcNow;
+            if (_wasInMinigame)
+            {
+                QueueAquariumRun();
+            }
+            else
+            {
+                UpdateAquariumStatusText();
+            }
+
+            return;
+        }
+
         if (_nextAquariumAt is not { } dueAt)
         {
             AppLog.Fishing("Schedule", "DECISION=not-scheduled | nextAt=null");
@@ -698,7 +725,7 @@ public sealed class FishingViewModel : ViewModelBase
             return;
         }
 
-        AquariumStatusText = $"Auto Aquarium ready. Cycle delay {AutoAquariumCycleDelayMinutes:0.##} min.";
+        AquariumStatusText = $"Auto Aquarium ready. Cycle delay {AutoAquariumCycleDelayMinutes:0.##} min, pending at {AutoAquariumPendingThresholdMinutes:0.##} min.";
     }
 
     private void UpdateMasterlineRodNamesFromStatus(string message)

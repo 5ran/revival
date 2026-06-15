@@ -19,24 +19,27 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
     private readonly GeneralViewModel _general;
     private readonly FishingViewModel _fishing;
     private readonly AutoTotemViewModel _autoTotem;
+    private readonly OtherAutomationViewModel _otherAutomation;
     private readonly Timer _tickTimer;
 
     private DateTimeOffset _lastOffsetsPollAt = DateTimeOffset.MinValue;
     private string _offsetsVersion = "—";
     private bool _disposed;
 
-    public CompactViewModel(GeneralViewModel general, FishingViewModel fishing, AutoTotemViewModel autoTotem)
+    public CompactViewModel(GeneralViewModel general, FishingViewModel fishing, AutoTotemViewModel autoTotem, OtherAutomationViewModel otherAutomation)
     {
         _general = general ?? throw new ArgumentNullException(nameof(general));
         _fishing = fishing ?? throw new ArgumentNullException(nameof(fishing));
         _autoTotem = autoTotem ?? throw new ArgumentNullException(nameof(autoTotem));
+        _otherAutomation = otherAutomation ?? throw new ArgumentNullException(nameof(otherAutomation));
 
         _tickTimer = new Timer(_ => Tick(), null, TickInterval, TickInterval);
     }
 
     // ─────────────── Tier 1 — always visible ───────────────
 
-    public string ActiveMacroText => _general.ActiveMacroText;
+    public string ActiveMacroText => TraderEnabled ? "Trader" : _general.ActiveMacroText;
+    public string TraderMacroText => TraderEnabled ? "Trader" : string.Empty;
 
     public string Phase => _fishing.Phase;
 
@@ -142,6 +145,9 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
     public bool AutoAquariumEnabled => _fishing.AutoAquariumEnabled;
     public string AquariumStatusText => _fishing.AquariumStatusText;
 
+    public bool TraderEnabled => _otherAutomation.TraderEnabled;
+    public string TraderStatusText => _otherAutomation.Trader.StatusText;
+
     // ─────────────── Tier 4 — health ───────────────
 
     public string OffsetsVersion
@@ -191,6 +197,7 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
 
         // Everything else: just raise notifications so the view re-reads.
         OnPropertyChanged(nameof(ActiveMacroText));
+        OnPropertyChanged(nameof(TraderMacroText));
         OnPropertyChanged(nameof(Phase));
         OnPropertyChanged(nameof(StatusMessage));
         OnPropertyChanged(nameof(HotkeyText));
@@ -216,6 +223,8 @@ public sealed class CompactViewModel : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(AnySurgeActive));
         OnPropertyChanged(nameof(AutoAquariumEnabled));
         OnPropertyChanged(nameof(AquariumStatusText));
+        OnPropertyChanged(nameof(TraderEnabled));
+        OnPropertyChanged(nameof(TraderStatusText));
     }
 
     private static string ResolveOffsetsVersion()

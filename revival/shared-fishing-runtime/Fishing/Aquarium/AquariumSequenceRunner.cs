@@ -153,6 +153,33 @@ internal sealed class AquariumSequenceRunner : IDisposable
         _memory.Dispose();
     }
 
+    public bool TryReadNextRemaining(out TimeSpan remaining)
+    {
+        remaining = TimeSpan.Zero;
+        try
+        {
+            _memory.EnsureAttached();
+            var playerGui = _memory.FindPlayerGui();
+            if (playerGui == 0)
+            {
+                return false;
+            }
+
+            var info = FindNextInfoLabel(playerGui);
+            if (info == 0)
+            {
+                return false;
+            }
+
+            var text = _memory.ReadGuiText(info).Trim();
+            return TryParseNextRemaining(text, out remaining);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private void EnsureTargets()
     {
         if (_aquariumButton != 0)
@@ -209,7 +236,51 @@ internal sealed class AquariumSequenceRunner : IDisposable
                 ? loose
                 : FindByPath(root, string.Empty, "Frame", "safezone", "personalaquarium", "more", "fishfood") is var frame && frame != 0
                     ? frame
-                    : FindAnyByPath(root, "safezone", "personalaquarium", "more", "fishfood");
+                : FindAnyByPath(root, "safezone", "personalaquarium", "more", "fishfood");
+    }
+
+    private ulong FindNextInfoLabel(ulong root)
+    {
+        var exact = FindByPath(root, "Info", "TextLabel", "hud", "safezone", "personalaquarium", "more", "profit", "header");
+        if (exact != 0)
+        {
+            return exact;
+        }
+
+        return FindAnyByPath(root, "safezone", "personalaquarium", "more", "profit", "header", "info");
+    }
+
+    private static bool TryParseNextRemaining(string text, out TimeSpan remaining)
+    {
+        remaining = TimeSpan.Zero;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        var match = System.Text.RegularExpressions.Regex.Match(
+            text,
+            @"Next:\s*(?:(\d+)\s*m)?\s*(?:(\d+)\s*s)?",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        var minutes = 0;
+        var seconds = 0;
+        if (match.Groups[1].Success)
+        {
+            minutes = int.TryParse(match.Groups[1].Value, out var parsedMinutes) ? parsedMinutes : 0;
+        }
+
+        if (match.Groups[2].Success)
+        {
+            seconds = int.TryParse(match.Groups[2].Value, out var parsedSeconds) ? parsedSeconds : 0;
+        }
+
+        remaining = TimeSpan.FromMinutes(minutes) + TimeSpan.FromSeconds(seconds);
+        return true;
     }
 
     private ulong FindByNameClass(ulong root, string name, string classNeedle)

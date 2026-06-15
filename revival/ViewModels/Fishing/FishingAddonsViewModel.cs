@@ -133,6 +133,21 @@ public sealed class FishingAddonsViewModel : ViewModelBase
         }
     }
 
+    public double AutoAquariumPendingThresholdMinutes
+    {
+        get => _fishingViewModel.AutoAquariumPendingThresholdMinutes;
+        set
+        {
+            if (_fishingViewModel.AutoAquariumPendingThresholdMinutes == value)
+            {
+                return;
+            }
+
+            _fishingViewModel.AutoAquariumPendingThresholdMinutes = value;
+            OnPropertyChanged(nameof(AutoAquariumPendingThresholdMinutes));
+        }
+    }
+
     public bool AutoTotemEnabled
     {
         get => _autoTotemViewModel.AutoTotemEnabled;
@@ -284,6 +299,12 @@ public sealed class FishingAddonsViewModel : ViewModelBase
         if (e.PropertyName is nameof(FishingViewModel.AutoAquariumCycleDelayMinutes))
         {
             OnPropertyChanged(nameof(AutoAquariumCycleDelayMinutes));
+            return;
+        }
+
+        if (e.PropertyName is nameof(FishingViewModel.AutoAquariumPendingThresholdMinutes))
+        {
+            OnPropertyChanged(nameof(AutoAquariumPendingThresholdMinutes));
         }
     }
 

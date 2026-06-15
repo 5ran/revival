@@ -30,33 +30,66 @@
                 Padding="14">
             <StackPanel Spacing="10">
             <StackPanel Spacing="5">
-                <TextBlock Classes="section-label" Text="Totem" />
-                <ComboBox Classes="app-select"
-                          Width="213"
-                          Height="38"
-                          ItemsSource="{Binding TotemOptions}"
-                          SelectedItem="{Binding SelectedTotem}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
-                            <StackPanel Orientation="Horizontal" Spacing="0">
-                                <TextBlock Text="{Binding DisplayPrimary}"
-                                           Foreground="{Binding Brush}" />
-                                <TextBlock Text="{Binding DisplaySuffix}"
-                                           Foreground="{StaticResource TextPrimary}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                    <ComboBox.SelectionBoxItemTemplate>
-                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
-                            <StackPanel Orientation="Horizontal" Spacing="0">
-                                <TextBlock Text="{Binding DisplayPrimary}"
-                                           Foreground="{Binding Brush}" />
-                                <TextBlock Text="{Binding DisplaySuffix}"
-                                           Foreground="{StaticResource TextPrimary}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.SelectionBoxItemTemplate>
-                </ComboBox>
+                <Grid ColumnDefinitions="*,*"
+                      ColumnSpacing="10">
+                    <StackPanel Grid.Column="0" Spacing="5">
+                        <TextBlock Classes="section-label" Text="Weather" />
+                        <ComboBox Classes="app-select"
+                                  Height="38"
+                                  ItemsSource="{Binding WeatherOptions}"
+                                  SelectedItem="{Binding SelectedWeather}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <TextBlock Text="{Binding DisplayPrimary}"
+                                                   Foreground="{Binding Brush}" />
+                                        <TextBlock Text="{Binding DisplaySuffix}"
+                                                   Foreground="{StaticResource TextPrimary}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <TextBlock Text="{Binding DisplayPrimary}"
+                                                   Foreground="{Binding Brush}" />
+                                        <TextBlock Text="{Binding DisplaySuffix}"
+                                                   Foreground="{StaticResource TextPrimary}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Spacing="5">
+                        <TextBlock Classes="section-label" Text="Secondary Weather" />
+                        <ComboBox Classes="app-select"
+                                  Height="38"
+                                  ItemsSource="{Binding SecondaryWeatherOptions}"
+                                  SelectedItem="{Binding SelectedSecondaryWeather}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <TextBlock Text="{Binding DisplayPrimary}"
+                                                   Foreground="{Binding Brush}" />
+                                        <TextBlock Text="{Binding DisplaySuffix}"
+                                                   Foreground="{StaticResource TextPrimary}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                            <ComboBox.SelectionBoxItemTemplate>
+                                <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                    <StackPanel Orientation="Horizontal" Spacing="0">
+                                        <TextBlock Text="{Binding DisplayPrimary}"
+                                                   Foreground="{Binding Brush}" />
+                                        <TextBlock Text="{Binding DisplaySuffix}"
+                                                   Foreground="{StaticResource TextPrimary}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.SelectionBoxItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
             </StackPanel>
 
             <StackPanel Spacing="5">

@@ -8,6 +8,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
     private readonly EnchantViewModel _enchantViewModel;
     private readonly AppraiseViewModel _appraiseViewModel;
     private readonly TreasureAppraiseViewModel _treasureAppraiseViewModel;
+    private readonly TraderViewModel _traderViewModel = new();
     private object? _activeAutomation;
 
     public OtherAutomationViewModel(
@@ -25,6 +26,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         _enchantViewModel.PropertyChanged += HandleEnchantPropertyChanged;
         _appraiseViewModel.PropertyChanged += HandleAppraisePropertyChanged;
         _treasureAppraiseViewModel.PropertyChanged += HandleTreasurePropertyChanged;
+        _traderViewModel.PropertyChanged += HandleTraderPropertyChanged;
         UpdateActiveAutomation();
     }
 
@@ -92,6 +94,28 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         }
     }
 
+    public bool TraderEnabled
+    {
+        get => _traderViewModel.TraderEnabled;
+        set
+        {
+            Client.Services.AppLog.Info("TraderMode", $"TraderEnabled set request -> {value} (current={_traderViewModel.TraderEnabled})");
+            if (_traderViewModel.TraderEnabled == value)
+            {
+                Client.Services.AppLog.Info("TraderMode", "TraderEnabled unchanged; skipping.");
+                return;
+            }
+
+            _traderViewModel.TraderEnabled = value;
+            OnPropertyChanged(nameof(TraderEnabled));
+            Client.Services.AppLog.Info("TraderMode", $"TraderEnabled now={_traderViewModel.TraderEnabled}; activeBefore={_activeAutomation?.GetType().Name ?? "none"}");
+            UpdateActiveAutomation();
+            Client.Services.AppLog.Info("TraderMode", $"TraderEnabled complete; activeAfter={_activeAutomation?.GetType().Name ?? "none"}");
+        }
+    }
+
+    public TraderViewModel Trader => _traderViewModel;
+
     public bool HasActiveAutomation => _activeAutomation is not null;
 
     public bool ShowAutomationTabs => !HasActiveAutomation;
@@ -104,6 +128,7 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         EnchantViewModel => "Other Automation - Enchant",
         AppraiseViewModel => "Other Automation - Appraise",
         TreasureAppraiseViewModel => "Other Automation - Treasure Appraise",
+        TraderViewModel => "Other Automation - Trader",
         _ => "Other Automation",
     };
 
@@ -143,9 +168,21 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         }
     }
 
+    private void HandleTraderPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is nameof(TraderViewModel.TraderEnabled))
+        {
+            OnPropertyChanged(nameof(TraderEnabled));
+            UpdateActiveAutomation();
+        }
+    }
+
     private void UpdateActiveAutomation()
     {
         object? next = null;
+        Client.Services.AppLog.Info(
+            "TraderMode",
+            $"UpdateActiveAutomation enter trader={_traderViewModel.TraderEnabled} angler={_autoAnglerViewModel.AutoAnglerEnabled} enchant={_enchantViewModel.AutoEnchantEnabled} appraise={_appraiseViewModel.AutoAppraiseEnabled} treasure={_treasureAppraiseViewModel.AutoTreasureEnabled}");
         if (_autoAnglerViewModel.AutoAnglerEnabled)
         {
             next = _autoAnglerViewModel;
@@ -162,13 +199,19 @@ public sealed class OtherAutomationViewModel : ViewModelBase
         {
             next = _treasureAppraiseViewModel;
         }
+        else if (_traderViewModel.TraderEnabled)
+        {
+            next = _traderViewModel;
+        }
 
         if (ReferenceEquals(_activeAutomation, next))
         {
+            Client.Services.AppLog.Info("TraderMode", $"UpdateActiveAutomation no-op active={_activeAutomation?.GetType().Name ?? "none"}");
             return;
         }
 
         _activeAutomation = next;
+        Client.Services.AppLog.Info("TraderMode", $"UpdateActiveAutomation new active={_activeAutomation?.GetType().Name ?? "none"}");
         OnPropertyChanged(nameof(ActiveAutomation));
         OnPropertyChanged(nameof(HasActiveAutomation));
         OnPropertyChanged(nameof(ShowAutomationTabs));

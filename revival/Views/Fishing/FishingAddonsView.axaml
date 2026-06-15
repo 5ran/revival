@@ -47,7 +47,7 @@
                 <Border IsVisible="{Binding IsAutoAquariumExpanded}"
                         Classes="app-card">
                 <StackPanel Spacing="10">
-                    <Grid ColumnDefinitions="180,*"
+                    <Grid ColumnDefinitions="180,180,*"
                           ColumnSpacing="14">
                         <StackPanel Grid.Column="0"
                                     Spacing="6">
@@ -60,7 +60,18 @@
                                      Height="34"
                                      Text="{Binding AutoAquariumCycleDelayMinutes}" />
                         </StackPanel>
-                        <TextBlock Grid.Column="1"
+                        <StackPanel Grid.Column="1"
+                                    Spacing="6">
+                            <TextBlock Text="Pending at or below (min)"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="12"
+                                       Foreground="{StaticResource TextSecondary}" />
+                            <TextBox Classes="app-input"
+                                     Width="170"
+                                     Height="34"
+                                     Text="{Binding AutoAquariumPendingThresholdMinutes}" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="2"
                                    VerticalAlignment="Center"
                                    Text="Time between aquarium runs."
                                    FontFamily="{StaticResource UIFont}"

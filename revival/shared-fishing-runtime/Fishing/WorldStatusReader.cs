@@ -23,9 +23,18 @@ internal sealed class WorldStatusReader : IDisposable
         _memory.Dispose();
     }
 
-    public bool TryRead(out string weather, out string cycle, out bool shinySurge, out bool sparklingSurge, out bool mutationSurge)
+    public bool TryRead(
+        out string weather,
+        out string secondaryWeather,
+        out string eventWeather,
+        out string cycle,
+        out bool shinySurge,
+        out bool sparklingSurge,
+        out bool mutationSurge)
     {
         weather = string.Empty;
+        secondaryWeather = string.Empty;
+        eventWeather = string.Empty;
         cycle = string.Empty;
         shinySurge = false;
         sparklingSurge = false;
@@ -34,21 +43,21 @@ internal sealed class WorldStatusReader : IDisposable
         try
         {
             _memory.EnsureAttached();
-
-            var eventText = GetWorldStatusText("2_event");
-            var weatherText = GetWorldStatusText("3_weather");
-            var cycleText = GetWorldStatusText("4_cycle");
-            var allStatuses = GetAllWorldStatusTexts();
-            var allStatusText = string.Join(" ", allStatuses);
-            var combined = $"{eventText} {weatherText} {allStatusText}";
+            var world = GetWorldConfig();
+            var weatherText = GetCurrentWeather(world);
+            var meteorologicalText = GetCurrentMeteorological(world);
+            var eventText = GetCurrentEvent(world);
+            var cycleText = GetCurrentCycle();
 
             UpdateSurgesFromChat();
             shinySurge = _shinySurgeActive;
             sparklingSurge = _sparklingSurgeActive;
             mutationSurge = _mutationSurgeActive;
 
-            weather = ResolveWeather(combined);
-            cycle = ResolveCycle(cycleText, allStatusText);
+            weather = NormalizeWorldNone(weatherText);
+            secondaryWeather = ResolveMeteorological(meteorologicalText, eventText);
+            eventWeather = ResolveEventDisplay(eventText);
+            cycle = ResolveCycle(cycleText);
             return true;
         }
         catch
@@ -289,125 +298,155 @@ internal sealed class WorldStatusReader : IDisposable
         return string.Empty;
     }
 
-    private string GetWorldStatusText(string statusName)
+    private ulong GetWorldConfig()
     {
-        var status = ResolveWorldStatus(statusName);
-        if (status == 0 || !_memory.IsVisible(status, "FrameVisible") || _memory.ReadGuiBounds(status, true) is null)
-        {
-            return string.Empty;
-        }
-
-        var label = _memory.FindChildByName(status, "label");
-        if (label == 0)
-        {
-            return string.Empty;
-        }
-
-        return Normalize(_memory.ReadGuiText(label));
-    }
-
-    private ulong ResolveWorldStatus(string statusName)
-    {
-        var localPlayer = _memory.GetLocalPlayer();
-        if (localPlayer == 0)
+        var dataModel = _memory.GetDataModel();
+        if (dataModel == 0)
         {
             return 0;
         }
 
-        var playerGui = _memory.FindChildByClass(localPlayer, "PlayerGui");
-        var hud = playerGui == 0 ? 0 : _memory.FindChildByName(playerGui, "hud");
-        var safezone = hud == 0 ? 0 : _memory.FindChildByName(hud, "safezone");
-        var worldStatuses = safezone == 0 ? 0 : _memory.FindChildByName(safezone, "worldstatuses");
-        return worldStatuses == 0 ? 0 : _memory.FindChildByName(worldStatuses, statusName);
+        var replicatedStorage = _memory.FindChildByClass(dataModel, "ReplicatedStorage");
+        if (replicatedStorage == 0)
+        {
+            return 0;
+        }
+
+        var world = _memory.FindChildByName(replicatedStorage, "world");
+        return world;
     }
 
-    private IReadOnlyList<string> GetAllWorldStatusTexts()
+    private static string NormalizeWorldNone(string value)
     {
-        var results = new List<string>();
-        var localPlayer = _memory.GetLocalPlayer();
-        if (localPlayer == 0)
-        {
-            return results;
-        }
-
-        var playerGui = _memory.FindChildByClass(localPlayer, "PlayerGui");
-        var hud = playerGui == 0 ? 0 : _memory.FindChildByName(playerGui, "hud");
-        var safezone = hud == 0 ? 0 : _memory.FindChildByName(hud, "safezone");
-        var worldStatuses = safezone == 0 ? 0 : _memory.FindChildByName(safezone, "worldstatuses");
-        if (worldStatuses == 0)
-        {
-            return results;
-        }
-
-        foreach (var status in _memory.ReadChildren(worldStatuses))
-        {
-            if (!_memory.IsVisible(status, "FrameVisible") || _memory.ReadGuiBounds(status, true) is null)
-            {
-                continue;
-            }
-
-            var label = _memory.FindChildByName(status, "label");
-            if (label == 0)
-            {
-                continue;
-            }
-
-            var text = Normalize(_memory.ReadGuiText(label));
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                results.Add(text);
-            }
-        }
-
-        return results;
+        var trimmed = value.Trim();
+        return string.Equals(trimmed, "none", StringComparison.OrdinalIgnoreCase) ? string.Empty : trimmed;
     }
 
-    private static string ResolveWeather(string combined)
+    private static string ReadWorldStringValue(RobloxMemory memory, ulong instanceAddr)
     {
-        if (Contains(combined, "aurora"))
+        if (instanceAddr == 0)
         {
-            return "Aurora Borealis";
+            return string.Empty;
         }
 
-        if (Contains(combined, "starfall"))
+        try
         {
-            return "Starfall";
-        }
+            var valueOffset = memory.GetOffset("Value");
+            var embedded = memory.ReadString(instanceAddr + valueOffset);
+            if (!string.IsNullOrWhiteSpace(embedded))
+            {
+                return embedded.Trim();
+            }
 
-        if (Contains(combined, "eclipse"))
-        {
-            return "Eclipse";
+            var ptr = memory.ReadPtr(instanceAddr + valueOffset);
+            if (ptr != 0)
+            {
+                var indirect = memory.ReadString(ptr);
+                if (!string.IsNullOrWhiteSpace(indirect))
+                {
+                    return indirect.Trim();
+                }
+            }
         }
-
-        if (Contains(combined, "rainbow"))
+        catch
         {
-            return "Rainbow";
-        }
-
-        if (Contains(combined, "rain"))
-        {
-            return "Rain";
-        }
-
-        if (Contains(combined, "wind"))
-        {
-            return "Windy";
-        }
-
-        if (Contains(combined, "fog"))
-        {
-            return "Foggy";
-        }
-
-        if (Contains(combined, "clear"))
-        {
-            return "Clear";
         }
 
         return string.Empty;
     }
 
-    private static string ResolveCycle(string cycleText, string allStatusText)
+    private string GetCurrentWeather(ulong world)
+    {
+        if (world == 0)
+        {
+            return string.Empty;
+        }
+
+        var weather = _memory.FindChildByName(world, "weather");
+        return weather == 0 ? string.Empty : NormalizeWorldNone(ReadWorldStringValue(_memory, weather));
+    }
+
+    private string GetCurrentMeteorological(ulong world)
+    {
+        if (world == 0)
+        {
+            return string.Empty;
+        }
+
+        var weather = _memory.FindChildByName(world, "weather");
+        if (weather == 0)
+        {
+            return string.Empty;
+        }
+
+        var meteorological = _memory.FindChildByName(weather, "meteorological");
+        return meteorological == 0 ? string.Empty : NormalizeWorldNone(ReadWorldStringValue(_memory, meteorological));
+    }
+
+    private string GetCurrentEvent(ulong world)
+    {
+        if (world == 0)
+        {
+            return string.Empty;
+        }
+
+        var eventInst = _memory.FindChildByName(world, "event");
+        return eventInst == 0 ? string.Empty : NormalizeWorldNone(ReadWorldStringValue(_memory, eventInst));
+    }
+
+    private string GetCurrentCycle()
+    {
+        var world = GetWorldConfig();
+        if (world == 0)
+        {
+            return string.Empty;
+        }
+
+        var cycle = _memory.FindChildByName(world, "cycle");
+        return cycle == 0 ? string.Empty : NormalizeWorldNone(ReadWorldStringValue(_memory, cycle));
+    }
+
+    private static string ResolveMeteorological(string meteorologicalText, string eventText)
+    {
+        if (Contains(meteorologicalText, "aurora"))
+        {
+            return "Aurora Borealis";
+        }
+
+        if (Contains(eventText, "night of the luminous"))
+        {
+            return "Sparkling";
+        }
+
+        if (Contains(eventText, "starfall"))
+        {
+            return "Starfall";
+        }
+
+        if (Contains(eventText, "eclipse"))
+        {
+            return "Eclipse";
+        }
+
+        if (Contains(eventText, "rainbow"))
+        {
+            return "Rainbow";
+        }
+
+        return string.Empty;
+    }
+
+    private static string ResolveEventDisplay(string eventText)
+    {
+        if (Contains(eventText, "night of the luminous"))
+        {
+            return "Sparkling";
+        }
+
+        return NormalizeWorldNone(eventText);
+    }
+
+    private static string ResolveCycle(string cycleText)
     {
         if (ContainsWholeWord(cycleText, "night"))
         {
@@ -415,17 +454,6 @@ internal sealed class WorldStatusReader : IDisposable
         }
 
         if (ContainsWholeWord(cycleText, "day"))
-        {
-            return "Day";
-        }
-
-        var scrubbed = allStatusText.Replace("Night of the Luminous", string.Empty, StringComparison.OrdinalIgnoreCase);
-        if (ContainsWholeWord(scrubbed, "night"))
-        {
-            return "Night";
-        }
-
-        if (ContainsWholeWord(scrubbed, "day"))
         {
             return "Day";
         }

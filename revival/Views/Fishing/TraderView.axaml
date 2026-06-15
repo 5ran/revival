@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.TraderView"
+             x:Name="Root"
+             x:DataType="vm:TraderViewModel"
+             Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="Border.trader-panel">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="10" />
+        </Style>
+        <Style Selector="Border.trader-item">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="8,6" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+        </Style>
+        <Style Selector="Border.trader-item:pointerover">
+            <Setter Property="Background" Value="{StaticResource ToggleHoverBackground}" />
+        </Style>
+        <Style Selector="Border.trader-item:selected">
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto,*"
+          Margin="20,6,20,20">
+        <Border Grid.Row="0"
+                Classes="app-card"
+                Padding="10">
+            <StackPanel Spacing="6">
+                <CheckBox IsChecked="{Binding TraderEnabled}"
+                          Content="Trader"
+                          VerticalAlignment="Center"
+                          FontFamily="{StaticResource UIFont}"
+                          FontSize="12"
+                          Foreground="{StaticResource TextPrimary}" />
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1"
+              Margin="0,8,0,0">
+            <StackPanel Spacing="8">
+                <Border Classes="trader-panel">
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          RowSpacing="8">
+                        <TextBlock Text="Search for"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <Grid Grid.Row="1"
+                              ColumnDefinitions="*,96,Auto"
+                              ColumnSpacing="8">
+                            <TextBox Classes="app-input"
+                                     Height="32"
+                                     Text="{Binding SearchName}"
+                                     PlaceholderText="Name" />
+                            <TextBox Grid.Column="1"
+                                     Classes="app-input"
+                                     Height="32"
+                                     Text="{Binding SearchPrice}"
+                                     PlaceholderText="Price" />
+                            <Button Grid.Column="2"
+                                    Classes="app-primary"
+                                    Width="72"
+                                    Height="32"
+                                    Padding="0"
+                                    Content="Add"
+                                    Command="{Binding AddSearchEntryCommand}" />
+                        </Grid>
+
+                        <ScrollViewer Grid.Row="2"
+                                      MaxHeight="190"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding SearchEntries}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:TraderSearchEntryViewModel">
+                                        <Grid ColumnDefinitions="*,Auto"
+                                              Margin="0,0,0,6">
+                                            <Border Classes="trader-item"
+                                                    Grid.Column="0">
+                                                <ToggleButton Background="Transparent"
+                                                              BorderThickness="0"
+                                                              Padding="0"
+                                                              HorizontalAlignment="Stretch"
+                                                              IsChecked="{Binding IsSelected}">
+                                                    <StackPanel Spacing="2">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontFamily="{StaticResource UIFont}"
+                                                                   FontSize="12"
+                                                                   Foreground="{StaticResource TextPrimary}"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Price}"
+                                                                   FontFamily="{StaticResource UIFont}"
+                                                                   FontSize="11"
+                                                                   Foreground="{StaticResource TextSecondary}"
+                                                                   TextTrimming="CharacterEllipsis" />
+                                                    </StackPanel>
+                                                </ToggleButton>
+                                            </Border>
+                                            <Button Grid.Column="1"
+                                                    Classes="app-secondary"
+                                                    Width="24"
+                                                    Height="24"
+                                                    Margin="4,4,0,0"
+                                                    Padding="0"
+                                                    Content="×"
+                                                    Command="{Binding #Root.DataContext.RemoveSearchEntryCommand}"
+                                                    CommandParameter="{Binding .}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <Border Classes="app-card"
+                        VerticalAlignment="Top"
+                        Padding="10">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="Status"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBlock Text="{Binding StatusText}"
+                                   TextWrapping="Wrap"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextPrimary}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

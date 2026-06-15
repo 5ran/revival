@@ -2692,24 +2692,18 @@ public sealed class Tracking1FishingTracker : IFishingTracker
 
     private bool TryReadActiveState(out ActiveTotemState state)
     {
-        var eventText = GetWorldStatusText("2_event");
-        var cycleText = GetWorldStatusText("4_cycle");
-        var statusEntries = GetAllVisibleWorldStatusEntries();
-        var allStatuses = new List<string>(statusEntries.Count);
-        foreach (var entry in statusEntries)
-        {
-            allStatuses.Add(entry.Text);
-        }
-
-        var combined = string.Join(" ", allStatuses);
-        var weatherText = ResolvePrimaryWeatherText(statusEntries);
-        var weather = ResolveWeather(weatherText, combined);
-        var cycle = ResolveCycle(cycleText, allStatuses);
+        // Auto totems fixed: read the same live state the UI shows.
+        var weatherText = GetCurrentWeatherText();
+        var eventText = GetCurrentEventText();
+        var cycleText = GetCurrentCycleText();
+        var weather = Normalize(weatherText);
+        var eventDisplay = ResolveEventDisplay(eventText);
+        var cycle = ResolveCycle(cycleText);
         UpdateSpecialSurgesFromChat();
         var shiny = _chatShinyActive;
         var sparkling = _chatSparklingActive;
         var mutation = _chatMutationActive;
-        state = new ActiveTotemState(weather, cycle, shiny, sparkling, mutation);
+        state = new ActiveTotemState(weather, eventDisplay, cycle, shiny, sparkling, mutation);
         return true;
     }
 
@@ -2885,59 +2879,96 @@ public sealed class Tracking1FishingTracker : IFishingTracker
         return string.Empty;
     }
 
-    private static string ResolveWeather(string weatherText, string combined)
+    private string GetCurrentWeatherText()
     {
-        var source = string.IsNullOrWhiteSpace(weatherText) ? combined : weatherText;
-        if (ContainsAny(source, "aurora"))
+        return ReadWorldConfigValue("weather");
+    }
+
+    private string GetCurrentEventText()
+    {
+        return ReadWorldConfigValue("event");
+    }
+
+    private string GetCurrentCycleText()
+    {
+        return ReadWorldConfigValue("cycle");
+    }
+
+    private string ReadWorldConfigValue(string name)
+    {
+        var world = ResolveWorldConfig();
+        if (world == 0)
         {
-            return "Aurora Borealis";
+            return string.Empty;
         }
 
-        if (ContainsAny(source, "starfall"))
+        var value = _memory.FindChildByName(world, name);
+        if (value == 0)
         {
-            return "Starfall";
+            return string.Empty;
         }
 
-        if (ContainsAny(source, "eclipse"))
+        return Normalize(ReadWorldStringValue(value));
+    }
+
+    private ulong ResolveWorldConfig()
+    {
+        var dataModel = _memory.GetDataModel();
+        if (dataModel == 0)
         {
-            return "Eclipse";
+            return 0;
         }
 
-        if (ContainsAny(source, "rainbow"))
+        var replicatedStorage = _memory.FindChildByClass(dataModel, "ReplicatedStorage");
+        if (replicatedStorage == 0)
         {
-            return "Rainbow";
+            return 0;
         }
 
-        if (ContainsAny(source, "rain", "rainy"))
+        return _memory.FindChildByName(replicatedStorage, "world");
+    }
+
+    private string ReadWorldStringValue(ulong instanceAddr)
+    {
+        if (instanceAddr == 0)
         {
-            return "Rain";
+            return string.Empty;
         }
 
-        if (ContainsAny(source, "wind", "windy"))
+        try
         {
-            return "Windy";
-        }
+            var valueOffset = _memory.GetOffset("Value");
+            var embedded = Normalize(_memory.ReadString(instanceAddr + valueOffset));
+            if (embedded.Length > 0)
+            {
+                return embedded;
+            }
 
-        if (ContainsAny(source, "fog", "foggy"))
-        {
-            return "Foggy";
+            var ptr = _memory.ReadPtr(instanceAddr + valueOffset);
+            if (ptr != 0)
+            {
+                return Normalize(_memory.ReadString(ptr));
+            }
         }
-
-        if (ContainsAny(source, "clear"))
+        catch
         {
-            return "Clear";
-        }
-
-        // Fallback to full combined statuses if the weather slot is empty/noisy.
-        if (!ReferenceEquals(source, combined))
-        {
-            return ResolveWeather(string.Empty, combined);
+            // Best-effort memory reads.
         }
 
         return string.Empty;
     }
 
-    private static string ResolveCycle(string cycleText, IReadOnlyList<string> statuses)
+    private static string ResolveEventDisplay(string eventText)
+    {
+        if (ContainsPhrase(eventText, "night of the luminous"))
+        {
+            return "Sparkling";
+        }
+
+        return Normalize(eventText);
+    }
+
+    private static string ResolveCycle(string cycleText)
     {
         if (ContainsPhrase(cycleText, "night"))
         {
@@ -2949,47 +2980,7 @@ public sealed class Tracking1FishingTracker : IFishingTracker
             return "Day";
         }
 
-        var combined = string.Join(" ", statuses).Replace("Night of the Luminous", string.Empty, StringComparison.OrdinalIgnoreCase);
-        if (ContainsPhrase(combined, "night"))
-        {
-            return "Night";
-        }
-
-        if (ContainsPhrase(combined, "day"))
-        {
-            return "Day";
-        }
-
         return string.Empty;
-    }
-
-    private static bool AnyStatusMatches(
-        IEnumerable<string> statuses,
-        string phrase,
-        bool requireActiveSignal = false,
-        bool requirePlusMarker = false)
-    {
-        foreach (var text in statuses)
-        {
-            if (!IsNamedStatus(text, phrase))
-            {
-                continue;
-            }
-
-            if (requirePlusMarker && !HasPlusMarkerForPhrase(text, phrase))
-            {
-                continue;
-            }
-
-            if (requireActiveSignal && !HasActiveStatusSignal(text))
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     private static bool HasActiveStatusSignal(string text)
@@ -3070,6 +3061,19 @@ public sealed class Tracking1FishingTracker : IFishingTracker
         }
 
         return string.Empty;
+    }
+
+    private static bool AnyStatusMatches(IReadOnlyList<string> statuses, string phrase)
+    {
+        foreach (var text in statuses)
+        {
+            if (IsNamedStatus(text, phrase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool IsNamedStatus(string text, string phrase)
@@ -3728,6 +3732,7 @@ public sealed class Tracking1FishingTracker : IFishingTracker
 
     private readonly record struct ActiveTotemState(
         string Weather,
+        string Event,
         string Cycle,
         bool Shiny,
         bool Sparkling,

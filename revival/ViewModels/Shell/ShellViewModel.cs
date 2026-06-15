@@ -60,10 +60,11 @@ public sealed class ShellViewModel : ViewModelBase
             },
             _ => IsRobloxFixButtonVisible);
         _autoSovereignRechargeViewModel = new AutoSovereignRechargeViewModel(_fishingViewModel);
+        _otherAutomationViewModel = new OtherAutomationViewModel(_autoAnglerViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel);
 
-        _generalViewModel = new GeneralViewModel(_fishingViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel, _autoAnglerViewModel);
+        _generalViewModel = new GeneralViewModel(_fishingViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel, _autoAnglerViewModel, _otherAutomationViewModel);
         _fishingAddonsViewModel = new FishingAddonsViewModel(_fishingViewModel, _autoTotemViewModel, _autoSovereignRechargeViewModel, _huntDetectViewModel);
-        CompactViewModel = new CompactViewModel(_generalViewModel, _fishingViewModel, _autoTotemViewModel);
+        CompactViewModel = new CompactViewModel(_generalViewModel, _fishingViewModel, _autoTotemViewModel, _otherAutomationViewModel);
         _generalViewModel.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(GeneralViewModel.IsRunning))
@@ -71,7 +72,6 @@ public sealed class ShellViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsCompactMode));
             }
         };
-        _otherAutomationViewModel = new OtherAutomationViewModel(_autoAnglerViewModel, _enchantViewModel, _appraiseViewModel, _treasureAppraiseViewModel);
         LoadSavedSettings();
         HookSettingsPersistence();
         _enchantViewModel.PropertyChanged += (_, e) =>
@@ -79,6 +79,11 @@ public sealed class ShellViewModel : ViewModelBase
             if (e.PropertyName == nameof(EnchantViewModel.AutoEnchantEnabled) &&
                 _enchantViewModel.AutoEnchantEnabled)
             {
+                if (_otherAutomationViewModel.TraderEnabled)
+                {
+                    _otherAutomationViewModel.TraderEnabled = false;
+                }
+
                 if (_appraiseViewModel.AutoAppraiseEnabled)
                 {
                     _appraiseViewModel.AutoAppraiseEnabled = false;
@@ -100,6 +105,11 @@ public sealed class ShellViewModel : ViewModelBase
             if (e.PropertyName == nameof(AppraiseViewModel.AutoAppraiseEnabled) &&
                 _appraiseViewModel.AutoAppraiseEnabled)
             {
+                if (_otherAutomationViewModel.TraderEnabled)
+                {
+                    _otherAutomationViewModel.TraderEnabled = false;
+                }
+
                 if (_enchantViewModel.AutoEnchantEnabled)
                 {
                     _enchantViewModel.AutoEnchantEnabled = false;
@@ -121,6 +131,11 @@ public sealed class ShellViewModel : ViewModelBase
             if (e.PropertyName == nameof(TreasureAppraiseViewModel.AutoTreasureEnabled) &&
                 _treasureAppraiseViewModel.AutoTreasureEnabled)
             {
+                if (_otherAutomationViewModel.TraderEnabled)
+                {
+                    _otherAutomationViewModel.TraderEnabled = false;
+                }
+
                 if (_enchantViewModel.AutoEnchantEnabled)
                 {
                     _enchantViewModel.AutoEnchantEnabled = false;
@@ -142,6 +157,11 @@ public sealed class ShellViewModel : ViewModelBase
             if (e.PropertyName == nameof(AutoAnglerViewModel.AutoAnglerEnabled) &&
                 _autoAnglerViewModel.AutoAnglerEnabled)
             {
+                if (_otherAutomationViewModel.TraderEnabled)
+                {
+                    _otherAutomationViewModel.TraderEnabled = false;
+                }
+
                 if (_enchantViewModel.AutoEnchantEnabled)
                 {
                     _enchantViewModel.AutoEnchantEnabled = false;
@@ -380,6 +400,7 @@ public sealed class ShellViewModel : ViewModelBase
 
             _fishingViewModel.AutoAquariumEnabled = saved.Fishing.AutoAquariumEnabled;
             _fishingViewModel.AutoAquariumCycleDelayMinutes = saved.Fishing.AutoAquariumCycleDelayMinutes;
+            _fishingViewModel.AutoAquariumPendingThresholdMinutes = saved.Fishing.AutoAquariumPendingThresholdMinutes;
 
             _generalViewModel.SelectedRodSlot = Math.Clamp(saved.General.RodSlot, 1, 9);
 
@@ -434,6 +455,8 @@ public sealed class ShellViewModel : ViewModelBase
             _huntDetectViewModel.UseHuntColors = true;
             _huntDetectViewModel.DiscordWebhook = saved.HuntDetect.DiscordWebhook ?? string.Empty;
             _huntDetectViewModel.RestoreSelectedTargets(saved.HuntDetect.SelectedTargets);
+            _otherAutomationViewModel.Trader.ImportSettings(saved.Trader);
+            _otherAutomationViewModel.TraderEnabled = saved.Trader.Enabled;
         }
         finally
         {
@@ -448,6 +471,20 @@ public sealed class ShellViewModel : ViewModelBase
         _autoTotemViewModel.PropertyChanged += (_, _) => SaveSettings();
         _autoSovereignRechargeViewModel.PropertyChanged += (_, _) => SaveSettings();
         _huntDetectViewModel.PropertyChanged += (_, _) => SaveSettings();
+        _otherAutomationViewModel.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(OtherAutomationViewModel.TraderEnabled))
+            {
+                SaveSettings();
+            }
+        };
+        _otherAutomationViewModel.Trader.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(TraderViewModel.TraderEnabled) or nameof(TraderViewModel.SearchEntries))
+            {
+                SaveSettings();
+            }
+        };
         ThemeService.ThemeChanged += OnThemeChangedForPersistence;
     }
 
@@ -474,6 +511,7 @@ public sealed class ShellViewModel : ViewModelBase
                 CastingMode = _fishingViewModel.SelectedCastingMode.ToString(),
                 AutoAquariumEnabled = _fishingViewModel.AutoAquariumEnabled,
                 AutoAquariumCycleDelayMinutes = _fishingViewModel.AutoAquariumCycleDelayMinutes,
+                AutoAquariumPendingThresholdMinutes = _fishingViewModel.AutoAquariumPendingThresholdMinutes,
             },
             General = new GeneralSettingsSnapshot
             {
@@ -512,6 +550,7 @@ public sealed class ShellViewModel : ViewModelBase
                 DiscordWebhook = _huntDetectViewModel.DiscordWebhook,
                 SelectedTargets = _huntDetectViewModel.GetSelectedTargetNames().ToArray(),
             },
+            Trader = _otherAutomationViewModel.Trader.ExportSettings(),
         };
 
         _userSettingsStore.Save(snapshot);

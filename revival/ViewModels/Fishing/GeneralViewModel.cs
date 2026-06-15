@@ -18,6 +18,7 @@ public sealed class GeneralViewModel : ViewModelBase
     private readonly AppraiseViewModel _appraise;
     private readonly TreasureAppraiseViewModel _treasureAppraise;
     private readonly AutoAnglerViewModel _autoAngler;
+    private readonly OtherAutomationViewModel _otherAutomation;
     private Key _startStopHotkey = Key.F3;
     private bool _isRebindingHotkey;
     private int _selectedRodSlot = 1;
@@ -32,13 +33,15 @@ public sealed class GeneralViewModel : ViewModelBase
         EnchantViewModel enchant,
         AppraiseViewModel appraise,
         TreasureAppraiseViewModel treasureAppraise,
-        AutoAnglerViewModel autoAngler)
+        AutoAnglerViewModel autoAngler,
+        OtherAutomationViewModel otherAutomation)
     {
         _fishing = fishing;
         _enchant = enchant;
         _appraise = appraise;
         _treasureAppraise = treasureAppraise;
         _autoAngler = autoAngler;
+        _otherAutomation = otherAutomation;
         RodSlots = new ObservableCollection<int>([1, 2, 3, 4, 5, 6, 7, 8, 9]);
         SelectedRodSlot = HotbarSlotSettings.RodSlot;
         ToggleMacroCommand = new RelayCommand(_ => ToggleMacroAsync());
@@ -87,26 +90,38 @@ public sealed class GeneralViewModel : ViewModelBase
                 RaiseFishingStateChanged();
             }
         };
+        _otherAutomation.Trader.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName is nameof(TraderViewModel.IsRunning) or
+                nameof(TraderViewModel.StatusText))
+            {
+                RaiseFishingStateChanged();
+            }
+        };
     }
 
     public bool IsRunning => _enchant.AutoEnchantEnabled
         ? _enchant.IsRunning
         : _appraise.AutoAppraiseEnabled
             ? _appraise.IsRunning
-            : _treasureAppraise.AutoTreasureEnabled
+                : _treasureAppraise.AutoTreasureEnabled
                 ? _treasureAppraise.IsRunning
                 : _autoAngler.AutoAnglerEnabled
                     ? _autoAngler.IsRunning
+                    : _otherAutomation.Trader.IsRunning
+                        ? _otherAutomation.Trader.IsRunning
                     : _fishing.IsRunning;
 
     public string StatusMessage => _enchant.AutoEnchantEnabled
         ? _enchant.StatusText
         : _appraise.AutoAppraiseEnabled
             ? _appraise.StatusText
-            : _treasureAppraise.AutoTreasureEnabled
+                : _treasureAppraise.AutoTreasureEnabled
                 ? _treasureAppraise.StatusText
                 : _autoAngler.AutoAnglerEnabled
                     ? _autoAngler.StatusText
+                    : _otherAutomation.Trader.IsRunning
+                        ? _otherAutomation.Trader.StatusText
                     : _fishing.StatusMessage;
 
     public string RunStateText => IsRunning ? "Running" : "Stopped";
@@ -131,6 +146,8 @@ public sealed class GeneralViewModel : ViewModelBase
                 ? "Treasure Appraise"
                 : _autoAngler.AutoAnglerEnabled
                     ? "Auto Angler"
+                    : _otherAutomation.TraderEnabled
+                        ? "Trader"
                     : "Fishing";
 
     public string HotkeyText => StartStopHotkey.ToString();
@@ -201,6 +218,7 @@ public sealed class GeneralViewModel : ViewModelBase
     public async Task ToggleMacroAsync()
     {
         AppLog.Info("MacroToggle", $"ToggleMacroAsync ENTER running={IsRunning} active={ActiveMacroText} stopDrain={Volatile.Read(ref _stopDrainInProgress)}");
+        AppLog.Info("MacroToggle", $"ToggleMacroAsync flags trader={_otherAutomation.TraderEnabled} angler={_autoAngler.AutoAnglerEnabled} enchant={_enchant.AutoEnchantEnabled} appraise={_appraise.AutoAppraiseEnabled} treasure={_treasureAppraise.AutoTreasureEnabled} fishing={_fishing.IsRunning}");
         if (Interlocked.Exchange(ref _toggleInProgress, 1) == 1)
         {
             AppLog.Info("MacroToggle", "ToggleMacroAsync suppressed: toggle already in progress.");
@@ -249,6 +267,13 @@ public sealed class GeneralViewModel : ViewModelBase
                 return;
             }
 
+            if (_otherAutomation.TraderEnabled)
+            {
+                AppLog.Info("MacroToggle", "Starting Trader.");
+                await _otherAutomation.Trader.StartAsync();
+                return;
+            }
+
             AppLog.Info("MacroToggle", "Starting Fishing.");
             await _fishing.StartAsync();
         }
@@ -262,6 +287,7 @@ public sealed class GeneralViewModel : ViewModelBase
     public async Task ToggleMacroFromHotkeyAsync()
     {
         AppLog.Info("HotkeyToggle", $"ToggleMacroFromHotkeyAsync ENTER running={IsRunning} active={ActiveMacroText}");
+        AppLog.Info("HotkeyToggle", $"ToggleMacroFromHotkeyAsync flags trader={_otherAutomation.TraderEnabled} angler={_autoAngler.AutoAnglerEnabled} enchant={_enchant.AutoEnchantEnabled} appraise={_appraise.AutoAppraiseEnabled} treasure={_treasureAppraise.AutoTreasureEnabled} fishing={_fishing.IsRunning}");
         if (Interlocked.Exchange(ref _toggleInProgress, 1) == 1)
         {
             AppLog.Info("HotkeyToggle", "Suppressed: toggle already in progress.");
@@ -320,6 +346,13 @@ public sealed class GeneralViewModel : ViewModelBase
             {
                 AppLog.Info("HotkeyToggle", "Starting Auto Angler.");
                 await _autoAngler.StartAsync();
+                return;
+            }
+
+            if (_otherAutomation.TraderEnabled)
+            {
+                AppLog.Info("HotkeyToggle", "Starting Trader.");
+                await _otherAutomation.Trader.StartAsync();
                 return;
             }
 
@@ -389,6 +422,8 @@ public sealed class GeneralViewModel : ViewModelBase
         await _treasureAppraise.StopAsync();
         AppLog.Info("HotkeyToggle", "Stopping Auto Angler.");
         await _autoAngler.StopAsync();
+        AppLog.Info("HotkeyToggle", "Stopping Trader.");
+        await _otherAutomation.Trader.StopAsync();
 
         AppLog.Info(
             "HotkeyToggle",
@@ -401,7 +436,8 @@ public sealed class GeneralViewModel : ViewModelBase
             _enchant.IsRunning ||
             _appraise.IsRunning ||
             _treasureAppraise.IsRunning ||
-            _autoAngler.IsRunning;
+            _autoAngler.IsRunning ||
+            _otherAutomation.Trader.IsRunning;
     }
 
     private bool ShouldForceStopOnToggle()

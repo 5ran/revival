@@ -39,6 +39,9 @@
         <DataTemplate DataType="{x:Type vm:EnchantViewModel}">
             <views:EnchantView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TraderViewModel}">
+            <views:TraderView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
             <views:SettingsView />
         </DataTemplate>
