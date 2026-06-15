@@ -466,11 +466,22 @@ public sealed class ShellViewModel : ViewModelBase
             _autoTotemViewModel.AutoTotemEnabled = saved.AutoTotem.Enabled;
             if (!string.IsNullOrWhiteSpace(saved.AutoTotem.TotemName))
             {
-                foreach (var option in _autoTotemViewModel.TotemOptions)
+                foreach (var option in _autoTotemViewModel.PrimaryTotemOptions)
                 {
                     if (string.Equals(option.Name, saved.AutoTotem.TotemName, StringComparison.OrdinalIgnoreCase))
                     {
                         _autoTotemViewModel.SelectedTotem = option;
+                        break;
+                    }
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(saved.AutoTotem.SecondaryTotemName))
+            {
+                foreach (var option in _autoTotemViewModel.SecondaryTotemOptions)
+                {
+                    if (string.Equals(option.Name, saved.AutoTotem.SecondaryTotemName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _autoTotemViewModel.SelectedSecondaryTotem = option;
                         break;
                     }
                 }
@@ -559,6 +570,7 @@ public sealed class ShellViewModel : ViewModelBase
             {
                 Enabled = _autoTotemViewModel.AutoTotemEnabled,
                 TotemName = _autoTotemViewModel.SelectedTotem?.Name,
+                SecondaryTotemName = _autoTotemViewModel.SelectedSecondaryTotem?.Name,
                 UseShinyTotem = _autoTotemViewModel.UseShinyTotem,
                 UseSparklingTotem = _autoTotemViewModel.UseSparklingTotem,
                 UseMutationTotem = _autoTotemViewModel.UseMutationTotem,

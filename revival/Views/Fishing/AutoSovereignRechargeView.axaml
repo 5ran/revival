@@ -4,7 +4,7 @@
              x:Class="Client.Views.AutoSovereignRechargeView"
              x:DataType="vm:AutoSovereignRechargeViewModel"
              Background="{StaticResource Background}">
-    <Grid Margin="34,0,34,34">
+    <Grid>
         <Border
                 Classes="app-card"
                 Padding="14">

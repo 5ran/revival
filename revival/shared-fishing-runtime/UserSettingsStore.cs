@@ -141,6 +141,8 @@ public sealed class AutoTotemSettingsSnapshot
 
     public string? TotemName { get; set; }
 
+    public string? SecondaryTotemName { get; set; }
+
     public bool UseShinyTotem { get; set; }
 
     public bool UseSparklingTotem { get; set; }

@@ -378,23 +378,33 @@
                 </Grid>
             </Border>
 
-            <Border Grid.Column="2" Classes="fishing-card" Padding="8">
+            <Border Grid.Column="4" Classes="fishing-card" Padding="8">
                 <Grid RowDefinitions="26,Auto,*,Auto">
-                    <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
-                        <Canvas Width="18" Height="18">
-                            <Path Data="M 4.2 6 L 13.8 6 L 13.2 16.5 L 4.8 16.5 Z M 4.2 6 L 5.4 2 L 12.6 2 L 13.8 6 M 5.4 2 L 7 4 L 11 4 L 12.6 2 M 4.8 16.5 L 6 15 M 13.2 16.5 L 12 15 M 6.2 10.5 C 7.5 8.9 10.4 8.8 12 10.4 C 10.5 12 7.6 12.1 6.2 10.5 Z M 12 10.4 L 14.2 8.7 L 13.8 11.9 Z M 8 9.6 L 7 8.2 M 8.4 10.1 L 8.4 10.2"
-                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                    <Viewbox Grid.Row="0" Width="26" Height="26" Margin="0,-2,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M 9 2.5 L 15 2.5 M 10 5 L 14 5 M 10 5 C 8 7 5.5 8.5 5 13.5 L 4.5 19.5 Q 12 22 19.5 19.5 L 19 13.5 C 18.5 8.5 16 7 14 5 M 5.2 12.8 C 7.3 11.7 9.6 13.7 12 12.8 C 14.4 11.9 16.7 13.5 18.8 12.8"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
+                            <Path Data="M 8.8 17.2 C 10 16.1 12.1 16.1 13.4 17.2 C 12.1 18.3 10 18.3 8.8 17.2 Z M 13.4 17.2 L 15.1 16.3 L 15.1 18.1 Z"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
+                            <Ellipse Width="1.2"
+                                     Height="1.2"
+                                     Canvas.Left="9.75"
+                                     Canvas.Top="16.6"
+                                     Fill="{StaticResource Accent}" />
                         </Canvas>
                     </Viewbox>
                     <TextBlock Grid.Row="1" Text="Auto Aquarium" Classes="fishing-heading" HorizontalAlignment="Center" TextAlignment="Center" />
                     <TextBlock Grid.Row="2" Text="Feed aquarium while macroing" Classes="fishing-copy"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                               Height="18"
+                               LineHeight="14"
+                               Padding="0,0,0,3"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="NoWrap" />
                     <CheckBox Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center"
                               IsChecked="{Binding FishingAddons.AutoAquariumEnabled}" />
                 </Grid>
             </Border>
 
-            <Border Grid.Column="4" Classes="fishing-card" Padding="8">
+            <Border Grid.Column="2" Classes="fishing-card" Padding="8">
                 <Grid RowDefinitions="26,Auto,*,Auto">
                     <Viewbox Grid.Row="0" Width="22" Height="22" HorizontalAlignment="Center">
                         <Canvas Width="18" Height="18">

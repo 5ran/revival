@@ -15,6 +15,7 @@ public sealed class AutoTotemViewModel : ViewModelBase
 {
     private bool _autoTotemEnabled;
     private TotemOptionViewModel _selectedTotem;
+    private TotemOptionViewModel _selectedSecondaryTotem;
     private string _currentWeather = string.Empty;
     private IReadOnlyList<ColoredTextLineViewModel> _statusLines = BuildStatusLines(string.Empty);
     private bool _useShinyTotem;
@@ -43,7 +44,24 @@ public sealed class AutoTotemViewModel : ViewModelBase
             new("Eclipse Totem", "Eclipse"),
             new("Starfall Totem", "Starfall"),
         };
-        _selectedTotem = TotemOptions[0];
+        PrimaryTotemOptions = new ObservableCollection<TotemOptionViewModel>();
+        SecondaryTotemOptions = new ObservableCollection<TotemOptionViewModel>
+        {
+            TotemOptions[0],
+        };
+        foreach (var option in TotemOptions)
+        {
+            if (string.Equals(option.Name, "Aurora Totem", StringComparison.OrdinalIgnoreCase))
+            {
+                SecondaryTotemOptions.Add(option);
+            }
+            else
+            {
+                PrimaryTotemOptions.Add(option);
+            }
+        }
+        _selectedTotem = PrimaryTotemOptions[0];
+        _selectedSecondaryTotem = SecondaryTotemOptions[0];
         WeatherOptions = new ObservableCollection<string>
         {
             "Clear",
@@ -68,6 +86,10 @@ public sealed class AutoTotemViewModel : ViewModelBase
     }
 
     public ObservableCollection<TotemOptionViewModel> TotemOptions { get; }
+
+    public ObservableCollection<TotemOptionViewModel> PrimaryTotemOptions { get; }
+
+    public ObservableCollection<TotemOptionViewModel> SecondaryTotemOptions { get; }
 
     public ObservableCollection<string> WeatherOptions { get; }
 
@@ -269,6 +291,12 @@ public sealed class AutoTotemViewModel : ViewModelBase
             UseMutationTotem = string.Equals(value, "Mutation", StringComparison.OrdinalIgnoreCase);
             OnPropertyChanged(nameof(SelectedSpecialOption));
         }
+    }
+
+    public TotemOptionViewModel SelectedSecondaryTotem
+    {
+        get => _selectedSecondaryTotem;
+        set => SetProperty(ref _selectedSecondaryTotem, value);
     }
 
     public string SelectedCycleLockOption

@@ -93,16 +93,34 @@
             <Setter Property="Background" Value="{StaticResource Surface}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="14" />
         </Style>
 
         <Style Selector="Border.app-header">
-            <Setter Property="Background" Value="{StaticResource TableSurface}" />
+            <Setter Property="Background" Value="{StaticResource Surface}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="14,10" />
+        </Style>
+
+        <Style Selector="TextBlock.tab-title">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+
+        <Style Selector="TextBlock.tab-section-title">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
         </Style>
 
         <Style Selector="Border.app-header TextBlock">
@@ -234,11 +252,213 @@
 
         <Style Selector="CheckBox">
             <Setter Property="Foreground" Value="{StaticResource CheckboxLabelForeground}" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="7"
+                                VerticalAlignment="Center">
+                        <Border Name="CheckBoxRoot"
+                                Width="18"
+                                Height="18"
+                                Background="{StaticResource CheckboxBackground}"
+                                BorderBrush="{StaticResource CheckboxBorder}"
+                                BorderThickness="1"
+                                CornerRadius="4">
+                            <Path Name="CheckMark"
+                                  IsVisible="False"
+                                  Width="9"
+                                  Height="7"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Stretch="Fill"
+                                  Stroke="{StaticResource CheckboxCheckForeground}"
+                                  StrokeThickness="1.7"
+                                  StrokeLineCap="Round"
+                                  Data="M 0 3.5 L 3 6.5 L 9 0" />
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
         </Style>
 
         <Style Selector="CheckBox:pointerover">
             <Setter Property="Foreground" Value="{StaticResource CheckboxLabelHoverForeground}" />
+        </Style>
+
+        <Style Selector="CheckBox:pointerover /template/ Border#CheckBoxRoot">
+            <Setter Property="Background" Value="{StaticResource CheckboxHoverBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxHoverBorder}" />
+        </Style>
+
+        <Style Selector="CheckBox:checked /template/ Border#CheckBoxRoot">
+            <Setter Property="Background" Value="{StaticResource CheckboxCheckedBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxCheckedBorder}" />
+        </Style>
+
+        <Style Selector="CheckBox:checked /template/ Path#CheckMark">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="RadioButton">
+            <Setter Property="Foreground" Value="{StaticResource CheckboxLabelForeground}" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="7"
+                                VerticalAlignment="Center">
+                        <Border Name="RadioRoot"
+                                Width="18"
+                                Height="18"
+                                Background="{StaticResource CheckboxBackground}"
+                                BorderBrush="{StaticResource CheckboxBorder}"
+                                BorderThickness="1"
+                                CornerRadius="9">
+                            <Ellipse Name="RadioMark"
+                                     IsVisible="False"
+                                     Width="8"
+                                     Height="8"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Fill="{StaticResource CheckboxCheckedBackground}" />
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="RadioButton:pointerover /template/ Border#RadioRoot">
+            <Setter Property="Background" Value="{StaticResource CheckboxHoverBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxHoverBorder}" />
+        </Style>
+
+        <Style Selector="RadioButton:checked /template/ Border#RadioRoot">
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxCheckedBorder}" />
+        </Style>
+
+        <Style Selector="RadioButton:checked /template/ Ellipse#RadioMark">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="ToggleSwitch">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="8"
+                                VerticalAlignment="Center">
+                        <Grid Name="PART_MovingKnobs"
+                              Width="38"
+                              Height="20">
+                            <Border Name="SwitchTrack"
+                                    Background="{StaticResource Surface}"
+                                    BorderBrush="{StaticResource CheckboxBorder}"
+                                    BorderThickness="1"
+                                    CornerRadius="10" />
+                            <Ellipse Name="SwitchThumb"
+                                     Width="12"
+                                     Height="12"
+                                     Margin="4"
+                                     HorizontalAlignment="Left"
+                                     Fill="{StaticResource CheckboxBorder}" />
+                        </Grid>
+                        <TextBlock Name="SwitchState"
+                                   Text="Off"
+                                   VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="ToggleSwitch:pointerover /template/ Border#SwitchTrack">
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxHoverBorder}" />
+        </Style>
+
+        <Style Selector="ToggleSwitch:checked /template/ Border#SwitchTrack">
+            <Setter Property="Background" Value="{StaticResource CheckboxCheckedBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource CheckboxCheckedBorder}" />
+        </Style>
+
+        <Style Selector="ToggleSwitch:checked /template/ Ellipse#SwitchThumb">
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="Fill" Value="{StaticResource CheckboxCheckForeground}" />
+        </Style>
+
+        <Style Selector="ToggleSwitch:checked /template/ TextBlock#SwitchState">
+            <Setter Property="Text" Value="On" />
+        </Style>
+
+        <Style Selector="Slider">
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Track Name="PART_Track"
+                           Height="4"
+                           VerticalAlignment="Center"
+                           Minimum="{TemplateBinding Minimum}"
+                           Maximum="{TemplateBinding Maximum}"
+                           Value="{TemplateBinding Value, Mode=TwoWay}">
+                        <Track.DecreaseButton>
+                            <RepeatButton Name="PART_DecreaseButton"
+                                          Background="{StaticResource Accent}"
+                                          BorderThickness="0">
+                                <RepeatButton.Template>
+                                    <ControlTemplate>
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="2" />
+                                    </ControlTemplate>
+                                </RepeatButton.Template>
+                            </RepeatButton>
+                        </Track.DecreaseButton>
+                        <Track.Thumb>
+                            <Thumb Width="18"
+                                   Height="18">
+                                <Thumb.Template>
+                                    <ControlTemplate>
+                                        <Ellipse Fill="{StaticResource Accent}"
+                                                 Stroke="{StaticResource AccentHover}"
+                                                 StrokeThickness="1" />
+                                    </ControlTemplate>
+                                </Thumb.Template>
+                            </Thumb>
+                        </Track.Thumb>
+                        <Track.IncreaseButton>
+                            <RepeatButton Name="PART_IncreaseButton"
+                                          Background="{StaticResource Border}"
+                                          BorderThickness="0">
+                                <RepeatButton.Template>
+                                    <ControlTemplate>
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="2" />
+                                    </ControlTemplate>
+                                </RepeatButton.Template>
+                            </RepeatButton>
+                        </Track.IncreaseButton>
+                    </Track>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="Slider /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+
+        <Style Selector="Slider:pointerover /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+
+        <Style Selector="Slider /template/ RepeatButton#PART_IncreaseButton">
+            <Setter Property="Background" Value="{StaticResource Border}" />
         </Style>
 
         <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">

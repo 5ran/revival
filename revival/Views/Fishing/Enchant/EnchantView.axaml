@@ -25,14 +25,17 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,*"
-          Margin="34,6,34,34">
+    <Grid RowDefinitions="Auto,8,Auto"
+          Width="550"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center">
         <Border Grid.Row="0"
                 Classes="app-card"
                 Padding="14">
-            <StackPanel Spacing="12">
+            <StackPanel Spacing="10">
                 <CheckBox IsChecked="{Binding AutoEnchantEnabled}"
                           Content="Auto Enchant"
+                          HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           FontFamily="{StaticResource UIFont}"
                           FontSize="13"
@@ -109,8 +112,7 @@
             </StackPanel>
         </Border>
 
-        <Grid Grid.Row="1"
-              Margin="0,8,0,0"
+        <Grid Grid.Row="2"
               ColumnDefinitions="*,*,*"
               ColumnSpacing="12">
             <Border Grid.Column="0"

@@ -5,15 +5,12 @@
              x:DataType="vm:AnglerAutomationViewModel"
              Background="{StaticResource Background}">
     <ScrollViewer Margin="0"
+                  VerticalContentAlignment="Center"
                   VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="6">
-            <TextBlock Text="Auto Angler"
-                       Margin="24,24,24,0"
-                       FontFamily="{StaticResource DisplayFont}"
-                       FontSize="24"
-                       FontWeight="SemiBold"
-                       Foreground="{StaticResource TextPrimary}" />
-
+        <StackPanel Spacing="8"
+                    Width="550"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
             <ContentControl Content="{Binding ActiveAutomation}" />
         </StackPanel>
     </ScrollViewer>

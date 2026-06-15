@@ -1,1 +1,66 @@
-<UserControl xmlns="https://github.com/avaloniaui"              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"              xmlns:vm="using:Client.ViewModels"              x:Class="Client.Views.TreasureAppraiseView"              x:DataType="vm:TreasureAppraiseViewModel"              Background="{StaticResource Background}">     <Grid RowDefinitions="Auto,*"           Margin="34,6,34,34">         <Border Grid.Row="0"                 Classes="app-card"                 Padding="14">             <StackPanel Spacing="12">                 <CheckBox IsChecked="{Binding AutoTreasureEnabled}"                           Content="Auto Treasure"                           VerticalAlignment="Center"                           FontFamily="{StaticResource UIFont}"                           FontSize="13"                           Foreground="{StaticResource TextPrimary}" />                  <Grid ColumnDefinitions="*,*"                       ColumnSpacing="12">                     <StackPanel Grid.Column="0"                                 Spacing="5">                         <TextBlock Text="Click Delay (sec)"                                    FontFamily="{StaticResource UIFont}"                                    FontSize="12"                                    Foreground="{StaticResource TextSecondary}" />                         <TextBox Classes="app-input"                                  Height="36"                                  Text="{Binding ClickDelaySecondsText}" />                     </StackPanel>                      <StackPanel Grid.Column="1"                                 Spacing="5">                         <TextBlock Text="Minimum Multi"                                    FontFamily="{StaticResource UIFont}"                                    FontSize="12"                                    Foreground="{StaticResource TextSecondary}" />                         <TextBox Classes="app-input"                                  Height="36"                                  Text="{Binding TargetWeightText}"                                  PlaceholderText="0.00" />                     </StackPanel>                 </Grid>             </StackPanel>         </Border>          <Grid Grid.Row="1"               Margin="0,8,0,0"               ColumnDefinitions="*">             <Border Classes="app-card"                     Height="112"                     VerticalAlignment="Top"                     Padding="18,16">                 <StackPanel Spacing="8">                     <TextBlock Text="Status"                                FontFamily="{StaticResource UIFont}"                                FontSize="12"                                Foreground="{StaticResource TextSecondary}" />                     <TextBlock Text="{Binding StatusText}"                                TextWrapping="Wrap"                                FontFamily="{StaticResource DisplayFont}"                                FontSize="18"                                FontWeight="SemiBold"                                Foreground="{StaticResource TextPrimary}" />                 </StackPanel>             </Border>         </Grid>     </Grid> </UserControl>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.TreasureAppraiseView"
+             x:DataType="vm:TreasureAppraiseViewModel"
+             Background="{StaticResource Background}">
+    <Border Classes="app-card"
+            Padding="12,4">
+        <Grid ColumnDefinitions="Auto,16,*,12,*,12,1.15*"
+              VerticalAlignment="Center">
+            <CheckBox Grid.Column="0"
+                      IsChecked="{Binding AutoTreasureEnabled}"
+                      Content="Auto Treasure"
+                      VerticalAlignment="Center"
+                      FontFamily="{StaticResource UIFont}"
+                      FontSize="12"
+                      Foreground="{StaticResource TextPrimary}" />
+
+            <StackPanel Grid.Column="2"
+                        Spacing="3">
+                <TextBlock Text="Click Delay (sec)"
+                           HorizontalAlignment="Center"
+                           FontSize="10"
+                           Foreground="{StaticResource TextSecondary}" />
+                <TextBox Classes="app-input"
+                         Height="26"
+                         HorizontalContentAlignment="Center"
+                         Text="{Binding ClickDelaySecondsText}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="4"
+                        Spacing="3">
+                <TextBlock Text="Minimum Multi"
+                           HorizontalAlignment="Center"
+                           FontSize="10"
+                           Foreground="{StaticResource TextSecondary}" />
+                <TextBox Classes="app-input"
+                         Height="26"
+                         HorizontalContentAlignment="Center"
+                         Text="{Binding TargetWeightText}"
+                         PlaceholderText="0.00" />
+            </StackPanel>
+
+            <Border Grid.Column="6"
+                    BorderBrush="{StaticResource Border}"
+                    BorderThickness="1,0,0,0"
+                    Padding="14,0,0,0">
+                <StackPanel Spacing="3"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Status"
+                               HorizontalAlignment="Center"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding StatusText}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextTrimming="CharacterEllipsis"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

@@ -115,26 +115,20 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
-          Margin="24">
-        <Grid Grid.Row="0"
-              VerticalAlignment="Top">
-            <TextBlock Text="Fishing"
-                       FontFamily="{StaticResource DisplayFont}"
-                       FontSize="24"
-                       FontWeight="SemiBold"
-                       Foreground="{StaticResource TextPrimary}" />
-        </Grid>
-
-        <Grid Grid.Row="1"
-              HorizontalAlignment="Left"
-              Margin="0,12,0,0">
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
+          Margin="22,10">
+        <Border Grid.Row="0"
+                Classes="app-card"
+                Width="550"
+                HorizontalAlignment="Center"
+                Padding="20,14">
             <Grid Grid.Column="0"
                   RowDefinitions="Auto,12,Auto"
-                  ColumnDefinitions="Auto,24,220">
+                  ColumnDefinitions="*,24,220">
                 <TextBlock Grid.Row="0"
                            Grid.Column="0"
                            Text="Tracking Method"
+                           HorizontalAlignment="Right"
                            VerticalAlignment="Center"
                            FontFamily="{StaticResource UIFont}"
                            FontSize="14"
@@ -176,6 +170,7 @@
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
                            Text="Casting"
+                           HorizontalAlignment="Right"
                            VerticalAlignment="Center"
                            FontFamily="{StaticResource UIFont}"
                            FontSize="14"
@@ -189,9 +184,9 @@
                           ItemsSource="{Binding CastingModes}"
                           SelectedItem="{Binding SelectedCastingMode}" />
             </Grid>
-        </Grid>
+        </Border>
 
-        <Grid Grid.Row="3"
+        <Grid Grid.Row="1"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Top"
               Margin="0,10,0,0"
@@ -202,7 +197,7 @@
                                       Items="{Binding StatsItems}" />
         </Grid>
 
-        <Grid Grid.Row="4"
+        <Grid Grid.Row="2"
               IsVisible="{Binding IsMasterlineEquipped}"
               Margin="0,4,0,0"
               HorizontalAlignment="Stretch"

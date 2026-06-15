@@ -102,7 +102,7 @@ public sealed class AppraiseViewModel : ViewModelBase
                 return "None";
             }
 
-            return selected.Count == 1 ? selected[0] : $"{selected.Count} Selected";
+            return string.Join(", ", selected);
         }
     }
 

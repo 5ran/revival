@@ -410,8 +410,7 @@
                     ClipToBounds="True"
                     Background="{StaticResource ShellContentBackground}">
                 <Grid Background="{StaticResource Background}">
-                    <ContentControl Margin="0,0,16,0"
-                                    Content="{Binding CurrentPage}" />
+                    <ContentControl Content="{Binding CurrentPage}" />
                 </Grid>
             </Border>
 
