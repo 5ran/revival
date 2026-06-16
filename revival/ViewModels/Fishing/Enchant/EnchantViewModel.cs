@@ -13,7 +13,9 @@ namespace Client.ViewModels;
 
 public sealed class EnchantViewModel : ViewModelBase
 {
-    private const double FixedCycleMs = 2800;
+    private const double DefaultGamepassSpeed = 0.6;
+    private const double DefaultNormalSpeed = 0.5;
+    private const string NoneEnchantName = "None";
     private readonly EnchantDetector _detector = new();
     private readonly AutoEnchantRunner _runner = new();
     private readonly List<EnchantOptionViewModel> _allTargetEnchants;
@@ -28,6 +30,8 @@ public sealed class EnchantViewModel : ViewModelBase
     private string _targetSearchText = string.Empty;
     private string _newEnchantText = string.Empty;
     private EnchantRollMode _rollMode = EnchantRollMode.Gamepass;
+    private double _gamepassSpeed = DefaultGamepassSpeed;
+    private double _normalSpeed = DefaultNormalSpeed;
     private bool _autoEnchantEnabled;
     private bool _isRunning;
     private int _rollingDotStep;
@@ -36,8 +40,8 @@ public sealed class EnchantViewModel : ViewModelBase
 
     public EnchantViewModel()
     {
-        _allTargetEnchants = EnchantCatalog.All
-            .OrderBy(item => item, StringComparer.OrdinalIgnoreCase)
+        _allTargetEnchants = new[] { NoneEnchantName }
+            .Concat(EnchantCatalog.All.OrderBy(item => item, StringComparer.OrdinalIgnoreCase))
             .Select(item => new EnchantOptionViewModel(item))
             .ToList();
         TargetEnchants = new ObservableCollection<EnchantOptionViewModel>(_allTargetEnchants);
@@ -64,9 +68,13 @@ public sealed class EnchantViewModel : ViewModelBase
         }
     }
 
-    public string SelectedTargetEnchantName => SelectedTargetEnchant.Name;
+    public string SelectedTargetEnchantName => IsNoneSelected ? string.Empty : SelectedTargetEnchant.Name;
 
-    public IBrush SelectedTargetEnchantBrush => EnchantColors.GetEnchantBrush(SelectedTargetEnchantName);
+    public IBrush SelectedTargetEnchantBrush => IsNoneSelected
+        ? Brushes.Transparent
+        : EnchantColors.GetEnchantBrush(SelectedTargetEnchant.Name);
+
+    public bool IsNoneSelected => string.Equals(SelectedTargetEnchant.Name, NoneEnchantName, StringComparison.OrdinalIgnoreCase);
 
     public string EquippedRodText
     {
@@ -202,6 +210,36 @@ public sealed class EnchantViewModel : ViewModelBase
 
     public RelayCommand AddEnchantCommand { get; }
 
+    public double GamepassSpeed
+    {
+        get => _gamepassSpeed;
+        set
+        {
+            var clamped = double.IsFinite(value) ? Math.Clamp(value, 0.0, 1.0) : DefaultGamepassSpeed;
+            if (SetProperty(ref _gamepassSpeed, clamped))
+            {
+                OnPropertyChanged(nameof(GamepassSpeedPercentText));
+            }
+        }
+    }
+
+    public string GamepassSpeedPercentText => $"{Math.Round(GamepassSpeed * 100)}";
+
+    public double NormalSpeed
+    {
+        get => _normalSpeed;
+        set
+        {
+            var clamped = double.IsFinite(value) ? Math.Clamp(value, 0.0, 1.0) : DefaultNormalSpeed;
+            if (SetProperty(ref _normalSpeed, clamped))
+            {
+                OnPropertyChanged(nameof(NormalSpeedPercentText));
+            }
+        }
+    }
+
+    public string NormalSpeedPercentText => $"{Math.Round(NormalSpeed * 100)}";
+
     public Task ToggleAsync()
     {
         return IsRunning ? StopAsync() : StartAsync();
@@ -216,7 +254,7 @@ public sealed class EnchantViewModel : ViewModelBase
         IsRunning = true;
         StatusText = "Rolling";
         _statusLockUntil = DateTimeOffset.UtcNow.AddMilliseconds(250);
-        AppLog.Info("MacroMode", $"Enchant started. target={SelectedTargetEnchantName} mode={_rollMode}");
+        AppLog.Info("MacroMode", $"Enchant started. target={(IsNoneSelected ? "<none>" : SelectedTargetEnchant.Name)} mode={_rollMode}");
         return Task.CompletedTask;
     }
 
@@ -249,10 +287,10 @@ public sealed class EnchantViewModel : ViewModelBase
             return;
         }
 
-        var cycleMs = FixedCycleMs;
+        var cycleMs = ResolveCycleMs();
         try
         {
-            var result = _runner.Step(SelectedTargetEnchantName, _rollMode, cycleMs);
+            var result = _runner.Step(IsNoneSelected ? string.Empty : SelectedTargetEnchant.Name, _rollMode, cycleMs);
             SetEnchantState(
                 string.IsNullOrWhiteSpace(result.Snapshot.RodText) ? "---" : result.Snapshot.RodText,
                 string.IsNullOrWhiteSpace(result.Snapshot.Enchant) ? "---" : result.Snapshot.Enchant,
@@ -347,7 +385,7 @@ public sealed class EnchantViewModel : ViewModelBase
             return;
         }
 
-        StatusText = string.Equals(CurrentEnchantText, SelectedTargetEnchantName, StringComparison.OrdinalIgnoreCase)
+        StatusText = string.Equals(CurrentEnchantText, SelectedTargetEnchant.Name, StringComparison.OrdinalIgnoreCase)
             ? $"Target found: {CurrentEnchantText}."
             : $"Current enchant: {CurrentEnchantText}.";
         StatusLines = ColoredEnchantText.BuildLines(StatusText);
@@ -377,7 +415,7 @@ public sealed class EnchantViewModel : ViewModelBase
     private void RefilterTargetEnchants()
     {
         var query = (TargetSearchText ?? string.Empty).Trim();
-        var selected = SelectedTargetEnchantName;
+        var selected = SelectedTargetEnchant.Name;
         var filtered = _allTargetEnchants
             .Where(item => query.Length == 0 || item.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
             .ToList();
@@ -403,6 +441,12 @@ public sealed class EnchantViewModel : ViewModelBase
     {
         _rollingDotStep = (_rollingDotStep + 1) % 4;
         return core + new string('.', _rollingDotStep);
+    }
+
+    private double ResolveCycleMs()
+    {
+        var speed = _rollMode == EnchantRollMode.Gamepass ? GamepassSpeed : NormalSpeed;
+        return 3400 - (Math.Clamp(speed, 0.0, 1.0) * 2200);
     }
 
     private void SetRollMode(EnchantRollMode mode)

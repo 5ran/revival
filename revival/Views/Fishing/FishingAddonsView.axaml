@@ -12,6 +12,14 @@
                     VerticalAlignment="Center">
             <StackPanel Spacing="6"
                         Margin="0">
+                <StackPanel.Styles>
+                    <Style Selector="ComboBox.totem-select">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                    <Style Selector="CheckBox.auto-totem-option">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                </StackPanel.Styles>
                 <TextBlock Text="Fishing Setup"
                            Classes="tab-section-title"
                            Margin="0" />
@@ -47,11 +55,13 @@
                                    FontFamily="{StaticResource UIFont}"
                                    FontSize="10"
                                    Foreground="{StaticResource TextSecondary}" />
-                        <ComboBox Grid.Column="8"
-                                  Classes="app-select"
-                                  Height="30"
-                                  ItemsSource="{Binding General.RodSlots}"
-                                  SelectedItem="{Binding General.SelectedRodSlot}" />
+                        <TextBox Grid.Column="8"
+                                 Classes="app-input"
+                                 Width="48"
+                                 Height="30"
+                                 MaxLength="1"
+                                 HorizontalContentAlignment="Center"
+                                 Text="{Binding General.RodSlotText}" />
                     </Grid>
                 </Border>
 
@@ -66,70 +76,179 @@
                             Grid.RowSpan="3"
                             Classes="app-header"
                             Padding="10,7">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Auto Totem"
+                        <Grid RowDefinitions="20,6,12,4,30,6,1,6,12,6,24,6,1,6,12,6,24,6,1,6,24"
+                              HorizontalAlignment="Center">
+                            <TextBlock Grid.Row="0"
+                                       Text="Auto Totem"
+                                       Width="300"
                                        HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
                                        FontFamily="{StaticResource DisplayFont}"
                                        FontSize="14"
                                        FontWeight="SemiBold"
                                        Foreground="{StaticResource TextPrimary}" />
-                            <Grid ColumnDefinitions="*,12,*">
-                                <StackPanel Grid.Column="0" Spacing="2">
-                                    <TextBlock Text="Weather" HorizontalAlignment="Center" TextAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                    <ComboBox Classes="app-select" Width="150" Height="30"
-                                              HorizontalAlignment="Center"
-                                              HorizontalContentAlignment="Center"
-                                              ItemsSource="{Binding AutoTotem.PrimaryTotemOptions}"
-                                              SelectedItem="{Binding AutoTotem.SelectedTotem}" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="2" Spacing="2">
-                                    <TextBlock Text="Secondary Weather" HorizontalAlignment="Center" TextAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                    <ComboBox Classes="app-select" Width="150" Height="30"
-                                              HorizontalAlignment="Center"
-                                              HorizontalContentAlignment="Center"
-                                              ItemsSource="{Binding AutoTotem.SecondaryTotemOptions}"
-                                              SelectedItem="{Binding AutoTotem.SelectedSecondaryTotem}" />
-                                </StackPanel>
+
+                            <Grid Grid.Row="2"
+                                  ColumnDefinitions="132,36,132"
+                                  Width="300"
+                                  HorizontalAlignment="Center">
+                                <TextBlock Grid.Column="0"
+                                           Text="Weather"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextSecondary}" />
+                                <TextBlock Grid.Column="2"
+                                           Text="Secondary Weather"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextSecondary}" />
                             </Grid>
 
-                            <Border Height="1"
+                            <Grid Grid.Row="4"
+                                  ColumnDefinitions="132,36,132"
+                                  Width="300"
+                                  HorizontalAlignment="Center">
+                                <ComboBox Grid.Column="0"
+                                          Classes="app-select totem-select"
+                                          Width="118"
+                                          Height="30"
+                                          HorizontalAlignment="Center"
+                                          ItemsSource="{Binding AutoTotem.PrimaryTotemOptions}"
+                                          SelectedItem="{Binding AutoTotem.SelectedTotem}">
+                                    <ComboBox.SelectionBoxItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="*,16">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding}"
+                                                           HorizontalAlignment="Center"
+                                                           TextAlignment="Center"
+                                                           Foreground="{StaticResource TextPrimary}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ComboBox.SelectionBoxItemTemplate>
+                                </ComboBox>
+                                <ComboBox Grid.Column="2"
+                                          Classes="app-select totem-select"
+                                          Width="118"
+                                          Height="30"
+                                          HorizontalAlignment="Center"
+                                          ItemsSource="{Binding AutoTotem.SecondaryTotemOptions}"
+                                          SelectedItem="{Binding AutoTotem.SelectedSecondaryTotem}">
+                                    <ComboBox.SelectionBoxItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="*,16">
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding}"
+                                                           HorizontalAlignment="Center"
+                                                           TextAlignment="Center"
+                                                           Foreground="{StaticResource TextPrimary}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ComboBox.SelectionBoxItemTemplate>
+                                </ComboBox>
+                            </Grid>
+
+                            <Border Grid.Row="6"
+                                    Height="1"
+                                    Width="300"
+                                    HorizontalAlignment="Center"
                                     Background="{StaticResource Border}"
                                     Opacity="0.45" />
 
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="Shiny / Sparkling / Mutation" HorizontalAlignment="Center" TextAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                <Grid ColumnDefinitions="*,8,*,8,*">
-                                    <CheckBox Grid.Column="0" HorizontalAlignment="Center" Content="Shiny" IsChecked="{Binding AutoTotem.UseShinyTotem}" FontSize="11" />
-                                    <CheckBox Grid.Column="2" HorizontalAlignment="Center" Content="Sparkling" IsChecked="{Binding AutoTotem.UseSparklingTotem}" FontSize="11" />
-                                    <CheckBox Grid.Column="4" HorizontalAlignment="Center" Content="Mutation" IsChecked="{Binding AutoTotem.UseMutationTotem}" FontSize="11" />
-                                </Grid>
-                            </StackPanel>
+                            <TextBlock Grid.Row="8"
+                                       Text="Cycle Lock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
 
-                            <Border Height="1"
+                            <Grid Grid.Row="10"
+                                  ColumnDefinitions="Auto,*,Auto"
+                                  Width="300"
+                                  Height="24"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <CheckBox Grid.Column="0"
+                                          Classes="auto-totem-option"
+                                          HorizontalAlignment="Center"
+                                          Content="Stay Day"
+                                          IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
+                                          IsChecked="{Binding AutoTotem.StayDay}"
+                                          FontSize="11" />
+                                <CheckBox Grid.Column="2"
+                                          Classes="auto-totem-option"
+                                          HorizontalAlignment="Center"
+                                          Content="Stay Night"
+                                          IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
+                                          IsChecked="{Binding AutoTotem.StayNight}"
+                                          FontSize="11" />
+                            </Grid>
+
+                            <Border Grid.Row="12"
+                                    Height="1"
+                                    Width="300"
+                                    HorizontalAlignment="Center"
                                     Background="{StaticResource Border}"
                                     Opacity="0.45" />
 
-                            <StackPanel Spacing="3">
-                                <TextBlock Text="Cycle Lock" HorizontalAlignment="Center" TextAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                <Grid ColumnDefinitions="*,8,*">
-                                    <CheckBox Grid.Column="0" HorizontalAlignment="Center" Content="Stay Day"
-                                              IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
-                                              IsChecked="{Binding AutoTotem.StayDay}" FontSize="11" />
-                                    <CheckBox Grid.Column="2" HorizontalAlignment="Center" Content="Stay Night"
-                                              IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
-                                              IsChecked="{Binding AutoTotem.StayNight}" FontSize="11" />
-                                </Grid>
-                            </StackPanel>
-                            <Border Height="1"
+                            <TextBlock Grid.Row="14"
+                                       Text="Shiny / Sparkling / Mutation"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       FontSize="10"
+                                       Foreground="{StaticResource TextSecondary}" />
+
+                            <Grid Grid.Row="16"
+                                  ColumnDefinitions="Auto,*,Auto,*,Auto"
+                                  Width="300"
+                                  Height="24"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <CheckBox Grid.Column="0"
+                                          Classes="auto-totem-option"
+                                          HorizontalAlignment="Center"
+                                          Content="Shiny"
+                                          IsChecked="{Binding AutoTotem.UseShinyTotem}"
+                                          FontSize="11" />
+                                <CheckBox Grid.Column="2"
+                                          Classes="auto-totem-option"
+                                          HorizontalAlignment="Center"
+                                          Content="Sparkling"
+                                          IsChecked="{Binding AutoTotem.UseSparklingTotem}"
+                                          FontSize="11" />
+                                <CheckBox Grid.Column="4"
+                                          Classes="auto-totem-option"
+                                          HorizontalAlignment="Center"
+                                          Content="Mutation"
+                                          IsChecked="{Binding AutoTotem.UseMutationTotem}"
+                                          FontSize="11" />
+                            </Grid>
+
+                            <Border Grid.Row="18"
+                                    Height="1"
+                                    Width="300"
+                                    HorizontalAlignment="Center"
                                     Background="{StaticResource Border}"
                                     Opacity="0.45" />
-                            <CheckBox HorizontalAlignment="Center"
-                                      Margin="0,1,0,0"
-                                      Content="On"
-                                      IsChecked="{Binding AutoTotemEnabled}"
-                                      FontSize="12" />
 
-                        </StackPanel>
+                            <Grid Grid.Row="20"
+                                  ColumnDefinitions="*,Auto,*"
+                                  Width="300"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <CheckBox Grid.Column="1"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="On"
+                                          IsChecked="{Binding AutoTotemEnabled}"
+                                          FontSize="12" />
+                            </Grid>
+                        </Grid>
                     </Border>
 
                     <Border Grid.Column="2"

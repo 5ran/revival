@@ -5,100 +5,130 @@
              x:Class="Client.Views.SettingsView"
              x:DataType="vm:SettingsViewModel"
              Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="Slider.interface-sound">
+            <Setter Property="Height" Value="16" />
+        </Style>
+        <Style Selector="Slider.interface-sound /template/ Track#PART_Track">
+            <Setter Property="Height" Value="3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Slider.interface-sound /template/ Thumb">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="Height" Value="12" />
+        </Style>
+        <Style Selector="Slider.interface-sound /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Slider.interface-sound:pointerover /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="Slider.interface-sound /template/ RepeatButton#PART_IncreaseButton">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBorder}" />
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="Slider.interface-sound /template/ Thumb /template/ Ellipse">
+            <Setter Property="Fill" Value="{StaticResource Accent}" />
+            <Setter Property="Stroke" Value="{StaticResource AccentHover}" />
+            <Setter Property="StrokeThickness" Value="1" />
+        </Style>
+    </UserControl.Styles>
     <UserControl.DataTemplates>
         <DataTemplate DataType="{x:Type vm:SettingsClientViewModel}">
             <views:SettingsClientView />
         </DataTemplate>
     </UserControl.DataTemplates>
 
-    <Panel>
-        <Grid Margin="0,10"
-              RowDefinitions="Auto,*"
-              Width="550"
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  VerticalContentAlignment="Center"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Width="550"
+              Margin="0,16,0,12"
               HorizontalAlignment="Center"
               VerticalAlignment="Center"
-              IsVisible="{Binding IsMainViewVisible}">
-            <Border Grid.Row="0"
-                    Classes="app-card"
-                    Margin="0">
-            <StackPanel Spacing="14">
-                <Button Classes="app-nav"
-                        Height="44"
-                        Command="{Binding NavigateToClientCommand}">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Grid.Column="0"
-                                   Text="Client"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="13"
-                                   Foreground="{StaticResource TextPrimary}" />
-                        <Path Grid.Column="1"
-                              Classes="app-nav-arrow"
-                              Data="M 0,0 L 5,4.5 L 0,9"
-                              StrokeThickness="1.5"
-                              StrokeLineCap="Round"
-                              VerticalAlignment="Center" />
-                    </Grid>
-                </Button>
+              RowDefinitions="Auto,Auto">
+            <StackPanel Grid.Row="0"
+                        Spacing="12"
+                        HorizontalAlignment="Center">
+                <Border Classes="app-card"
+                        Width="550"
+                        Padding="18,16">
+                    <ContentControl Content="{Binding ClientSettings}" />
+                </Border>
 
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Interface Sounds"
-                               Classes="tab-section-title" />
-                    <Rectangle Height="1"
-                               Fill="{StaticResource Border}" />
-                    <Grid ColumnDefinitions="*,Auto"
-                          RowDefinitions="Auto,Auto"
-                          RowSpacing="10">
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="Enable Interface Sounds"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextPrimary}" />
-                        <ToggleSwitch Grid.Row="0"
-                                      Grid.Column="1"
-                                      IsChecked="{Binding InterfaceSoundsEnabled}" />
+                <Border Classes="app-card"
+                        Width="550"
+                        Padding="18,16">
+                    <StackPanel Width="480"
+                                Spacing="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Interface Sounds"
+                                   Classes="tab-section-title"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center" />
+                        <Border Height="1"
+                                Background="{StaticResource Border}" />
+                        <Grid RowDefinitions="Auto,Auto"
+                              RowSpacing="12"
+                              HorizontalAlignment="Center">
+                            <StackPanel Grid.Row="0"
+                                        Orientation="Horizontal"
+                                        Spacing="12"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="Enable Interface Sounds"
+                                           Width="150"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Right"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="12"
+                                           Foreground="{StaticResource TextPrimary}" />
+                                <ToggleSwitch IsChecked="{Binding InterfaceSoundsEnabled}"
+                                              VerticalAlignment="Center" />
+                            </StackPanel>
 
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="0"
-                                   Text="Interface Sound Volume"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextPrimary}" />
-                        <Grid Grid.Row="1"
-                              Grid.Column="1"
-                              Width="220"
-                              ColumnDefinitions="*,42"
-                              ColumnSpacing="8">
-                            <Slider Grid.Column="0"
-                                    Minimum="0"
-                                    Maximum="100"
-                                    Value="{Binding InterfaceSoundVolume}" />
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding InterfaceSoundVolume, StringFormat={}{0:0}%}"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Center"
-                                       FontFamily="{StaticResource MonoFont}"
-                                       FontSize="11"
-                                       Foreground="{StaticResource TextSecondary}" />
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        Spacing="12"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="Interface Sound Volume"
+                                           Width="150"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Right"
+                                           FontFamily="{StaticResource DisplayFont}"
+                                           FontSize="13"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimary}" />
+                                <Slider Classes="interface-sound"
+                                        Minimum="0"
+                                        Maximum="100"
+                                        Width="112"
+                                        VerticalAlignment="Center"
+                                        Value="{Binding InterfaceSoundVolume}" />
+                                <TextBlock Text="{Binding InterfaceSoundVolume, StringFormat={}{0:0}%}"
+                                           Width="34"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Left"
+                                           FontFamily="{StaticResource MonoFont}"
+                                           FontSize="11"
+                                           Foreground="{StaticResource TextPrimary}" />
+                            </StackPanel>
                         </Grid>
-                    </Grid>
-                </StackPanel>
+                    </StackPanel>
+                </Border>
             </StackPanel>
-            </Border>
 
             <TextBlock Grid.Row="1"
+                       Margin="0,8,0,0"
                        Text="{Binding AppVersionText}"
                        HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
                        FontFamily="{StaticResource UIFont}"
                        FontSize="11"
                        Foreground="{StaticResource TextSecondary}" />
         </Grid>
-
-        <ContentControl Content="{Binding CurrentSubView}"
-                        IsVisible="{Binding !IsMainViewVisible}" />
-    </Panel>
+    </ScrollViewer>
 </UserControl>

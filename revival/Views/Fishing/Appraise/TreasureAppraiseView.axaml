@@ -4,51 +4,88 @@
              x:Class="Client.Views.TreasureAppraiseView"
              x:DataType="vm:TreasureAppraiseViewModel"
              Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="TextBox.treasure-input">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Height" Value="21" />
+            <Setter Property="Padding" Value="10,-1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+    </UserControl.Styles>
+
     <Border Classes="app-card"
-            Padding="12,4">
-        <Grid ColumnDefinitions="Auto,16,*,12,*,12,1.15*"
-              VerticalAlignment="Center">
-            <CheckBox Grid.Column="0"
+            Width="550"
+            HorizontalAlignment="Center"
+            Padding="20,0">
+        <Grid RowDefinitions="42,1,56">
+            <CheckBox Grid.Row="0"
                       IsChecked="{Binding AutoTreasureEnabled}"
                       Content="Auto Treasure"
+                      HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      FontFamily="{StaticResource UIFont}"
-                      FontSize="12"
+                      FontFamily="{StaticResource DisplayFont}"
+                      FontSize="13"
+                      FontWeight="SemiBold"
                       Foreground="{StaticResource TextPrimary}" />
 
-            <StackPanel Grid.Column="2"
-                        Spacing="3">
-                <TextBlock Text="Click Delay (sec)"
-                           HorizontalAlignment="Center"
-                           FontSize="10"
-                           Foreground="{StaticResource TextSecondary}" />
-                <TextBox Classes="app-input"
-                         Height="26"
-                         HorizontalContentAlignment="Center"
-                         Text="{Binding ClickDelaySecondsText}" />
-            </StackPanel>
+            <Border Grid.Row="1"
+                    Background="{StaticResource Border}" />
 
-            <StackPanel Grid.Column="4"
-                        Spacing="3">
-                <TextBlock Text="Minimum Multi"
-                           HorizontalAlignment="Center"
-                           FontSize="10"
-                           Foreground="{StaticResource TextSecondary}" />
-                <TextBox Classes="app-input"
-                         Height="26"
-                         HorizontalContentAlignment="Center"
-                         Text="{Binding TargetWeightText}"
-                         PlaceholderText="0.00" />
-            </StackPanel>
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="145,15,1,15,145,15,1,15,145"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <StackPanel Grid.Column="0"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Click Delay (sec)"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBox Classes="app-input treasure-input"
+                             Width="112"
+                             HorizontalAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Text="{Binding ClickDelaySecondsText}" />
+                </StackPanel>
 
-            <Border Grid.Column="6"
-                    BorderBrush="{StaticResource Border}"
-                    BorderThickness="1,0,0,0"
-                    Padding="14,0,0,0">
-                <StackPanel Spacing="3"
+                <Border Grid.Column="2"
+                        Background="{StaticResource Border}"
+                        Margin="0,8" />
+
+                <StackPanel Grid.Column="4"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Minimum Multi"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBox Classes="app-input treasure-input"
+                             Width="112"
+                             HorizontalAlignment="Center"
+                             HorizontalContentAlignment="Center"
+                             Text="{Binding TargetWeightText}"
+                             PlaceholderText="0.00" />
+                </StackPanel>
+
+                <Border Grid.Column="6"
+                        Background="{StaticResource Border}"
+                        Margin="0,8" />
+
+                <StackPanel Grid.Column="8"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <TextBlock Text="Status"
                                HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <TextBlock Text="{Binding StatusText}"
@@ -56,11 +93,11 @@
                                TextAlignment="Center"
                                TextTrimming="CharacterEllipsis"
                                FontFamily="{StaticResource DisplayFont}"
-                               FontSize="14"
+                               FontSize="13"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextPrimary}" />
                 </StackPanel>
-            </Border>
+            </Grid>
         </Grid>
     </Border>
 </UserControl>

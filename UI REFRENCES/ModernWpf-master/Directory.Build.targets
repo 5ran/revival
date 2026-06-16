@@ -1,0 +1,36 @@
+﻿<Project>
+  <PropertyGroup Condition="'$(PackageId)' != ''">
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/Kinnara/ModernWpf</PackageProjectUrl>
+    <PackageTags>WPF XAML UI Theme Controls Fluent Modern Metro WinUI</PackageTags>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)artifacts</PackageOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.6.1')) or
+                            '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <DefineConstants>$(DefineConstants);NET461_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.6.2')) or
+                            '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <DefineConstants>$(DefineConstants);NET462_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.7')) or
+                            '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <DefineConstants>$(DefineConstants);NET47_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.7.2')) or
+                            '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <DefineConstants>$(DefineConstants);NET472_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '4.8')) or
+                            '$(TargetFrameworkIdentifier)' == '.NETCoreApp'">
+    <DefineConstants>$(DefineConstants);NET48_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '5.0'))">
+    <DefineConstants>$(DefineConstants);NET5_0_OR_NEWER</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(SupportedOSPlatform)' != '' and $([MSBuild]::VersionGreaterThan($(SupportedOSPlatform), '7.0'))">
+    <SupportedOSPlatform>7.0</SupportedOSPlatform>
+  </PropertyGroup>
+</Project>

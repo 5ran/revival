@@ -1,39 +1,18 @@
 using System;
 using System.Reflection;
-using System.Windows.Input;
 using Client.Services;
 
 namespace Client.ViewModels;
 
 public sealed class SettingsViewModel : ViewModelBase
 {
-    private ViewModelBase? _currentSubView;
-
     public SettingsViewModel()
     {
         InterfaceSoundService.SettingsChanged += OnInterfaceSoundSettingsChanged;
-        NavigateToClientCommand = new RelayCommand(_ =>
-        {
-            CurrentSubView = new SettingsClientViewModel(ShowMainView);
-            return System.Threading.Tasks.Task.CompletedTask;
-        });
+        ClientSettings = new SettingsClientViewModel();
     }
 
-    public ViewModelBase? CurrentSubView
-    {
-        get => _currentSubView;
-        private set
-        {
-            if (_currentSubView is IDisposable old)
-                old.Dispose();
-            SetProperty(ref _currentSubView, value);
-            OnPropertyChanged(nameof(IsMainViewVisible));
-        }
-    }
-
-    public bool IsMainViewVisible => _currentSubView is null;
-
-    public ICommand NavigateToClientCommand { get; }
+    public SettingsClientViewModel ClientSettings { get; }
 
     public string AppVersionText { get; } = ResolveAppVersionText();
 
@@ -53,12 +32,8 @@ public sealed class SettingsViewModel : ViewModelBase
     // page always lands on the main view, never the previously-opened sub-page.
     public void ResetToMainView()
     {
-        CurrentSubView = null;
-    }
-
-    private void ShowMainView()
-    {
-        CurrentSubView = null;
+        // Settings now renders as a single integrated page, so there is no
+        // sub-view state to reset when re-entering Edit.
     }
 
     private void OnInterfaceSoundSettingsChanged()

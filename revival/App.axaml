@@ -265,18 +265,14 @@
                                 Background="{StaticResource CheckboxBackground}"
                                 BorderBrush="{StaticResource CheckboxBorder}"
                                 BorderThickness="1"
-                                CornerRadius="4">
-                            <Path Name="CheckMark"
+                                CornerRadius="9">
+                            <Ellipse Name="CheckMark"
                                   IsVisible="False"
-                                  Width="9"
-                                  Height="7"
+                                  Width="8"
+                                  Height="8"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
-                                  Stretch="Fill"
-                                  Stroke="{StaticResource CheckboxCheckForeground}"
-                                  StrokeThickness="1.7"
-                                  StrokeLineCap="Round"
-                                  Data="M 0 3.5 L 3 6.5 L 9 0" />
+                                  Fill="{StaticResource CheckboxCheckedBackground}" />
                         </Border>
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center" />
@@ -295,11 +291,10 @@
         </Style>
 
         <Style Selector="CheckBox:checked /template/ Border#CheckBoxRoot">
-            <Setter Property="Background" Value="{StaticResource CheckboxCheckedBackground}" />
             <Setter Property="BorderBrush" Value="{StaticResource CheckboxCheckedBorder}" />
         </Style>
 
-        <Style Selector="CheckBox:checked /template/ Path#CheckMark">
+        <Style Selector="CheckBox:checked /template/ Ellipse#CheckMark">
             <Setter Property="IsVisible" Value="True" />
         </Style>
 
@@ -410,7 +405,7 @@
                            Value="{TemplateBinding Value, Mode=TwoWay}">
                         <Track.DecreaseButton>
                             <RepeatButton Name="PART_DecreaseButton"
-                                          Background="{StaticResource Accent}"
+                                          Background="{DynamicResource Accent}"
                                           BorderThickness="0">
                                 <RepeatButton.Template>
                                     <ControlTemplate>
@@ -422,19 +417,22 @@
                         </Track.DecreaseButton>
                         <Track.Thumb>
                             <Thumb Width="18"
-                                   Height="18">
+                                   Height="18"
+                                   Background="{DynamicResource Accent}"
+                                   BorderBrush="{DynamicResource AccentHover}"
+                                   BorderThickness="1">
                                 <Thumb.Template>
                                     <ControlTemplate>
-                                        <Ellipse Fill="{StaticResource Accent}"
-                                                 Stroke="{StaticResource AccentHover}"
-                                                 StrokeThickness="1" />
+                                        <Ellipse Fill="{TemplateBinding Background}"
+                                                 Stroke="{TemplateBinding BorderBrush}"
+                                                 StrokeThickness="{TemplateBinding BorderThickness}" />
                                     </ControlTemplate>
                                 </Thumb.Template>
                             </Thumb>
                         </Track.Thumb>
                         <Track.IncreaseButton>
                             <RepeatButton Name="PART_IncreaseButton"
-                                          Background="{StaticResource Border}"
+                                          Background="{DynamicResource Border}"
                                           BorderThickness="0">
                                 <RepeatButton.Template>
                                     <ControlTemplate>
@@ -450,15 +448,21 @@
         </Style>
 
         <Style Selector="Slider /template/ RepeatButton#PART_DecreaseButton">
-            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Background" Value="{DynamicResource Accent}" />
         </Style>
 
         <Style Selector="Slider:pointerover /template/ RepeatButton#PART_DecreaseButton">
-            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+            <Setter Property="Background" Value="{DynamicResource AccentHover}" />
         </Style>
 
         <Style Selector="Slider /template/ RepeatButton#PART_IncreaseButton">
-            <Setter Property="Background" Value="{StaticResource Border}" />
+            <Setter Property="Background" Value="{DynamicResource Border}" />
+        </Style>
+
+        <Style Selector="Slider /template/ Thumb">
+            <Setter Property="Background" Value="{DynamicResource Accent}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentHover}" />
+            <Setter Property="BorderThickness" Value="1" />
         </Style>
 
         <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">

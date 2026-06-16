@@ -283,7 +283,18 @@ public sealed class AppraiseViewModel : ViewModelBase
         }
     }
 
-    public string GamepassSpeedPercentText => $"{Math.Round(GamepassSpeed * 100)}%";
+    public string GamepassSpeedPercentText
+    {
+        get => $"{Math.Round(GamepassSpeed * 100)}";
+        set
+        {
+            var raw = (value ?? string.Empty).Trim().TrimEnd('%');
+            if (double.TryParse(raw, out var percent))
+            {
+                GamepassSpeed = Math.Clamp(percent, 0.0, 100.0) / 100.0;
+            }
+        }
+    }
 
     public Task ToggleAsync()
     {

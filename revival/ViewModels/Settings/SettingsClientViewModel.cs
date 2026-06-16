@@ -7,7 +7,7 @@ namespace Client.ViewModels;
 
 public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
 {
-    private readonly Action _navigateBack;
+    private bool _isCustomEditorOpen;
     private string _backgroundHex = string.Empty;
     private string _surfaceHex = string.Empty;
     private string _borderHex = string.Empty;
@@ -15,15 +15,8 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
     private string _textPrimaryHex = string.Empty;
     private bool _suppressHexSync;
 
-    public SettingsClientViewModel(Action navigateBack)
+    public SettingsClientViewModel()
     {
-        _navigateBack = navigateBack;
-        BackCommand = new RelayCommand(_ =>
-        {
-            _navigateBack();
-            return System.Threading.Tasks.Task.CompletedTask;
-        });
-
         SelectDarkCommand = new RelayCommand(_ =>
         {
             SetTheme(AppTheme.Dark);
@@ -48,10 +41,16 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
             return System.Threading.Tasks.Task.CompletedTask;
         });
 
-        SelectCustomCommand = new RelayCommand(_ =>
+        ToggleCustomEditorCommand = new RelayCommand(_ =>
         {
-            SeedCustomFromCurrentIfUnset();
-            SetTheme(AppTheme.Custom);
+            if (IsCustomEditorOpen)
+            {
+                IsCustomEditorOpen = false;
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+
+            LoadEditorFromCurrentTheme();
+            IsCustomEditorOpen = true;
             return System.Threading.Tasks.Task.CompletedTask;
         });
 
@@ -66,13 +65,26 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
     public bool IsSlateSelected => ThemeService.Current == AppTheme.Slate;
     public bool IsPinkSelected => ThemeService.Current == AppTheme.Pink;
     public bool IsCustomSelected => ThemeService.Current == AppTheme.Custom;
+    public bool IsCustomCardActive => IsCustomEditorOpen || IsCustomSelected;
+    public bool IsCustomEditorOpen
+    {
+        get => _isCustomEditorOpen;
+        private set
+        {
+            if (SetProperty(ref _isCustomEditorOpen, value))
+            {
+                OnPropertyChanged(nameof(CustomEditorButtonText));
+                OnPropertyChanged(nameof(IsCustomCardActive));
+            }
+        }
+    }
+    public string CustomEditorButtonText => IsCustomEditorOpen ? "Close" : "Open";
 
-    public ICommand BackCommand { get; }
     public ICommand SelectDarkCommand { get; }
     public ICommand SelectLightCommand { get; }
     public ICommand SelectSlateCommand { get; }
     public ICommand SelectPinkCommand { get; }
-    public ICommand SelectCustomCommand { get; }
+    public ICommand ToggleCustomEditorCommand { get; }
 
     public string BackgroundHex
     {
@@ -147,7 +159,15 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
 
         var anchors = ThemeService.CustomAnchors.Clone();
         write(anchors, value);
-        ThemeService.SetCustomAnchors(anchors, apply: ThemeService.Current == AppTheme.Custom);
+        ThemeService.SetCustomAnchors(anchors, apply: false);
+        if (ThemeService.Current != AppTheme.Custom)
+        {
+            ThemeService.Apply(AppTheme.Custom);
+        }
+        else
+        {
+            ThemeService.Apply(AppTheme.Custom);
+        }
         SyncHexFromAnchors();
     }
 
@@ -156,20 +176,22 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
         ThemeService.Apply(theme);
     }
 
-    private void SeedCustomFromCurrentIfUnset()
+    private void LoadEditorFromCurrentTheme()
     {
-        // Only seed on the very first activation, before the user has ever
-        // customized or loaded a saved custom theme. After that, the stored
-        // anchors must survive switching to other presets and back.
-        if (ThemeService.HasCustomAnchors) return;
-
         var src = ThemeService.Current switch
         {
             AppTheme.Light => ThemeColors.Light,
             AppTheme.Slate => ThemeColors.Slate,
             AppTheme.Pink => ThemeColors.Pink,
+            AppTheme.Custom => null,
             _ => ThemeColors.Dark,
         };
+
+        if (src is null)
+        {
+            SyncHexFromAnchors();
+            return;
+        }
 
         var anchors = new CustomThemeAnchors
         {
@@ -243,6 +265,7 @@ public sealed class SettingsClientViewModel : ViewModelBase, IDisposable
         OnPropertyChanged(nameof(IsSlateSelected));
         OnPropertyChanged(nameof(IsPinkSelected));
         OnPropertyChanged(nameof(IsCustomSelected));
+        OnPropertyChanged(nameof(IsCustomCardActive));
         SyncHexFromAnchors();
     }
 

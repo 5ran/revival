@@ -151,12 +151,26 @@ public sealed class GeneralViewModel : ViewModelBase
         get => _selectedRodSlot;
         set
         {
-            if (!SetProperty(ref _selectedRodSlot, value))
+            var clamped = Math.Clamp(value, 1, 9);
+            if (!SetProperty(ref _selectedRodSlot, clamped))
             {
                 return;
             }
 
-            HotbarSlotSettings.RodSlot = value;
+            HotbarSlotSettings.RodSlot = clamped;
+            OnPropertyChanged(nameof(RodSlotText));
+        }
+    }
+
+    public string RodSlotText
+    {
+        get => SelectedRodSlot.ToString();
+        set
+        {
+            if (int.TryParse(value, out var slot))
+            {
+                SelectedRodSlot = Math.Clamp(slot, 1, 9);
+            }
         }
     }
 

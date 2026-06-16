@@ -6,6 +6,92 @@
              x:DataType="vm:EnchantViewModel"
              Background="{StaticResource Background}">
     <UserControl.Styles>
+        <Style Selector="Border.enchant-picker">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+        <Style Selector="TextBox.enchant-picker-search">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="6,0,0,6" />
+        </Style>
+        <Style Selector="Button.enchant-picker-button">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="BorderThickness" Value="1,0,0,0" />
+            <Setter Property="CornerRadius" Value="0,6,6,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.enchant-picker-button /template/ ContentPresenter">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.12" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.enchant-picker-button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Button.enchant-picker-button:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="Button.enchant-add">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="0,5,5,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.enchant-add /template/ ContentPresenter">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.12" />
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.enchant-add:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Button.enchant-add:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="ListBox.enchant-dropdown">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="ListBox.enchant-dropdown ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="ListBox.enchant-dropdown ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="ListBox.enchant-dropdown ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryHoverBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+        </Style>
+        <Style Selector="ListBox.enchant-dropdown ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
+        </Style>
         <Style Selector="ComboBox.enchant-select">
             <Setter Property="Background" Value="{StaticResource Surface}"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
@@ -17,157 +103,353 @@
             <Setter Property="Padding" Value="12,0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
+
+        <Style Selector="Border.enchant-segmented">
+            <Setter Property="Background" Value="{StaticResource Surface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+
         <Style Selector="RadioButton.enchant-mode">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
             <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="RadioButton.enchant-mode:pointerover">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryHoverBackground}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
+        </Style>
+        <Style Selector="RadioButton.enchant-mode:checked">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
+        </Style>
+        <Style Selector="RadioButton.enchant-mode:checked:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentForeground}"/>
+        </Style>
+        <Style Selector="Slider.enchant-speed">
+            <Setter Property="Height" Value="16" />
+        </Style>
+        <Style Selector="Slider.enchant-speed /template/ Track#PART_Track">
+            <Setter Property="Height" Value="3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Slider.enchant-speed /template/ Thumb">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="Height" Value="12" />
+        </Style>
+        <Style Selector="Slider.enchant-speed /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Slider.enchant-speed:pointerover /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="Slider.enchant-speed /template/ RepeatButton#PART_IncreaseButton">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBorder}" />
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="Slider.enchant-speed /template/ Thumb /template/ Ellipse">
+            <Setter Property="Fill" Value="{StaticResource Accent}" />
+            <Setter Property="Stroke" Value="{StaticResource AccentHover}" />
+            <Setter Property="StrokeThickness" Value="1" />
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,8,Auto"
-          Width="550"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center">
-        <Border Grid.Row="0"
-                Classes="app-card"
-                Padding="14">
-            <StackPanel Spacing="10">
-                <CheckBox IsChecked="{Binding AutoEnchantEnabled}"
+    <Border Classes="app-card"
+            Width="550"
+            HorizontalAlignment="Center"
+            Padding="0">
+        <Grid RowDefinitions="70,1,42,1,176">
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="145,12,1,12,170,12,1,12,145"
+                  HorizontalAlignment="Center"
+                  Margin="16,12">
+                <StackPanel Grid.Column="0"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Rod"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <controls:ColoredTextBlock Lines="{Binding EquippedRodLines}"
+                                               HorizontalAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               FontFamily="{StaticResource DisplayFont}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold" />
+                </StackPanel>
+
+                <Border Grid.Column="2"
+                        Background="{StaticResource Border}" />
+
+                <CheckBox Grid.Column="4"
+                          IsChecked="{Binding AutoEnchantEnabled}"
                           Content="Auto Enchant"
                           HorizontalAlignment="Center"
                           VerticalAlignment="Center"
                           FontFamily="{StaticResource UIFont}"
                           FontSize="13"
+                          FontWeight="SemiBold"
                           Foreground="{StaticResource TextPrimary}" />
 
-                <Grid ColumnDefinitions="*,*"
-                      ColumnSpacing="10">
-                    <Border Grid.Column="0"
-                            Classes="app-card"
-                            BorderBrush="{StaticResource Border}"
-                            BorderThickness="1"
-                            Padding="12,8"
-                            Background="{StaticResource Surface}">
-                        <RadioButton Classes="enchant-mode"
+                <Border Grid.Column="6"
+                        Background="{StaticResource Border}" />
+
+                <StackPanel Grid.Column="8"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Status"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <controls:ColoredTextBlock Lines="{Binding StatusLines}"
+                                               HorizontalAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               FontFamily="{StaticResource DisplayFont}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold" />
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Row="1"
+                    Background="{StaticResource Border}" />
+
+            <Grid Grid.Row="2"
+                  Margin="22,6">
+                <Border Classes="enchant-segmented"
+                        Width="210"
+                        Height="30"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="2">
+                        <RadioButton Grid.Column="0"
+                                     Classes="enchant-mode"
                                      GroupName="EnchantRollMode"
                                      Content="Gamepass"
                                      IsChecked="{Binding IsGamepassMode}" />
-                    </Border>
-                    <Border Grid.Column="1"
-                            Classes="app-card"
-                            BorderBrush="{StaticResource Border}"
-                            BorderThickness="1"
-                            Padding="12,8"
-                            Background="{StaticResource Surface}">
-                        <RadioButton Classes="enchant-mode"
+                        <RadioButton Grid.Column="1"
+                                     Classes="enchant-mode"
                                      GroupName="EnchantRollMode"
                                      Content="Normal"
                                      IsChecked="{Binding IsNormalMode}" />
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <Border Grid.Row="3"
+                    Background="{StaticResource Border}" />
+
+            <Grid Grid.Row="4"
+                  RowDefinitions="Auto,8,Auto,12,38,12,36"
+                  Margin="22,12">
+                <TextBlock Grid.Row="0"
+                           Text="Target Enchant"
+                           Classes="tab-section-title" />
+
+                <StackPanel Grid.Row="2"
+                            Spacing="2"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Selected"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <TextBlock Text="{Binding SelectedTargetEnchantName}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Foreground="{Binding SelectedTargetEnchantBrush}"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="13"
+                               FontWeight="SemiBold" />
+                </StackPanel>
+
+                <Grid Grid.Row="4"
+                      ColumnDefinitions="*,12,*"
+                      HorizontalAlignment="Stretch">
+                    <Panel Grid.Column="0">
+                        <Border x:Name="EnchantPicker"
+                                Classes="enchant-picker"
+                                Height="34"
+                                HorizontalAlignment="Stretch">
+                            <Grid ColumnDefinitions="*,64">
+                                <TextBox Grid.Column="0"
+                                         Classes="app-input enchant-picker-search"
+                                         Height="34"
+                                         PlaceholderText="Search"
+                                         Text="{Binding TargetSearchText}" />
+                                <Button Grid.Column="1"
+                                        Classes="enchant-picker-button"
+                                        Height="34"
+                                        Click="EnchantDropdownButton_OnClick">
+                                    <Path Width="10"
+                                          Height="6"
+                                          Stretch="Fill"
+                                          Fill="{StaticResource AccentForeground}"
+                                          Data="M 0 0 L 5 6 L 10 0 Z" />
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <Popup x:Name="EnchantDropdownPopup"
+                               PlacementTarget="{Binding #EnchantPicker}"
+                               Placement="BottomEdgeAlignedLeft"
+                               IsLightDismissEnabled="True">
+                            <Border Background="{StaticResource Surface}"
+                                    BorderBrush="{StaticResource Border}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Padding="4"
+                                    Width="{Binding #EnchantPicker.Bounds.Width}"
+                                    Margin="0,4,0,0">
+                                <ScrollViewer MaxHeight="220"
+                                              VerticalScrollBarVisibility="Auto">
+                                    <ListBox Classes="enchant-dropdown"
+                                             ItemsSource="{Binding TargetEnchants}"
+                                             SelectedItem="{Binding SelectedTargetEnchant}"
+                                             SelectionChanged="EnchantTargetList_OnSelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:EnchantOptionViewModel">
+                                                <TextBlock Text="{Binding Name}"
+                                                           Foreground="{Binding Brush}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="13"
+                                                           Margin="8,6" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Panel>
+
+                    <Border Grid.Column="2"
+                            Classes="enchant-picker"
+                            Height="34"
+                            HorizontalAlignment="Stretch">
+                        <Grid ColumnDefinitions="*,56">
+                            <TextBox Grid.Column="0"
+                                     Classes="app-input enchant-picker-search"
+                                     Height="34"
+                                     PlaceholderText="Custom enchant"
+                                     Text="{Binding NewEnchantText}" />
+                            <Button Grid.Column="1"
+                                    Classes="enchant-add"
+                                    Height="34"
+                                    Content="Add"
+                                    Command="{Binding AddEnchantCommand}" />
+                        </Grid>
                     </Border>
                 </Grid>
 
-                <Grid ColumnDefinitions="*,120"
-                      ColumnSpacing="10">
-                    <StackPanel Grid.Column="0"
-                                Spacing="5">
-                        <TextBlock Text="Target Enchant"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="12"
-                                   Foreground="{StaticResource TextSecondary}" />
-                        <TextBox Classes="app-input"
-                                 Height="32"
-                                 PlaceholderText="Search"
-                                 Text="{Binding TargetSearchText}" />
-                        <ComboBox Classes="enchant-select"
-                                  Height="38"
-                                  ItemsSource="{Binding TargetEnchants}"
-                                  SelectedItem="{Binding SelectedTargetEnchant}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate x:DataType="vm:EnchantOptionViewModel">
-                                    <TextBlock Text="{Binding Name}"
-                                               Foreground="{Binding Brush}"
-                                               FontFamily="{StaticResource UIFont}"
-                                               FontSize="13" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-
-                    <StackPanel Grid.Column="1"
-                                VerticalAlignment="Bottom"
-                                Spacing="5">
-                        <TextBox Classes="app-input"
-                                 Width="120"
-                                 Height="32"
-                                 PlaceholderText="New"
-                                 Text="{Binding NewEnchantText}" />
-                        <Button Classes="app-primary"
-                                Width="120"
-                                Height="38"
-                                Content="Add"
-                                Command="{Binding AddEnchantCommand}" />
-                    </StackPanel>
+                <Grid Grid.Row="6"
+                      Margin="8,0"
+                      IsVisible="{Binding IsGamepassMode}">
+                    <Grid Width="300"
+                          ColumnDefinitions="96,12,144,12,36"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Roll Speed"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"
+                                   FontFamily="{StaticResource DisplayFont}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Slider Grid.Column="2"
+                                Classes="enchant-speed"
+                                Minimum="0"
+                                Maximum="1"
+                                Width="144"
+                                VerticalAlignment="Center"
+                                Value="{Binding GamepassSpeed}"
+                                TickFrequency="0.05" />
+                        <TextBlock Grid.Column="4"
+                                   Text="{Binding GamepassSpeedPercentText}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
                 </Grid>
-            </StackPanel>
-        </Border>
 
-        <Grid Grid.Row="2"
-              ColumnDefinitions="*,*,*"
-              ColumnSpacing="12">
-            <Border Grid.Column="0"
-                    Classes="app-card"
-                    Height="112"
-                    VerticalAlignment="Top"
-                    Padding="18,16">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Rod"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="12"
-                               Foreground="{StaticResource TextSecondary}" />
-                    <controls:ColoredTextBlock Lines="{Binding EquippedRodLines}"
-                                               TextWrapping="Wrap"
-                                               FontFamily="{StaticResource DisplayFont}"
-                                               FontSize="18"
-                                               FontWeight="SemiBold" />
-                </StackPanel>
-            </Border>
+                <Grid Grid.Row="6"
+                      Margin="8,0"
+                      IsVisible="{Binding IsNormalMode}">
+                    <Grid Width="300"
+                          ColumnDefinitions="96,12,144,12,36"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Action Delay"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"
+                                   FontFamily="{StaticResource DisplayFont}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Slider Grid.Column="2"
+                                Classes="enchant-speed"
+                                Minimum="0"
+                                Maximum="1"
+                                Width="144"
+                                VerticalAlignment="Center"
+                                Value="{Binding NormalSpeed}"
+                                TickFrequency="0.05" />
+                        <TextBlock Grid.Column="4"
+                                   Text="{Binding NormalSpeedPercentText}"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextPrimary}" />
+                    </Grid>
+                </Grid>
+            </Grid>
 
-            <Border Grid.Column="1"
-                    Classes="app-card"
-                    Height="112"
-                    VerticalAlignment="Top"
-                    Padding="18,16">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Current Enchant"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="12"
-                               Foreground="{StaticResource TextSecondary}" />
-                    <controls:ColoredTextBlock Lines="{Binding CurrentEnchantLines}"
-                                               TextWrapping="Wrap"
-                                               FontFamily="{StaticResource DisplayFont}"
-                                               FontSize="18"
-                                               FontWeight="SemiBold" />
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Column="2"
-                    Classes="app-card"
-                    Height="112"
-                    VerticalAlignment="Top"
-                    Padding="18,16">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Status"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="12"
-                               Foreground="{StaticResource TextSecondary}" />
-                    <controls:ColoredTextBlock Lines="{Binding StatusLines}"
-                                               TextWrapping="Wrap"
-                                               FontFamily="{StaticResource DisplayFont}"
-                                               FontSize="18"
-                                               FontWeight="SemiBold" />
-                </StackPanel>
-            </Border>
         </Grid>
-    </Grid>
+    </Border>
 </UserControl>

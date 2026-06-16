@@ -160,18 +160,14 @@
                                 Background="{StaticResource TableSurface}"
                                 BorderBrush="{StaticResource Border}"
                                 BorderThickness="1"
-                                CornerRadius="3">
-                            <Path Name="ChoiceMark"
+                                CornerRadius="7.5">
+                            <Ellipse Name="ChoiceMark"
                                   IsVisible="False"
-                                  Width="7"
-                                  Height="5"
+                                  Width="6"
+                                  Height="6"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
-                                  Stretch="Fill"
-                                  Stroke="{StaticResource AccentForeground}"
-                                  StrokeThickness="1.6"
-                                  StrokeLineCap="Round"
-                                  Data="M 0 2.5 L 2.5 5 L 7 0" />
+                                  Fill="{StaticResource AccentForeground}" />
                         </Border>
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center" />
@@ -181,11 +177,10 @@
         </Style>
 
         <Style Selector="CheckBox.fish-skip-choice:checked /template/ Border#ChoiceBox">
-            <Setter Property="Background" Value="{StaticResource Accent}" />
             <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
         </Style>
 
-        <Style Selector="CheckBox.fish-skip-choice:checked /template/ Path#ChoiceMark">
+        <Style Selector="CheckBox.fish-skip-choice:checked /template/ Ellipse#ChoiceMark">
             <Setter Property="IsVisible" Value="True" />
         </Style>
     </UserControl.Styles>

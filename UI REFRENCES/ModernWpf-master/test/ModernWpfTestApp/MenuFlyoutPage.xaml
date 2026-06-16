@@ -1,0 +1,142 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<local:TestPage
+    x:Class="MUXControlsTestApp.MenuFlyoutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:MUXControlsTestApp"
+    xmlns:muxc="http://schemas.modernwpf.com/2019"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{DynamicResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.RowSpan="2">
+            <ButtonEx Content="Short Text MenuFlyout" x:Name="TestMenuFlyoutButton" AutomationProperties.Name="TestMenuFlyoutButton" Margin="0,0,0,12">
+                <ButtonEx.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Reset" x:Name="TestMenuFlyoutItem" AutomationProperties.Name="TestMenuFlyoutItem" Click="TestMenuFlyoutItemClick"/>
+                        <MenuFlyoutSeparator />
+                        <MenuFlyoutItem Text="Repeat" />
+                        <MenuFlyoutItem Text="Shuffle" />
+                    </MenuFlyout>
+                </ButtonEx.Flyout>
+            </ButtonEx>
+
+            <Button Content="MenuFlyout"  VerticalAlignment="Top">
+                <muxc:FlyoutService.Flyout>
+                    <muxc:MenuFlyout>
+                        <MenuItem Header="MenuFlyoutItem" />
+                        <MenuItem Header="MenuFlyoutSubItem">
+                            <MenuItem Header="MenuFlyoutItem" />
+                            <MenuItem Header="ToggleMenuFlyoutItem" />
+                            <MenuItem Header="MenuFlyoutSubItem">
+                                <MenuItem Header="MenuFlyoutItem" />
+                                <Separator />
+                                <MenuItem Header="MenuFlyoutItem" />
+                            </MenuItem>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem Header="MenuFlyoutItem" />
+                    </muxc:MenuFlyout>
+                </muxc:FlyoutService.Flyout>
+            </Button>
+
+            <Button Content="Icons" Margin="0,12,0,12">
+                <muxc:FlyoutService.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Share">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:FontIcon Glyph="&#xE72D;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Copy">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Copy" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Delete">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <ToggleMenuFlyoutItem Text="ToggleMenuFlyoutItem">
+                            <ToggleMenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </ToggleMenuFlyoutItem.Icon>
+                        </ToggleMenuFlyoutItem>
+                        <ToggleMenuFlyoutItem Text="ToggleMenuFlyoutItem" InputGestureText="Ctrl+S">
+                            <ToggleMenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </ToggleMenuFlyoutItem.Icon>
+                        </ToggleMenuFlyoutItem>
+                        <ToggleMenuFlyoutItem Text="ToggleMenuFlyoutItem" />
+                        <MenuFlyoutSeparator/>
+                        <RadioMenuFlyoutItem Text="Radio And Has Icon">
+                            <RadioMenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </RadioMenuFlyoutItem.Icon>
+                        </RadioMenuFlyoutItem>
+                        <RadioMenuFlyoutItem Text="Radio with icon and accelerator" InputGestureText="Ctrl+S">
+                            <RadioMenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </RadioMenuFlyoutItem.Icon>
+                        </RadioMenuFlyoutItem>
+                        <RadioMenuFlyoutItem Text="Radio with accelerator" InputGestureText="Ctrl+S"/>
+                        <MenuFlyoutItem Text="Rename"/>
+                        <MenuFlyoutItem Text="Select"/>
+                    </MenuFlyout>
+                </muxc:FlyoutService.Flyout>
+            </Button>
+
+            <Button Content="Keyboard accelerators">
+                <muxc:FlyoutService.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Share" InputGestureText="Ctrl+S">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:FontIcon Glyph="&#xE72D;"/>
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Copy" InputGestureText="Ctrl+C">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Copy" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutItem Text="Delete" InputGestureText="Delete">
+                            <MenuFlyoutItem.Icon>
+                                <muxc:SymbolIcon Symbol="Delete" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                        <MenuFlyoutSeparator/>
+                        <MenuFlyoutItem Text="Rename"/>
+                        <MenuFlyoutItem Text="Select"/>
+                    </MenuFlyout>
+                </muxc:FlyoutService.Flyout>
+            </Button>
+        </StackPanel>
+
+        <Grid Grid.Column="1" Margin="20,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Text="MenuFlyoutItem height: "/>
+            <TextBlock x:Name="TestMenuFlyoutItemHeightTextBlock" AutomationProperties.Name="TestMenuFlyoutItemHeightTextBlock" Text="0" Grid.Column="1" Margin="5, 0, 0, 0"/>
+
+            <TextBlock Text="MenuFlyoutItem width: " Grid.Row="1"/>
+            <TextBlock x:Name="TestMenuFlyoutItemWidthTextBlock" AutomationProperties.Name="TestMenuFlyoutItemWidthTextBlock" Text="0" Grid.Row="1" Grid.Column="1" Margin="5, 0, 0, 0"/>
+        </Grid>
+    </Grid>
+</local:TestPage>

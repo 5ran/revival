@@ -132,7 +132,7 @@
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Padding" Value="10,5"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -170,6 +170,8 @@
         <Style Selector="CheckBox.appraise-trait">
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="12" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
         <Style Selector="Border.appraise-picker">
@@ -200,15 +202,67 @@
             <Setter Property="Background" Value="{StaticResource ButtonSecondaryHoverBackground}" />
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
         </Style>
+        <Style Selector="Slider.appraise-speed">
+            <Setter Property="Height" Value="16" />
+        </Style>
+        <Style Selector="Slider.appraise-speed /template/ Track#PART_Track">
+            <Setter Property="Height" Value="3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Slider.appraise-speed /template/ Thumb">
+            <Setter Property="Width" Value="12" />
+            <Setter Property="Height" Value="12" />
+        </Style>
+        <Style Selector="Slider.appraise-speed /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Slider.appraise-speed:pointerover /template/ RepeatButton#PART_DecreaseButton">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="Slider.appraise-speed /template/ RepeatButton#PART_IncreaseButton">
+            <Setter Property="Background" Value="{StaticResource ButtonSecondaryBorder}" />
+            <Setter Property="Opacity" Value="0.85" />
+        </Style>
+        <Style Selector="Slider.appraise-speed /template/ Thumb /template/ Ellipse">
+            <Setter Property="Fill" Value="{StaticResource Accent}" />
+            <Setter Property="Stroke" Value="{StaticResource AccentHover}" />
+            <Setter Property="StrokeThickness" Value="1" />
+        </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="Auto,8,Auto">
-        <Border Grid.Row="0"
-                Classes="app-card"
-                Padding="14,10">
-            <Grid ColumnDefinitions="132,1,*,1,170"
-                  ColumnSpacing="12">
-                <CheckBox Grid.Column="0"
+    <Grid>
+        <Border Classes="app-card"
+                Width="550"
+                BorderBrush="{StaticResource Accent}"
+                HorizontalAlignment="Center"
+                Padding="0">
+            <Grid RowDefinitions="64,1,42,1,128,1,46">
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="145,12,1,12,170,12,1,12,145"
+                      HorizontalAlignment="Center"
+                      Margin="14,10">
+                <StackPanel Grid.Column="0"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Held Fish"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="10"
+                               Foreground="{StaticResource TextSecondary}" />
+                    <controls:ColoredTextBlock Lines="{Binding HeldFishLines}"
+                                               HorizontalAlignment="Center"
+                                               TextWrapping="Wrap"
+                                               FontFamily="{StaticResource DisplayFont}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold" />
+                </StackPanel>
+
+                <Border Grid.Column="2"
+                        Background="{StaticResource Border}" />
+
+                <CheckBox Grid.Column="4"
                           IsChecked="{Binding AutoAppraiseEnabled}"
                           Content="Auto Appraise"
                           HorizontalAlignment="Center"
@@ -218,17 +272,38 @@
                           FontWeight="SemiBold"
                           Foreground="{StaticResource TextPrimary}" />
 
-                <Border Grid.Column="1"
+                <Border Grid.Column="6"
                         Background="{StaticResource Border}" />
 
-                <StackPanel Grid.Column="2"
-                            Spacing="6">
-                    <TextBlock Text="Roll Method"
-                               HorizontalAlignment="Center"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="11"
-                               Foreground="{StaticResource TextSecondary}" />
-                    <Border Classes="appraise-segmented">
+                <StackPanel Grid.Column="8"
+                            Spacing="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">
+                        <TextBlock Text="Status"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="10"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <controls:ColoredTextBlock Lines="{Binding StatusLines}"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   FontFamily="{StaticResource DisplayFont}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold" />
+                </StackPanel>
+            </Grid>
+
+                <Border Grid.Row="1"
+                        Background="{StaticResource Border}" />
+
+                <Grid Grid.Row="2"
+                      Margin="20,0">
+                    <Border Classes="appraise-segmented"
+                            Height="30"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Width="210">
                         <Grid ColumnDefinitions="*,*"
                               ColumnSpacing="2">
                             <RadioButton Grid.Column="0"
@@ -243,222 +318,190 @@
                                          IsChecked="{Binding IsNormalMode}" />
                         </Grid>
                     </Border>
-                </StackPanel>
+                </Grid>
 
-                <Border Grid.Column="3"
+                <Border Grid.Row="3"
                         Background="{StaticResource Border}" />
 
-                <Grid Grid.Column="4"
-                      Height="50"
-                      VerticalAlignment="Center">
-                    <StackPanel IsVisible="{Binding IsGamepassMode}"
-                                Spacing="4">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0"
-                                       Text="Roll Speed"
-                                       FontFamily="{StaticResource UIFont}"
-                                       FontSize="11"
-                                       Foreground="{StaticResource TextSecondary}" />
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding GamepassSpeedPercentText}"
-                                       FontFamily="{StaticResource MonoFont}"
-                                       FontSize="11"
-                                       Foreground="{StaticResource TextPrimary}" />
-                        </Grid>
-                        <Slider Minimum="0"
-                                Maximum="1"
-                                Value="{Binding GamepassSpeed}"
-                                TickFrequency="0.05" />
+                <Grid Grid.Row="4"
+                      RowDefinitions="Auto,5,34,7,Auto"
+                      Margin="20,8">
+                    <StackPanel Grid.Row="0"
+                                HorizontalAlignment="Center"
+                                Spacing="2">
+                        <TextBlock Text="Mutation"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="{StaticResource DisplayFont}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <TextBlock Text="{Binding SelectedMutationsSummary}"
+                                   MaxWidth="300"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondary}" />
                     </StackPanel>
 
-                    <Button Classes="appraise-secondary"
-                            Height="34"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Content="Set Click Position"
-                            IsVisible="{Binding IsNormalMode}"
-                            Command="{Binding UseCursorPositionCommand}" />
-                </Grid>
-            </Grid>
-        </Border>
+                    <Grid Grid.Row="2"
+                          ColumnDefinitions="*,12,*">
+                        <Panel Grid.Column="0">
+                            <Border x:Name="MutationPicker"
+                                    Classes="appraise-picker"
+                                    Height="34"
+                                    HorizontalAlignment="Stretch">
+                                <Grid ColumnDefinitions="*,64">
+                                    <TextBox x:Name="MutationSearchBox"
+                                             Grid.Column="0"
+                                             Classes="appraise-input appraise-picker-search"
+                                             PlaceholderText="Search"
+                                             Text="{Binding MutationSearchText}"
+                                             PointerPressed="MutationSearchBox_OnPointerPressed"
+                                             GotFocus="MutationSearchBox_OnGotFocus"
+                                             TextChanged="MutationSearchBox_OnTextChanged" />
+                                    <Button Grid.Column="1"
+                                            Classes="appraise-add"
+                                            Margin="0"
+                                            CornerRadius="0,5,5,0"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Click="MutationDropdownButton_OnClick">
+                                        <Path Width="10"
+                                              Height="6"
+                                              Stretch="Fill"
+                                              Fill="{StaticResource AccentForeground}"
+                                              Data="M 0 0 L 5 6 L 10 0 Z" />
+                                    </Button>
+                                </Grid>
+                            </Border>
 
-        <Grid Grid.Row="2"
-              ColumnDefinitions="*,10,*"
-              RowDefinitions="Auto,8,66">
-            <Border Grid.Column="0"
-                    Grid.RowSpan="3"
-                    Classes="app-card"
-                    Padding="14,10">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="Mutation"
-                               FontFamily="{StaticResource DisplayFont}"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}" />
+                            <Popup x:Name="MutationDropdownPopup"
+                                   PlacementTarget="{Binding #MutationPicker}"
+                                   Placement="BottomEdgeAlignedLeft"
+                                   IsLightDismissEnabled="True">
+                                <Border Background="{StaticResource Surface}"
+                                        BorderBrush="{StaticResource Border}"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="4"
+                                        Width="{Binding #MutationPicker.Bounds.Width}"
+                                        Margin="0,4,0,0">
+                                    <ScrollViewer MaxHeight="220"
+                                                  VerticalScrollBarVisibility="Auto">
+                                        <ItemsControl ItemsSource="{Binding Mutations}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:AppraiseMutationOptionViewModel">
+                                                    <ToggleButton Classes="appraise-mutation"
+                                                                  IsChecked="{Binding IsSelected}">
+                                                        <Grid ColumnDefinitions="*,Auto">
+                                                            <TextBlock Grid.Column="0"
+                                                                       Text="{Binding Name}"
+                                                                       Foreground="{Binding Brush}"
+                                                                       FontFamily="{StaticResource UIFont}"
+                                                                       FontSize="13"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                            <TextBlock Grid.Column="1"
+                                                                       Text="{Binding MultiText}"
+                                                                       Margin="10,0,0,0"
+                                                                       Foreground="{StaticResource TextSecondary}"
+                                                                       FontFamily="{StaticResource MonoFont}"
+                                                                       FontSize="12"
+                                                                       HorizontalAlignment="Right" />
+                                                        </Grid>
+                                                    </ToggleButton>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Panel>
 
-                    <TextBlock Text="{Binding SelectedMutationsSummary}"
-                               MinHeight="16"
-                               TextWrapping="Wrap"
-                               FontFamily="{StaticResource UIFont}"
-                               FontSize="11"
-                               Foreground="{StaticResource TextSecondary}" />
-
-                    <Panel>
-                        <Border x:Name="MutationPicker"
+                        <Border Grid.Column="2"
                                 Classes="appraise-picker"
-                                Width="217"
-                                HorizontalAlignment="Left">
+                                Height="34"
+                                HorizontalAlignment="Stretch">
                             <Grid ColumnDefinitions="*,64">
-                                <TextBox x:Name="MutationSearchBox"
-                                         Grid.Column="0"
+                                <TextBox Grid.Column="0"
                                          Classes="appraise-input appraise-picker-search"
-                                         PlaceholderText="Search"
-                                         Text="{Binding MutationSearchText}"
-                                         PointerPressed="MutationSearchBox_OnPointerPressed"
-                                         GotFocus="MutationSearchBox_OnGotFocus"
-                                         TextChanged="MutationSearchBox_OnTextChanged" />
+                                         PlaceholderText="Custom mutation"
+                                         Text="{Binding NewMutationText}" />
                                 <Button Grid.Column="1"
                                         Classes="appraise-add"
                                         Margin="0"
                                         CornerRadius="0,5,5,0"
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Stretch"
-                                        Click="MutationDropdownButton_OnClick">
-                                    <Path Width="10"
-                                          Height="6"
-                                          Stretch="Fill"
-                                          Fill="{StaticResource AccentForeground}"
-                                          Data="M 0 0 L 5 6 L 10 0 Z" />
-                                </Button>
+                                        Content="Add"
+                                        Command="{Binding AddMutationCommand}" />
                             </Grid>
                         </Border>
-
-                        <Popup x:Name="MutationDropdownPopup"
-                               PlacementTarget="{Binding #MutationPicker}"
-                               Placement="BottomEdgeAlignedLeft"
-                               IsLightDismissEnabled="True">
-                            <Border Background="{StaticResource Surface}"
-                                    BorderBrush="{StaticResource Border}"
-                                    BorderThickness="1"
-                                    CornerRadius="6"
-                                    Padding="4"
-                                    Width="260"
-                                    Margin="0,4,0,0">
-                                <ScrollViewer MaxHeight="220"
-                                              VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl ItemsSource="{Binding Mutations}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:AppraiseMutationOptionViewModel">
-                                                <ToggleButton Classes="appraise-mutation"
-                                                              IsChecked="{Binding IsSelected}">
-                                                    <Grid ColumnDefinitions="*,Auto">
-                                                        <TextBlock Grid.Column="0"
-                                                                   Text="{Binding Name}"
-                                                                   Foreground="{Binding Brush}"
-                                                                   FontFamily="{StaticResource UIFont}"
-                                                                   FontSize="13"
-                                                                   TextTrimming="CharacterEllipsis" />
-                                                        <TextBlock Grid.Column="1"
-                                                                   Text="{Binding MultiText}"
-                                                                   Margin="10,0,0,0"
-                                                                   Foreground="{StaticResource TextSecondary}"
-                                                                   FontFamily="{StaticResource MonoFont}"
-                                                                   FontSize="12"
-                                                                   HorizontalAlignment="Right" />
-                                                    </Grid>
-                                                </ToggleButton>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </Border>
-                        </Popup>
-                    </Panel>
-
-                    <Border Classes="appraise-picker"
-                            Width="217"
-                            Height="34"
-                            HorizontalAlignment="Left">
-                        <Grid ColumnDefinitions="*,64">
-                            <TextBox Grid.Column="0"
-                                     Classes="appraise-input appraise-picker-search"
-                                     PlaceholderText="Custom mutation"
-                                     Text="{Binding NewMutationText}" />
-                            <Button Grid.Column="1"
-                                    Classes="appraise-add"
-                                    Margin="0"
-                                    CornerRadius="0,5,5,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Stretch"
-                                    Content="Add"
-                                    Command="{Binding AddMutationCommand}" />
-                        </Grid>
-                    </Border>
-                </StackPanel>
-            </Border>
-
-            <Border Grid.Column="2"
-                    Grid.Row="0"
-                    Classes="app-card"
-                    Padding="14,10">
-                <StackPanel Spacing="9">
-                    <TextBlock Text="Required Traits"
-                               FontFamily="{StaticResource DisplayFont}"
-                               FontSize="13"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}" />
-                    <Grid ColumnDefinitions="*,*"
-                          RowDefinitions="Auto,Auto,Auto"
-                          RowSpacing="4"
-                          ColumnSpacing="8">
-                        <CheckBox Grid.Row="0" Grid.Column="0" Classes="appraise-trait" IsChecked="{Binding RequireShiny}"><TextBlock Text="Shiny" Foreground="{Binding ShinyBrush}" /></CheckBox>
-                        <CheckBox Grid.Row="0" Grid.Column="1" Classes="appraise-trait" IsChecked="{Binding RequireSparkling}"><TextBlock Text="Sparkling" Foreground="{Binding SparklingBrush}" /></CheckBox>
-                        <CheckBox Grid.Row="1" Grid.Column="0" Classes="appraise-trait" IsChecked="{Binding RequireTiny}"><TextBlock Text="Tiny" Foreground="{Binding TinyBrush}" /></CheckBox>
-                        <CheckBox Grid.Row="1" Grid.Column="1" Classes="appraise-trait" IsChecked="{Binding RequireSmall}"><TextBlock Text="Small" Foreground="{Binding SmallBrush}" /></CheckBox>
-                        <CheckBox Grid.Row="2" Grid.Column="0" Classes="appraise-trait" IsChecked="{Binding RequireBig}"><TextBlock Text="Big" Foreground="{Binding BigBrush}" /></CheckBox>
-                        <CheckBox Grid.Row="2" Grid.Column="1" Classes="appraise-trait" IsChecked="{Binding RequireGiant}"><TextBlock Text="Giant" Foreground="{Binding GiantBrush}" /></CheckBox>
                     </Grid>
-                </StackPanel>
-            </Border>
 
-            <Border Grid.Column="2"
-                    Grid.Row="2"
-                    Classes="app-card"
-                    Padding="12,8">
-                <Grid ColumnDefinitions="*,1,*">
-                    <StackPanel Grid.Column="0"
-                                Spacing="3"
-                                Margin="0,0,12,0">
-                        <TextBlock Text="Held Fish"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource TextSecondary}" />
-                        <controls:ColoredTextBlock Lines="{Binding HeldFishLines}"
-                                                   TextWrapping="Wrap"
-                                                   FontFamily="{StaticResource DisplayFont}"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold" />
-                    </StackPanel>
+                    <Grid Grid.Row="4"
+                          ColumnDefinitions="Auto,*,Auto,*,Auto,*,Auto,*,Auto,*,Auto"
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Center">
+                        <CheckBox Grid.Column="0" Classes="appraise-trait" IsChecked="{Binding RequireShiny}"><TextBlock Text="Shiny" Foreground="{Binding ShinyBrush}" /></CheckBox>
+                        <CheckBox Grid.Column="2" Classes="appraise-trait" IsChecked="{Binding RequireSparkling}"><TextBlock Text="Sparkling" Foreground="{Binding SparklingBrush}" /></CheckBox>
+                        <CheckBox Grid.Column="4" Classes="appraise-trait" IsChecked="{Binding RequireTiny}"><TextBlock Text="Tiny" FontSize="11" Foreground="{Binding TinyBrush}" /></CheckBox>
+                        <CheckBox Grid.Column="6" Classes="appraise-trait" IsChecked="{Binding RequireSmall}"><TextBlock Text="Small" FontSize="11" Foreground="{Binding SmallBrush}" /></CheckBox>
+                        <CheckBox Grid.Column="8" Classes="appraise-trait" IsChecked="{Binding RequireBig}"><TextBlock Text="Big" FontSize="11" Foreground="{Binding BigBrush}" /></CheckBox>
+                        <CheckBox Grid.Column="10" Classes="appraise-trait" IsChecked="{Binding RequireGiant}"><TextBlock Text="Giant" FontSize="11" Foreground="{Binding GiantBrush}" /></CheckBox>
+                    </Grid>
+                </Grid>
 
-                    <Border Grid.Column="1"
-                            Background="{StaticResource Border}"
-                            Margin="0,2" />
+                <Border Grid.Row="5"
+                        Background="{StaticResource Border}" />
 
-                    <StackPanel Grid.Column="2"
-                                Spacing="3"
-                                Margin="12,0,0,0">
-                        <TextBlock Text="Status"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource TextSecondary}" />
-                        <controls:ColoredTextBlock Lines="{Binding StatusLines}"
-                                                   TextWrapping="Wrap"
-                                                   FontFamily="{StaticResource DisplayFont}"
-                                                   FontSize="14"
-                                                   FontWeight="SemiBold" />
+                <Grid Grid.Row="6"
+                      Margin="20,0"
+                      IsVisible="{Binding IsGamepassMode}">
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="12"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="Roll Speed"
+                                   Width="84"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Right"
+                                   FontFamily="{StaticResource DisplayFont}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Slider Classes="appraise-speed"
+                                Minimum="0"
+                                Maximum="1"
+                                Width="112"
+                                VerticalAlignment="Center"
+                                Value="{Binding GamepassSpeed}"
+                                TickFrequency="0.05" />
+                        <TextBlock Text="{Binding GamepassSpeedPercentText}"
+                                   Width="30"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Left"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextPrimary}" />
                     </StackPanel>
                 </Grid>
-            </Border>
-        </Grid>
+
+                <Grid Grid.Row="6"
+                      Margin="20,0"
+                      IsVisible="{Binding IsNormalMode}">
+                    <Button
+                            Classes="appraise-secondary"
+                            Width="150"
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Set Click Position"
+                            Command="{Binding UseCursorPositionCommand}" />
+                </Grid>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>
