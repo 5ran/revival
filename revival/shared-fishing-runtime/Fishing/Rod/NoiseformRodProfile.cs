@@ -4,6 +4,7 @@ using Avalonia.Media;
 using Client.Services;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace Client.Services.Fishing;
 
@@ -28,8 +29,12 @@ internal sealed class NoiseformRodProfile : RodProfile
     private long _lastScanAt;
     private int _lastBeamZoneCount = -1;
     private int _scanInFlight;
+    private int _colorizeInFlight;
+    private string _lastColorizeSignature = string.Empty;
+    private List<BellonaDebugBox> _colorizedBoxes = [];
     private const int OverlayGraceMs = 600;
     private const int ScanThrottleMs = 50;
+    private const int ColorizeThrottleMs = 1000;
 
     public override RodKind Kind => RodKind.Noiseform;
 
@@ -63,7 +68,6 @@ internal sealed class NoiseformRodProfile : RodProfile
             var barPath = DescribePath(memory, bar);
             var reelPath = DescribePath(memory, reelGui);
             var boxes = FindBeamZoneBoxes(memory, bar, reelGui);
-            ApplyDistinctColors(boxes);
 
             if (boxes.Count != _lastBeamZoneCount)
             {
@@ -84,7 +88,7 @@ internal sealed class NoiseformRodProfile : RodProfile
                 _lastOverlaySeenAt = Environment.TickCount64;
             }
 
-            BellonaDebugOverlayService.Update(boxes);
+            ScheduleColorizedOverlay(memory, boxes);
         }
         catch (Exception ex)
         {
@@ -132,6 +136,68 @@ internal sealed class NoiseformRodProfile : RodProfile
 
         BellonaDebugOverlayService.Hide();
         LogOverlay($"overlay cleared ({reason})");
+    }
+
+    private void ScheduleColorizedOverlay(RobloxMemory memory, List<BellonaDebugBox> boxes)
+    {
+        if (boxes.Count == 0)
+        {
+            return;
+        }
+
+        var signature = BuildSignature(boxes);
+        if (string.Equals(signature, _lastColorizeSignature, StringComparison.Ordinal) &&
+            _colorizedBoxes.Count == boxes.Count)
+        {
+            BellonaDebugOverlayService.Update(_colorizedBoxes);
+            return;
+        }
+
+        if (Interlocked.Exchange(ref _colorizeInFlight, 1) == 1)
+        {
+            if (_colorizedBoxes.Count == boxes.Count)
+            {
+                BellonaDebugOverlayService.Update(_colorizedBoxes);
+            }
+            return;
+        }
+
+        _lastColorizeSignature = signature;
+        var snapshot = new List<BellonaDebugBox>(boxes);
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                ApplyDistinctColors(snapshot);
+                lock (_overlayLock)
+                {
+                    _colorizedBoxes = new List<BellonaDebugBox>(snapshot);
+                }
+
+                BellonaDebugOverlayService.Update(snapshot);
+            }
+            catch (Exception ex)
+            {
+                AppLog.FishingError("NoiseformOverlay", "colorization failed", ex);
+                BellonaDebugOverlayService.Update(snapshot);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _colorizeInFlight, 0);
+            }
+        });
+    }
+
+    private static string BuildSignature(IReadOnlyList<BellonaDebugBox> boxes)
+    {
+        var parts = new List<string>(boxes.Count);
+        for (var i = 0; i < boxes.Count; i++)
+        {
+            var box = boxes[i];
+            parts.Add($"{Math.Round(box.X):0}:{Math.Round(box.Y):0}:{Math.Round(box.Width):0}:{Math.Round(box.Height):0}");
+        }
+
+        return string.Join("|", parts);
     }
 
     private static List<BellonaDebugBox> FindBeamZoneBoxes(RobloxMemory memory, ulong root, ulong fallbackRoot)
