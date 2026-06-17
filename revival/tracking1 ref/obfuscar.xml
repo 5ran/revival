@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Obfuscator>
+  <Var name="InPath" value="bin\Release\net8.0-windows\win-x64" />
+  <Var name="OutPath" value="obfuscated" />
+  <Var name="KeepPublicApi" value="true" />
+  <Var name="HidePrivateApi" value="true" />
+  <Var name="RenameProperties" value="true" />
+  <Var name="RenameEvents" value="true" />
+  <Var name="RenameFields" value="true" />
+  <Var name="UseUnicodeNames" value="true" />
+  <Var name="HideStrings" value="true" />
+  <Var name="OptimizeMethods" value="true" />
+  <Var name="SuppressIldasm" value="true" />
+  <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.28\ref\net8.0" />
+  <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.28\ref\net8.0" />
+  <Module file="$(InPath)\fish_new.dll" />
+</Obfuscator>

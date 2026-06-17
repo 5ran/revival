@@ -62,7 +62,9 @@ public sealed class UserSettingsStore
 [JsonSourceGenerationOptions(WriteIndented = true)]
 [JsonSerializable(typeof(UserSettingsSnapshot))]
 [JsonSerializable(typeof(FishingSettingsSnapshot))]
+[JsonSerializable(typeof(LullabyModeSettingsSnapshot))]
 [JsonSerializable(typeof(AutoTotemSettingsSnapshot))]
+[JsonSerializable(typeof(AutoReconnectSettingsSnapshot))]
 [JsonSerializable(typeof(AutoSovereignSettingsSnapshot))]
 [JsonSerializable(typeof(GeneralSettingsSnapshot))]
 [JsonSerializable(typeof(CustomThemeSnapshot))]
@@ -79,6 +81,8 @@ public sealed class UserSettingsSnapshot
     public FishingSettingsSnapshot Fishing { get; set; } = new();
 
     public AutoTotemSettingsSnapshot AutoTotem { get; set; } = new();
+
+    public AutoReconnectSettingsSnapshot AutoReconnect { get; set; } = new();
 
     public AutoSovereignSettingsSnapshot AutoSovereign { get; set; } = new();
 
@@ -110,6 +114,10 @@ public sealed class FishingSettingsSnapshot
 
     public string? CastingMode { get; set; }
 
+    public string? LullabyMode { get; set; }
+
+    public LullabyModeSettingsSnapshot[] LullabyModes { get; set; } = Array.Empty<LullabyModeSettingsSnapshot>();
+
     public bool AutoAquariumEnabled { get; set; }
 
     public double AutoAquariumCycleDelayMinutes { get; set; } = 65;
@@ -132,6 +140,17 @@ public sealed class AutoTotemSettingsSnapshot
     public bool StayDay { get; set; }
 
     public bool StayNight { get; set; }
+}
+
+public sealed class AutoReconnectSettingsSnapshot
+{
+    public bool Enabled { get; set; }
+
+    public string? FishingLocationDirection { get; set; }
+
+    public int FishingLocationX { get; set; }
+
+    public int FishingLocationY { get; set; }
 }
 
 public sealed class AutoSovereignSettingsSnapshot
@@ -173,6 +192,17 @@ public sealed class CurrentlyTradingSettingsSnapshot
     public bool Enabled { get; set; }
 
     public string? SearchQuery { get; set; }
+}
+
+public sealed class LullabyModeSettingsSnapshot
+{
+    public string Name { get; set; } = string.Empty;
+
+    public string ProgressSpamAt { get; set; } = "100";
+
+    public string ProgressStopSpamBelow { get; set; } = "0";
+
+    public string ClickDelaySeconds { get; set; } = "0.1";
 }
 
 public sealed class TraderSearchEntrySnapshot

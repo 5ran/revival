@@ -82,6 +82,7 @@ internal sealed class HotbarRodReader : IDisposable
         "Long Rod",
         "Lucid Rod",
         "Lucky Rod",
+        "Lullaby",
         "Luminescent Oath",
         "Maelstrom Rod",
         "Magma Rod",

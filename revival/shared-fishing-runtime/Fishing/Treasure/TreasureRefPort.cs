@@ -128,6 +128,20 @@ internal sealed class TreasureAppraiser : IDisposable
 
         if (phase == TreasureAppraisePhase.WaitAfterFinalRowClick)
         {
+            RefreshAppraiseTarget(false);
+            RectangleF appraiseBounds;
+            if (targets!.AppraiseButton == 0 || !TryReadUsableBounds(targets.AppraiseButton, out appraiseBounds))
+            {
+                rowIndex = 0;
+                finalPhaseLastWeightText = string.Empty;
+                finalPhaseBestWeightText = string.Empty;
+                finalPhaseLastChangeTime = now;
+                finalPhaseSawChangedWeight = false;
+                phase = TreasureAppraisePhase.ClickRows;
+                nextActionTime = now + PostAppraiseGoneDelaySeconds;
+                return TreasureStepResult.Running;
+            }
+
             if (!EnsureWeightAddressHealthy())
             {
                 nextActionTime = now + PostFinalRowClickPollSeconds;
@@ -180,7 +194,7 @@ internal sealed class TreasureAppraiser : IDisposable
 
         List<Point> row = rowPoints[rowIndex];
         Point target = row[random.Next(row.Count)];
-        MouseInput.ClickAt(target.X, target.Y);
+        SpamRowClick(target.X, target.Y);
         rowIndex++;
         if (rowIndex >= rowPoints.Count)
         {
@@ -191,6 +205,15 @@ internal sealed class TreasureAppraiser : IDisposable
 
         nextActionTime = now + Settings.ClickDelaySeconds;
         return TreasureStepResult.Running;
+    }
+
+    private void SpamRowClick(int x, int y)
+    {
+        Stopwatch spamWatch = Stopwatch.StartNew();
+        while (spamWatch.ElapsedMilliseconds < 90)
+        {
+            MouseInput.ClickAt(x, y);
+        }
     }
 
     private void BeginRowCycle(double now)

@@ -44,6 +44,11 @@ internal static class RodClassifier
             return RodKind.Requiem;
         }
 
+        if (text.Contains("lullaby", StringComparison.Ordinal))
+        {
+            return RodKind.Lullaby;
+        }
+
         if (text.Contains("splitbranch", StringComparison.Ordinal) &&
             text.Contains("twig", StringComparison.Ordinal))
         {

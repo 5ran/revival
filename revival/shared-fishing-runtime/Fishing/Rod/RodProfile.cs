@@ -29,6 +29,7 @@ internal abstract class RodProfile
         RodKind.Tranquility => new TranquilityRodProfile(),
         RodKind.Dreambreaker => new DreambreakerRodProfile(),
         RodKind.Requiem => new RequiemRodProfile(),
+        RodKind.Lullaby => new LullabyRodProfile(),
         RodKind.SplitbranchTwig => new SplitbranchTwigRodProfile(),
         RodKind.MiguRod => new MiguRodProfile(),
         _ => new DefaultRodProfile(),

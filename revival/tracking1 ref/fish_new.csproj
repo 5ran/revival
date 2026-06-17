@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>fish_new</AssemblyName>
+    <RootNamespace>FishNew</RootNamespace>
+    <UseObfuscatedAssembly Condition="'$(UseObfuscatedAssembly)' == ''">false</UseObfuscatedAssembly>
+    <ObfuscatedAssemblyPath Condition="'$(ObfuscatedAssemblyPath)' == ''">$(MSBuildProjectDirectory)\obfuscated\fish_new.dll</ObfuscatedAssemblyPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="fish_decompiled\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="offsets.hpp" LogicalName="offsets.hpp" />
+  </ItemGroup>
+
+  <Target Name="SwapInObfuscatedAssembly" AfterTargets="Build" Condition="'$(UseObfuscatedAssembly)' == 'true'">
+    <Message Importance="High" Text="Using obfuscated assembly: $(ObfuscatedAssemblyPath)" />
+    <Copy SourceFiles="$(ObfuscatedAssemblyPath)" DestinationFiles="$(TargetPath)" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(ObfuscatedAssemblyPath)" DestinationFiles="$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\$(RuntimeIdentifier)\$(TargetFileName)" OverwriteReadOnlyFiles="true" />
+  </Target>
+</Project>

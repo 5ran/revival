@@ -9,6 +9,7 @@ public enum RodKind
     Tranquility,
     Dreambreaker,
     Requiem,
+    Lullaby,
     SplitbranchTwig,
     MiguRod,
 }

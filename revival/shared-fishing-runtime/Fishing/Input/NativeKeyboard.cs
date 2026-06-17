@@ -15,11 +15,13 @@ internal static class NativeKeyboard
     private const byte VkControl = 0x11;
     private const byte VkShift = 0x10;
     private const byte VkMenu = 0x12;
+    private const byte VkRight = 0x27;
     private const byte VkA = 0x41;
     private const byte VkE = 0x45;
     private const byte VkG = 0x47;
     private const byte VkBackslash = 0xDC;
     private const uint KeyeventfKeyup = 0x0002;
+    private const uint KeyeventfExtendedKey = 0x0001;
     private const uint KeyeventfScancode = 0x0008;
     private const uint InputKeyboard = 1;
     private const uint MapvkVkToVsc = 0;
@@ -78,6 +80,24 @@ internal static class NativeKeyboard
     public static void PressShift(IntPtr targetWindow)
     {
         PressKey(VkShift, targetWindow);
+    }
+
+    public static void PressRightArrow(IntPtr targetWindow)
+    {
+        PressKey(VkRight, targetWindow);
+    }
+
+    public static void RightArrowDown(IntPtr targetWindow)
+    {
+        FocusTarget(targetWindow);
+        SendExtendedKey(VkRight, keyUp: false);
+        keybd_event(VkRight, 0, 0, UIntPtr.Zero);
+    }
+
+    public static void RightArrowUp()
+    {
+        SendExtendedKey(VkRight, keyUp: true);
+        keybd_event(VkRight, 0, KeyeventfKeyup, UIntPtr.Zero);
     }
 
     public static void PressBackspace(IntPtr targetWindow)
@@ -299,6 +319,26 @@ internal static class NativeKeyboard
                     VirtualKey = scanCode ? (ushort)0 : virtualKey,
                     ScanCode = scan,
                     Flags = flags,
+                },
+            },
+        };
+
+        return SendInput(1, [input], Marshal.SizeOf<Input>()) == 1;
+    }
+
+    private static bool SendExtendedKey(byte virtualKey, bool keyUp)
+    {
+        var scan = unchecked((ushort)MapVirtualKey(virtualKey, MapvkVkToVsc));
+        var input = new Input
+        {
+            Type = InputKeyboard,
+            Data = new InputUnion
+            {
+                Keyboard = new KeyboardInput
+                {
+                    VirtualKey = 0,
+                    ScanCode = scan,
+                    Flags = KeyeventfScancode | KeyeventfExtendedKey | (keyUp ? KeyeventfKeyup : 0),
                 },
             },
         };

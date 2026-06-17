@@ -82,6 +82,82 @@
                 </Border>
 
                 <Border Classes="app-header"
+                        IsVisible="{Binding ShowAutoReconnectSection}">
+                <Grid ColumnDefinitions="*,Auto,Auto"
+                      ColumnSpacing="12">
+                    <TextBlock Grid.Column="0"
+                               VerticalAlignment="Center"
+                               Text="Auto Reconnect"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <CheckBox Grid.Column="1"
+                              VerticalAlignment="Center"
+                              Content="On"
+                              IsChecked="{Binding AutoReconnectEnabled}"
+                              FontFamily="{StaticResource UIFont}"
+                              FontSize="12"
+                              Foreground="{StaticResource TextPrimary}" />
+                    <Button Grid.Column="2"
+                            Classes="app-primary"
+                            Width="54"
+                            Height="28"
+                            Padding="0"
+                            FontSize="11"
+                            Content="{Binding AutoReconnectExpandGlyph}"
+                            Command="{Binding ToggleAutoReconnectExpandedCommand}" />
+                </Grid>
+                </Border>
+
+                <Border IsVisible="{Binding IsAutoReconnectExpanded}"
+                        Classes="app-card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{Binding AutoReconnectStatusText}"
+                               FontFamily="{StaticResource UIFont}"
+                               FontSize="12"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}" />
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="12">
+                        <Button Grid.Column="0"
+                                Classes="app-primary"
+                                Width="112"
+                                Height="30"
+                                Padding="0"
+                                FontSize="11"
+                                Content="Test Sequence"
+                                Command="{Binding TestMysticMirrorSequenceCommand}" />
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding MysticMirrorTestStatusText}"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="12">
+                        <Button Grid.Column="0"
+                                Classes="app-primary"
+                                Width="132"
+                                Height="30"
+                                Padding="0"
+                                FontSize="11"
+                                Content="Set Fishing Location"
+                                Command="{Binding SetFishingLocationCommand}" />
+                        <TextBlock Grid.Column="1"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding FishingLocationStatusText}"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="12"
+                                   Foreground="{StaticResource TextSecondary}"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
+                </Border>
+
+                <Border Classes="app-header"
                         IsVisible="{Binding ShowAutoTotemSection}">
                 <Grid ColumnDefinitions="*,Auto,Auto"
                       ColumnSpacing="12">

@@ -398,6 +398,8 @@ public sealed class ShellViewModel : ViewModelBase
                 _fishingViewModel.SelectedCastingMode = castingMode;
             }
 
+            _fishingViewModel.ImportLullabyModeSettings(saved.Fishing.LullabyModes, saved.Fishing.LullabyMode);
+
             _fishingViewModel.AutoAquariumEnabled = saved.Fishing.AutoAquariumEnabled;
             _fishingViewModel.AutoAquariumCycleDelayMinutes = saved.Fishing.AutoAquariumCycleDelayMinutes;
             _fishingViewModel.AutoAquariumPendingThresholdMinutes = saved.Fishing.AutoAquariumPendingThresholdMinutes;
@@ -446,6 +448,7 @@ public sealed class ShellViewModel : ViewModelBase
             _autoTotemViewModel.UseMutationTotem = saved.AutoTotem.UseMutationTotem;
             _autoTotemViewModel.StayDay = saved.AutoTotem.StayDay;
             _autoTotemViewModel.StayNight = saved.AutoTotem.StayNight;
+            _fishingAddonsViewModel.RestoreAutoReconnectSettings(saved.AutoReconnect);
 
             _autoSovereignRechargeViewModel.MinimumPercent = saved.AutoSovereign.MinimumPercent;
             _autoSovereignRechargeViewModel.MaximumPercent = saved.AutoSovereign.MaximumPercent;
@@ -471,6 +474,7 @@ public sealed class ShellViewModel : ViewModelBase
         _fishingViewModel.PropertyChanged += (_, _) => SaveSettings();
         _generalViewModel.PropertyChanged += (_, _) => SaveSettings();
         _autoTotemViewModel.PropertyChanged += (_, _) => SaveSettings();
+        _fishingAddonsViewModel.PropertyChanged += (_, _) => SaveSettings();
         _autoSovereignRechargeViewModel.PropertyChanged += (_, _) => SaveSettings();
         _huntDetectViewModel.PropertyChanged += (_, _) => SaveSettings();
         _otherAutomationViewModel.PropertyChanged += (_, e) =>
@@ -518,6 +522,8 @@ public sealed class ShellViewModel : ViewModelBase
             {
                 TrackerMode = _fishingViewModel.SelectedMode.ToString(),
                 CastingMode = _fishingViewModel.SelectedCastingMode.ToString(),
+                LullabyMode = _fishingViewModel.SelectedLullabyMode?.Name,
+                LullabyModes = _fishingViewModel.ExportLullabyModeSettings(),
                 AutoAquariumEnabled = _fishingViewModel.AutoAquariumEnabled,
                 AutoAquariumCycleDelayMinutes = _fishingViewModel.AutoAquariumCycleDelayMinutes,
                 AutoAquariumPendingThresholdMinutes = _fishingViewModel.AutoAquariumPendingThresholdMinutes,
@@ -546,6 +552,7 @@ public sealed class ShellViewModel : ViewModelBase
                 StayDay = _autoTotemViewModel.StayDay,
                 StayNight = _autoTotemViewModel.StayNight,
             },
+            AutoReconnect = _fishingAddonsViewModel.ExportAutoReconnectSettings(),
             AutoSovereign = new AutoSovereignSettingsSnapshot
             {
                 Enabled = _autoSovereignRechargeViewModel.Enabled,

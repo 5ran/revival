@@ -11,6 +11,7 @@ public sealed class RodClassifierTests
     [InlineData("Tranquility Rod", RodKind.Tranquility)]
     [InlineData("Dreambreaker", RodKind.Dreambreaker)]
     [InlineData("Requiem Rod", RodKind.Requiem)]
+    [InlineData("Lullaby", RodKind.Lullaby)]
     [InlineData("Carbon Rod", RodKind.Default)]
     [InlineData("", RodKind.Default)]
     public void Classify_MatchesExpectedKind(string text, RodKind expected)

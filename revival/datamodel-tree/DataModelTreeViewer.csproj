@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>DataModelTreeViewer</AssemblyName>
+    <RootNamespace>DataModelTreeViewer</RootNamespace>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\offsets.hpp" Link="offsets.hpp" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Compile Include="..\shared-fishing-runtime\Fishing\Runtime\IOffsetsSource.cs" Link="Shared\IOffsetsSource.cs" />
+    <Compile Include="..\shared-fishing-runtime\Fishing\Runtime\RobloxMemory.cs" Link="Shared\RobloxMemory.cs" />
+  </ItemGroup>
+</Project>

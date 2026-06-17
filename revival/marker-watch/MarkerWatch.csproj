@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="MarkerWatchForm.cs" />
+    <Compile Include="MarkerWatchProbe.cs" />
+    <Compile Include="..\shared-fishing-runtime\AppLog.cs" Link="SharedRuntime\AppLog.cs" />
+    <Compile Include="..\shared-fishing-runtime\OffsetsService.cs" Link="SharedRuntime\OffsetsService.cs" />
+    <Compile Include="..\shared-fishing-runtime\Fishing\Runtime\IOffsetsSource.cs" Link="SharedRuntime\Fishing\Runtime\IOffsetsSource.cs" />
+    <Compile Include="..\shared-fishing-runtime\Fishing\Runtime\OffsetsSourceProvider.cs" Link="SharedRuntime\Fishing\Runtime\OffsetsSourceProvider.cs" />
+    <Compile Include="..\shared-fishing-runtime\Fishing\Runtime\RobloxMemory.cs" Link="SharedRuntime\Fishing\Runtime\RobloxMemory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\offsets.hpp" Link="offsets.hpp" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

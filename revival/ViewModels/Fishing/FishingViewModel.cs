@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Client.Controls;
 using Client.Services;
@@ -27,8 +29,10 @@ public sealed class FishingViewModel : ViewModelBase
     private readonly Timer _statusTimer;
     private readonly Timer _aquariumTimer;
     private readonly Timer _rodTimer;
+    private readonly IReadOnlyList<LullabyModeOptionViewModel> _lullabyModeOptions;
     private FishingTrackerOption _selectedTracker;
     private FishingCastingMode _selectedCastingMode = FishingCastingMode.Normal;
+    private LullabyModeOptionViewModel _selectedLullabyMode = LullabyModeOptionViewModel.None;
     private FishingTrackerStatus _status = new(false, "OFF", "Ready.", null, false);
     private bool _autoAquariumEnabled;
     private bool _aquariumPending;
@@ -46,10 +50,21 @@ public sealed class FishingViewModel : ViewModelBase
     private IReadOnlyList<ColoredTextLineViewModel> _equippedRodLines = ColoredEnchantText.BuildLines("---");
     private string _masterlineRodNamesText = "---";
     private bool _isMasterlineEquipped;
+    private bool _isLullabyEquipped;
 
     public FishingViewModel()
     {
         _selectedTracker = TrackerOptions[0];
+        _lullabyModeOptions =
+        [
+            LullabyModeOptionViewModel.None,
+            LullabyModeOptionViewModel.Resistant,
+            LullabyModeOptionViewModel.Quickening,
+            LullabyModeOptionViewModel.Strengthening,
+            LullabyModeOptionViewModel.Fortuitous,
+            LullabyModeOptionViewModel.Prismatic,
+        ];
+        LullabySettings.SelectedModeName = _selectedLullabyMode.Name;
         StartCommand = new RelayCommand(_ => StartAsync(), _ => !IsRunning);
         StopCommand = new RelayCommand(_ => StopAsync(), _ => IsRunning);
         NavigateToAutoTotemCommand = new RelayCommand(_ => { NavigateToAutoTotemAction?.Invoke(); return Task.CompletedTask; });
@@ -119,6 +134,23 @@ public sealed class FishingViewModel : ViewModelBase
             }
 
             RefreshStatus();
+        }
+    }
+
+    public IReadOnlyList<LullabyModeOptionViewModel> LullabyModeOptions => _lullabyModeOptions;
+
+    public LullabyModeOptionViewModel SelectedLullabyMode
+    {
+        get => _selectedLullabyMode;
+        set
+        {
+            if (!SetProperty(ref _selectedLullabyMode, value))
+            {
+                return;
+            }
+
+            LullabySettings.SelectedModeName = value.Name;
+            OnPropertyChanged(nameof(SelectedLullabyMode));
         }
     }
 
@@ -213,6 +245,12 @@ public sealed class FishingViewModel : ViewModelBase
     {
         get => _isMasterlineEquipped;
         private set => SetProperty(ref _isMasterlineEquipped, value);
+    }
+
+    public bool IsLullabyEquipped
+    {
+        get => _isLullabyEquipped;
+        private set => SetProperty(ref _isLullabyEquipped, value);
     }
 
     public string Phase => IsRunning ? _status.Phase : "---";
@@ -535,12 +573,27 @@ public sealed class FishingViewModel : ViewModelBase
     private void SetRodState(string rodText, string equippedState)
     {
         var isMasterline = rodText.Contains("masterline", StringComparison.OrdinalIgnoreCase);
-        SetEquippedRodText(rodText);
+        var isLullaby = RodClassifier.Classify(rodText) == RodKind.Lullaby;
+        var displayText = rodText;
+        IReadOnlyList<ColoredTextLineViewModel>? coloredLines = null;
+        if (isLullaby)
+        {
+            var hasEnchantPrefix = !string.IsNullOrWhiteSpace(EnchantColors.FindEnchantName(rodText));
+            if (!hasEnchantPrefix && !string.Equals(SelectedLullabyMode.Name, "None", StringComparison.OrdinalIgnoreCase))
+            {
+                displayText = $"{SelectedLullabyMode.Name} {rodText}";
+            }
+
+            coloredLines = BuildLullabyEquippedRodLines(rodText);
+        }
+
+        SetEquippedRodText(displayText, coloredLines);
         if (!Dispatcher.UIThread.CheckAccess())
         {
             Dispatcher.UIThread.Post(() =>
             {
                 IsMasterlineEquipped = isMasterline;
+                IsLullabyEquipped = isLullaby;
                 RodHeaderText = $"Rod - {equippedState}";
                 OnPropertyChanged(nameof(StatusItems));
             });
@@ -548,21 +601,114 @@ public sealed class FishingViewModel : ViewModelBase
         }
 
         IsMasterlineEquipped = isMasterline;
+        IsLullabyEquipped = isLullaby;
         RodHeaderText = $"Rod - {equippedState}";
         OnPropertyChanged(nameof(StatusItems));
     }
 
-    private void SetEquippedRodText(string value)
+    public void SetLullabyModeByName(string? modeName)
+    {
+        var selected = _lullabyModeOptions[0];
+        if (!string.IsNullOrWhiteSpace(modeName))
+        {
+            foreach (var option in _lullabyModeOptions)
+            {
+                if (string.Equals(option.Name, modeName, StringComparison.OrdinalIgnoreCase))
+                {
+                    selected = option;
+                    break;
+                }
+            }
+        }
+
+        SelectedLullabyMode = selected;
+    }
+
+    public void ImportLullabyModeSettings(IReadOnlyList<LullabyModeSettingsSnapshot>? snapshots, string? selectedModeName)
+    {
+        if (snapshots is not null)
+        {
+            foreach (var snapshot in snapshots)
+            {
+                if (snapshot is null)
+                {
+                    continue;
+                }
+
+                foreach (var option in _lullabyModeOptions)
+                {
+                    if (string.Equals(option.Name, snapshot.Name, StringComparison.OrdinalIgnoreCase))
+                    {
+                        option.ApplySnapshot(snapshot);
+                        break;
+                    }
+                }
+            }
+        }
+
+        SetLullabyModeByName(selectedModeName);
+    }
+
+    public LullabyModeSettingsSnapshot[] ExportLullabyModeSettings()
+    {
+        var snapshots = new LullabyModeSettingsSnapshot[_lullabyModeOptions.Count];
+        for (var index = 0; index < _lullabyModeOptions.Count; index++)
+        {
+            snapshots[index] = _lullabyModeOptions[index].ToSnapshot();
+        }
+
+        return snapshots;
+    }
+
+    private void SetEquippedRodText(string value, IReadOnlyList<ColoredTextLineViewModel>? coloredLines = null)
     {
         if (!Dispatcher.UIThread.CheckAccess())
         {
-            Dispatcher.UIThread.Post(() => SetEquippedRodText(value));
+            Dispatcher.UIThread.Post(() => SetEquippedRodText(value, coloredLines));
             return;
         }
 
         EquippedRodText = value;
-        EquippedRodLines = ColoredEnchantText.BuildLines(value);
+        EquippedRodLines = coloredLines ?? ColoredEnchantText.BuildLines(value);
         OnPropertyChanged(nameof(StatusItems));
+    }
+
+    private IReadOnlyList<ColoredTextLineViewModel> BuildLullabyEquippedRodLines(string text)
+    {
+        var baseLines = ColoredEnchantText.BuildLines(text);
+        if (baseLines.Count == 0)
+        {
+            return baseLines;
+        }
+
+        var modeBrush = SelectedLullabyMode.Brush;
+        var prefix = SelectedLullabyMode.Name;
+        var firstLine = baseLines[0];
+        var segments = new List<ColoredTextSegmentViewModel>
+        {
+            new(prefix, modeBrush),
+            new(" ", firstLine.Segments.Count > 0 ? firstLine.Segments[0].Brush : modeBrush),
+        };
+
+        if (firstLine.Segments.Count > 0)
+        {
+            foreach (var segment in firstLine.Segments)
+            {
+                segments.Add(segment);
+            }
+        }
+
+        var lines = new List<ColoredTextLineViewModel>(baseLines.Count)
+        {
+            new(segments),
+        };
+
+        for (var index = 1; index < baseLines.Count; index++)
+        {
+            lines.Add(baseLines[index]);
+        }
+
+        return lines;
     }
 
     private void UpdateAquariumSchedule(FishingTrackerStatus status)

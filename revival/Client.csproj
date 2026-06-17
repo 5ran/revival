@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <Compile Include="**\*.cs"
-             Exclude="bin\**;obj\**;source\bin\**;source\obj\**;Client.Tests\**;Launcher.Tests\**;tracking-reference\**;shared-fishing-runtime\**" />
+             Exclude="bin\**;obj\**;source\bin\**;source\obj\**;Client.Tests\**;Launcher.Tests\**;tracking-reference\**;tracking1 ref\**;shared-fishing-runtime\**;marker-watch\**;datamodel-tree\**" />
     <Compile Include="shared-fishing-runtime\**\*.cs"
              Link="SharedRuntime\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
