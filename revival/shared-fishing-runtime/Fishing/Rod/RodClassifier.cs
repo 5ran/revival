@@ -60,6 +60,11 @@ internal static class RodClassifier
             return RodKind.MiguRod;
         }
 
+        if (text.Contains("noiseform", StringComparison.Ordinal))
+        {
+            return RodKind.Noiseform;
+        }
+
         return RodKind.Default;
     }
 

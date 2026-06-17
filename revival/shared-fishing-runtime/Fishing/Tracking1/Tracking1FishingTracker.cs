@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Avalonia.Media;
@@ -709,10 +710,12 @@ public sealed class Tracking1FishingTracker : IFishingTracker
                 {
                     UpdateBellonaDebugOverlay(primaryContext);
                 }
-                else
+                else if (_rodProfile.Kind != RodKind.Noiseform)
                 {
                     BellonaDebugOverlayService.Hide();
                 }
+
+                _rodProfile.UpdateOverlay(_memory, _context, context);
 
                 UpdateFishingMotionSignal(metrics, progress);
                 if (_startupAssistActive)
@@ -1596,6 +1599,26 @@ public sealed class Tracking1FishingTracker : IFishingTracker
             bounds.Value.Height,
             color));
     }
+
+    private static int RgbKey(byte r, byte g, byte b)
+    {
+        return (r << 16) | (g << 8) | b;
+    }
+
+    private const int InvalidPixel = -1;
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetDC(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+    [DllImport("gdi32.dll")]
+    private static extern int GetPixel(IntPtr hdc, int nXPos, int nYPos);
+
+    private static byte GetRValue(int pixel) => (byte)(pixel & 0xFF);
+    private static byte GetGValue(int pixel) => (byte)((pixel >> 8) & 0xFF);
+    private static byte GetBValue(int pixel) => (byte)((pixel >> 16) & 0xFF);
 
     private void UpdateFishingMotionSignal(ReelMetrics metrics, double? progress)
     {
@@ -3797,7 +3820,8 @@ public sealed class Tracking1FishingTracker : IFishingTracker
         _lastRodDetectAt = now;
         try
         {
-            var kind = RodClassifier.Classify(HotbarRodResolver.GetHotbarRodDisplayText(_memory));
+            var displayText = HotbarRodResolver.GetHotbarRodDisplayText(_memory);
+            var kind = RodClassifier.Classify(displayText);
             if (kind == RodKind.MasterlineRod)
             {
                 var overlayKind = ResolveMasterlineOverlayKind();
@@ -3807,9 +3831,11 @@ public sealed class Tracking1FishingTracker : IFishingTracker
                 }
             }
 
+            AppLog.Fishing("RodDetect", $"display=\"{displayText}\" classified={kind} current={_rodProfile.Kind}");
             if (kind != _rodProfile.Kind)
             {
                 _rodProfile = RodProfile.For(kind);
+                AppLog.Fishing("RodDetect", $"profile switched -> {_rodProfile.Kind}");
             }
         }
         catch

@@ -12,4 +12,5 @@ public enum RodKind
     Lullaby,
     SplitbranchTwig,
     MiguRod,
+    Noiseform,
 }

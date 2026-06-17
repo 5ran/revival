@@ -21,6 +21,11 @@ internal abstract class RodProfile
     {
     }
 
+    // Optional visual hook for rod-specific overlays.
+    public virtual void UpdateOverlay(RobloxMemory memory, FishingRuntimeContext context, ReelContext? reelContext)
+    {
+    }
+
     public static RodProfile For(RodKind kind) => kind switch
     {
         RodKind.BellonaWaraxe => new BellonaWaraxeRodProfile(),
@@ -32,6 +37,7 @@ internal abstract class RodProfile
         RodKind.Lullaby => new LullabyRodProfile(),
         RodKind.SplitbranchTwig => new SplitbranchTwigRodProfile(),
         RodKind.MiguRod => new MiguRodProfile(),
+        RodKind.Noiseform => new NoiseformRodProfile(),
         _ => new DefaultRodProfile(),
     };
 }

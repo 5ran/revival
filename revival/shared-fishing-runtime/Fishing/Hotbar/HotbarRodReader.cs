@@ -99,6 +99,7 @@ internal sealed class HotbarRodReader : IDisposable
         "No-Life Rod",
         "North Pole",
         "North-Star Rod",
+        "Noiseform",
         "Onirifalx",
         "Paleontologist's Rod",
         "Paper Fan Rod",

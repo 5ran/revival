@@ -1158,13 +1158,47 @@ internal sealed class TreeViewerForm : Form
 
         try
         {
-            Clipboard.SetText(node.Address);
-            toolbarStatus.Text = $"Copied {node.Address}.";
+            var fullPath = GetCopyFullAddressText(node);
+            Clipboard.SetText(fullPath);
+            toolbarStatus.Text = $"Copied {fullPath}.";
         }
         catch (Exception ex)
         {
             toolbarStatus.Text = "Copy failed: " + ex.Message;
         }
+    }
+
+    private static string GetCopyFullAddressText(DataModelNode node)
+    {
+        var fullPath = BuildFullPath(node);
+        if (!string.IsNullOrWhiteSpace(fullPath))
+        {
+            return fullPath;
+        }
+
+        return !string.IsNullOrWhiteSpace(node.Address)
+            ? node.Address
+            : FormatNodeReference(node);
+    }
+
+    private static string BuildFullPath(DataModelNode node)
+    {
+        var parts = new List<string>();
+        for (var current = node; current is not null; current = current.Parent)
+        {
+            if (!string.IsNullOrWhiteSpace(current.Name))
+            {
+                parts.Add(current.Name);
+            }
+        }
+
+        parts.Reverse();
+        if (parts.Count > 0)
+        {
+            return string.Join("/", parts);
+        }
+
+        return node.Path;
     }
 
     private void ShowAllInfo()

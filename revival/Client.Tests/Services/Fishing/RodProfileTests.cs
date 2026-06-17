@@ -37,6 +37,7 @@ public sealed class RodProfileTests
     [InlineData(RodKind.Tranquility, typeof(TranquilityRodProfile))]
     [InlineData(RodKind.Dreambreaker, typeof(DreambreakerRodProfile))]
     [InlineData(RodKind.Requiem, typeof(RequiemRodProfile))]
+    [InlineData(RodKind.Noiseform, typeof(DefaultRodProfile))]
     public void For_ReturnsMatchingProfile(RodKind kind, System.Type expected)
     {
         Assert.IsType(expected, RodProfile.For(kind));
