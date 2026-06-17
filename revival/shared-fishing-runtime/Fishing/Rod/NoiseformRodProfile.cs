@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Avalonia.Media;
 using Client.Services;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Client.Services.Fishing;
 
@@ -11,37 +10,33 @@ namespace Client.Services.Fishing;
 // so we can highlight the three beam zones without touching the generic loop.
 internal sealed class NoiseformRodProfile : RodProfile
 {
-    private static long _lastOverlayLogAt;
-    private static string _lastOverlayMessage = string.Empty;
-    private static long _lastOverlaySeenAt;
-    private static bool _overlayVisible;
-    private static ulong _lastBar;
-    private static long _lastScanAt;
-    private static int _lastBeamZoneCount = -1;
-    private static int _scanInFlight;
-    private const int OverlayGraceMs = 350;
+    private readonly object _overlayLock = new();
+    private List<BellonaDebugBox> _lastBoxes = [];
+    private long _lastOverlayLogAt;
+    private string _lastOverlayMessage = string.Empty;
+    private long _lastOverlaySeenAt;
+    private bool _overlayVisible;
+    private ulong _lastBar;
+    private long _lastScanAt;
+    private int _lastBeamZoneCount = -1;
+    private int _scanInFlight;
+    private const int OverlayGraceMs = 600;
     private const int ScanThrottleMs = 50;
 
     public override RodKind Kind => RodKind.Noiseform;
 
     public override void UpdateOverlay(RobloxMemory memory, FishingRuntimeContext context, ReelContext? reelContext)
     {
+        var now = Environment.TickCount64;
         if (reelContext is null)
         {
-            LogOverlay("overlay skipped: reelContext missing");
-            if (_overlayVisible)
-            {
-                BellonaDebugOverlayService.Hide();
-                _overlayVisible = false;
-            }
-            _lastBar = 0;
-            _lastBeamZoneCount = -1;
+            ClearOverlayIfExpired(now, "reelContext missing");
             return;
         }
 
-        var now = Environment.TickCount64;
         if (reelContext.Bar == _lastBar && now - _lastScanAt < ScanThrottleMs)
         {
+            ClearOverlayIfExpired(now, "scan throttled");
             return;
         }
 
@@ -49,58 +44,85 @@ internal sealed class NoiseformRodProfile : RodProfile
         _lastScanAt = now;
         if (Interlocked.Exchange(ref _scanInFlight, 1) == 1)
         {
+            ClearOverlayIfExpired(now, "scan busy");
             return;
         }
 
         var reelGui = context.GetPrimaryReelGuiAddress();
         var bar = reelContext.Bar;
-        _ = Task.Run(() =>
+        try
         {
-            try
+            var barPath = DescribePath(memory, bar);
+            var reelPath = DescribePath(memory, reelGui);
+            var boxes = FindBeamZoneBoxes(memory, bar, reelGui);
+
+            if (boxes.Count != _lastBeamZoneCount)
             {
-                var barPath = DescribePath(memory, bar);
-                var reelPath = DescribePath(memory, reelGui);
-                var boxes = FindBeamZoneBoxes(memory, bar, reelGui);
+                LogOverlay($"reelPath={reelPath} barPath={barPath} bar=0x{bar:X} beamZones={boxes.Count} childNames={DescribeImmediateChildren(memory, bar)}");
+                _lastBeamZoneCount = boxes.Count;
+            }
 
-                if (boxes.Count != _lastBeamZoneCount)
-                {
-                    LogOverlay($"reelPath={reelPath} barPath={barPath} bar=0x{bar:X} beamZones={boxes.Count} childNames={DescribeImmediateChildren(memory, bar)}");
-                    _lastBeamZoneCount = boxes.Count;
-                }
+            if (boxes.Count == 0)
+            {
+                ClearOverlayIfExpired(Environment.TickCount64, "beamZone scan empty");
+                return;
+            }
 
-                if (boxes.Count == 0)
-                {
-                    if (_overlayVisible && Environment.TickCount64 - _lastOverlaySeenAt < OverlayGraceMs)
-                    {
-                        return;
-                    }
-
-                    if (_overlayVisible)
-                    {
-                        BellonaDebugOverlayService.Hide();
-                        _overlayVisible = false;
-                    }
-
-                    if (Environment.TickCount64 - _lastOverlayLogAt >= 500)
-                    {
-                        LogOverlay("beamZone scan empty");
-                    }
-                    return;
-                }
-
+            lock (_overlayLock)
+            {
+                _lastBoxes = new List<BellonaDebugBox>(boxes);
                 _overlayVisible = true;
                 _lastOverlaySeenAt = Environment.TickCount64;
-                BellonaDebugOverlayService.Update(boxes);
             }
-            catch (Exception ex)
+
+            BellonaDebugOverlayService.Update(boxes);
+        }
+        catch (Exception ex)
+        {
+            AppLog.FishingError("NoiseformOverlay", "overlay scan failed", ex);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _scanInFlight, 0);
+        }
+    }
+
+    private void ClearOverlayIfExpired(long now, string reason)
+    {
+        if (!_overlayVisible)
+        {
+            return;
+        }
+
+        if (now - _lastOverlaySeenAt < OverlayGraceMs)
+        {
+            if (now - _lastOverlayLogAt >= 500)
             {
-                AppLog.FishingError("NoiseformOverlay", "overlay scan failed", ex);
+                LogOverlay($"overlay retained ({reason})");
             }
-            finally
+
+            if (_lastBoxes.Count > 0)
             {
-                Interlocked.Exchange(ref _scanInFlight, 0);
+                BellonaDebugOverlayService.Update(_lastBoxes);
             }
-        });
+
+            return;
+        }
+
+        lock (_overlayLock)
+        {
+            if (!_overlayVisible)
+            {
+                return;
+            }
+
+            _overlayVisible = false;
+            _lastBoxes = [];
+            _lastBeamZoneCount = -1;
+        }
+
+        BellonaDebugOverlayService.Hide();
+        LogOverlay($"overlay cleared ({reason})");
     }
 
     private static List<BellonaDebugBox> FindBeamZoneBoxes(RobloxMemory memory, ulong root, ulong fallbackRoot)
@@ -156,7 +178,7 @@ internal sealed class NoiseformRodProfile : RodProfile
                     }
                     else
                     {
-                        LogOverlay($"beamZone without bounds child=0x{child:X} path={DescribePath(memory, child)}");
+                        AppLog.Fishing("NoiseformOverlay", $"beamZone without bounds child=0x{child:X} path={DescribePath(memory, child)}");
                     }
 
                     continue;
@@ -219,7 +241,7 @@ internal sealed class NoiseformRodProfile : RodProfile
         return names.Count == 0 ? "<none>" : string.Join(", ", names);
     }
 
-    private static void LogOverlay(string message)
+    private void LogOverlay(string message)
     {
         var now = Environment.TickCount64;
         if (now - _lastOverlayLogAt < 200 && string.Equals(message, _lastOverlayMessage, StringComparison.Ordinal))
