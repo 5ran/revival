@@ -347,8 +347,7 @@
 
         <Border Grid.Row="4"
                 Classes="fishing-card"
-                Width="550"
-                HorizontalAlignment="Center"
+                HorizontalAlignment="Stretch"
                 Padding="20,0">
             <Grid RowDefinitions="40,1,82,1,40">
                 <Grid Grid.Row="4" ColumnDefinitions="225,60,225">
