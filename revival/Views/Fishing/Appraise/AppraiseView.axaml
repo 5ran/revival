@@ -236,13 +236,14 @@
                 BorderBrush="{StaticResource Accent}"
                 HorizontalAlignment="Center"
                 Padding="0">
-            <Grid RowDefinitions="64,1,42,1,128,1,46">
+            <Grid RowDefinitions="54,1,42,1,128,1,46">
                 <Grid Grid.Row="0"
-                      ColumnDefinitions="145,12,1,12,170,12,1,12,145"
+                      Width="518"
+                      ColumnDefinitions="148,10,1,10,180,10,1,10,148"
                       HorizontalAlignment="Center"
-                      Margin="14,10">
+                      Margin="0,7">
                 <StackPanel Grid.Column="0"
-                            Spacing="3"
+                            Spacing="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                     <TextBlock Text="Held Fish"
@@ -252,7 +253,9 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <controls:ColoredTextBlock Lines="{Binding HeldFishLines}"
+                                               Width="120"
                                                HorizontalAlignment="Center"
+                                               TextAlignment="Center"
                                                TextWrapping="Wrap"
                                                FontFamily="{StaticResource DisplayFont}"
                                                FontSize="13"
@@ -276,7 +279,7 @@
                         Background="{StaticResource Border}" />
 
                 <StackPanel Grid.Column="8"
-                            Spacing="3"
+                            Spacing="1"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center">
                         <TextBlock Text="Status"
@@ -286,7 +289,9 @@
                                    FontSize="10"
                                    Foreground="{StaticResource TextSecondary}" />
                         <controls:ColoredTextBlock Lines="{Binding StatusLines}"
+                                                   Width="120"
                                                    HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
                                                    TextWrapping="Wrap"
                                                    FontFamily="{StaticResource DisplayFont}"
                                                    FontSize="13"
@@ -335,14 +340,14 @@
                                    FontSize="13"
                                    FontWeight="SemiBold"
                                    Foreground="{StaticResource TextPrimary}" />
-                        <TextBlock Text="{Binding SelectedMutationsSummary}"
-                                   MaxWidth="300"
-                                   HorizontalAlignment="Center"
-                                   TextAlignment="Center"
-                                   TextTrimming="CharacterEllipsis"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="11"
-                                   Foreground="{StaticResource TextSecondary}" />
+                        <controls:ColoredTextBlock Lines="{Binding SelectedMutationsLines}"
+                                                   MaxWidth="300"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   FontFamily="{StaticResource UIFont}"
+                                                   FontSize="11"
+                                                   Foreground="{StaticResource TextSecondary}" />
                     </StackPanel>
 
                     <Grid Grid.Row="2"
@@ -353,15 +358,22 @@
                                     Height="34"
                                     HorizontalAlignment="Stretch">
                                 <Grid ColumnDefinitions="*,64">
-                                    <TextBox x:Name="MutationSearchBox"
-                                             Grid.Column="0"
-                                             Classes="appraise-input appraise-picker-search"
-                                             PlaceholderText="Search"
-                                             Text="{Binding MutationSearchText}"
-                                             PointerPressed="MutationSearchBox_OnPointerPressed"
-                                             GotFocus="MutationSearchBox_OnGotFocus"
-                                             TextChanged="MutationSearchBox_OnTextChanged" />
+                                    <Border x:Name="MutationField"
+                                            Grid.Column="0"
+                                            Background="Transparent"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="0,0,-1,0">
+                                        <TextBox x:Name="MutationSearchBox"
+                                                 Classes="appraise-input appraise-picker-search"
+                                                 PlaceholderText="Search"
+                                                 Text="{Binding MutationSearchText}"
+                                                 PointerPressed="MutationSearchBox_OnPointerPressed"
+                                                 GotFocus="MutationSearchBox_OnGotFocus"
+                                                 TextChanged="MutationSearchBox_OnTextChanged" />
+                                    </Border>
                                     <Button Grid.Column="1"
+                                            x:Name="MutationDropdownButton"
                                             Classes="appraise-add"
                                             Margin="0"
                                             CornerRadius="0,5,5,0"
@@ -379,14 +391,17 @@
 
                             <Popup x:Name="MutationDropdownPopup"
                                    PlacementTarget="{Binding #MutationPicker}"
-                                   Placement="BottomEdgeAlignedLeft"
+                           Placement="AnchorAndGravity"
+                           PlacementAnchor="BottomLeft"
+                           PlacementGravity="BottomRight"
                                    IsLightDismissEnabled="True">
-                                <Border Background="{StaticResource Surface}"
+                                <Border x:Name="MutationDropdownBorder"
+                                        Background="{StaticResource Surface}"
                                         BorderBrush="{StaticResource Border}"
                                         BorderThickness="1"
                                         CornerRadius="6"
                                         Padding="4"
-                                        Width="{Binding #MutationPicker.Bounds.Width}"
+                                        Width="{Binding #MutationPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
                                         Margin="0,4,0,0">
                                     <ScrollViewer MaxHeight="220"
                                                   VerticalScrollBarVisibility="Auto">

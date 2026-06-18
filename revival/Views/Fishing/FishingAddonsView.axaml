@@ -6,18 +6,116 @@
              Background="{StaticResource Background}">
     <ScrollViewer Margin="0"
                   VerticalContentAlignment="Center"
-                  VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="8"
-                    Margin="22,0,22,18"
+                  VerticalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="6"
+                    Margin="14,0,14,10"
                     VerticalAlignment="Center">
-            <StackPanel Spacing="6"
+            <StackPanel Spacing="4"
                         Margin="0">
                 <StackPanel.Styles>
-                    <Style Selector="ComboBox.totem-select">
+                    <Style Selector="Border.totem-picker">
+                        <Setter Property="Background" Value="{StaticResource TableSurface}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="CornerRadius" Value="8" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                    </Style>
+                    <Style Selector="Button.totem-picker-button">
+                        <Setter Property="Background" Value="{StaticResource Accent}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                        <Setter Property="BorderThickness" Value="1,0,0,0" />
+                        <Setter Property="CornerRadius" Value="0,8,8,0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="VerticalAlignment" Value="Stretch" />
+                        <Setter Property="ClipToBounds" Value="True" />
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{TemplateBinding CornerRadius}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                </Border>
+                            </ControlTemplate>
+                        </Setter>
+                    </Style>
+                    <Style Selector="Border.totem-dropdown-surface">
+                        <Setter Property="Background" Value="{StaticResource TableSurface}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="CornerRadius" Value="8" />
+                        <Setter Property="Padding" Value="6" />
+                    </Style>
+                    <Style Selector="Button.totem-picker-button /template/ ContentPresenter">
+                        <Setter Property="Transitions">
+                            <Transitions>
+                                <BrushTransition Property="Background" Duration="0:0:0.12" />
+                            </Transitions>
+                        </Setter>
+                    </Style>
+                    <Style Selector="Button.totem-picker-button:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{StaticResource AccentHover}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+                    </Style>
+                    <Style Selector="Button.totem-picker-button:pointerover">
+                        <Setter Property="Background" Value="{StaticResource AccentHover}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+                    </Style>
+                    <Style Selector="Button.totem-picker-button:pressed /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+                    </Style>
+                    <Style Selector="Button.totem-picker-button:pressed">
+                        <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+                    </Style>
+                    <Style Selector="ListBox.totem-dropdown">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                    </Style>
+                    <Style Selector="ListBox.totem-dropdown ListBoxItem">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0" />
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                    <Style Selector="ListBox.totem-dropdown ListBoxItem /template/ ContentPresenter">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="CornerRadius" Value="6" />
+                    </Style>
+                    <Style Selector="ListBox.totem-dropdown ListBoxItem:pointerover /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+                    </Style>
+                    <Style Selector="ListBox.totem-dropdown ListBoxItem:selected /template/ ContentPresenter">
+                        <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
+                    </Style>
+                    <Style Selector="TextBlock.totem-picker-primary">
+                        <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+                        <Setter Property="FontSize" Value="13" />
+                    </Style>
+                    <Style Selector="TextBlock.totem-picker-suffix">
+                        <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+                        <Setter Property="FontSize" Value="13" />
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
                     </Style>
                     <Style Selector="CheckBox.auto-totem-option">
                         <Setter Property="HorizontalAlignment" Value="Center" />
+                    </Style>
+                    <Style Selector="CheckBox.addon-power-toggle">
+                        <Setter Property="HorizontalAlignment" Value="Center" />
+                        <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+                        <Setter Property="FontSize" Value="13" />
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                        <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
                     </Style>
                 </StackPanel.Styles>
                 <TextBlock Text="Fishing Setup"
@@ -25,8 +123,10 @@
                            Margin="0" />
 
                 <Border Classes="app-header"
-                        Padding="14,8">
-                    <Grid ColumnDefinitions="*,Auto,72,8,68,40,Auto,8,80,*"
+                        Width="560"
+                        Padding="12,6">
+                    <Grid Width="536"
+                          ColumnDefinitions="*,Auto,58,8,64,26,Auto,8,64,*"
                           VerticalAlignment="Center">
                         <TextBlock Grid.Column="1"
                                    Text="Hotkey"
@@ -39,11 +139,11 @@
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    FontFamily="{StaticResource MonoFont}"
-                                   FontSize="11"
+                                   FontSize="10"
                                    Foreground="{StaticResource TextPrimary}" />
                         <Button Grid.Column="4"
                                 Classes="app-secondary"
-                                Height="30"
+                                Height="26"
                                 Padding="6,0"
                                 FontSize="10"
                                 Content="{Binding General.RebindButtonText}"
@@ -57,8 +157,8 @@
                                    Foreground="{StaticResource TextSecondary}" />
                         <TextBox Grid.Column="8"
                                  Classes="app-input"
-                                 Width="48"
-                                 Height="30"
+                                 Width="42"
+                                 Height="26"
                                  MaxLength="1"
                                  HorizontalContentAlignment="Center"
                                  Text="{Binding General.RodSlotText}" />
@@ -67,243 +167,373 @@
 
                 <TextBlock Text="Automation Settings"
                            Classes="tab-section-title"
-                           Margin="0,4,0,0" />
+                           Margin="0,2,0,0" />
 
-                <Grid ColumnDefinitions="2*,10,*"
-                      RowDefinitions="*,10,*"
-                      Height="250">
-                    <Border Grid.Column="0"
-                            Grid.RowSpan="3"
+                <Grid Width="560"
+                      RowDefinitions="Auto,8,Auto"
+                      HorizontalAlignment="Center">
+                    <Border Grid.Row="0"
                             Classes="app-header"
-                            Padding="10,7">
-                        <Grid RowDefinitions="20,6,12,4,30,6,1,6,12,6,24,6,1,6,12,6,24,6,1,6,24"
+                            Width="560"
+                            Padding="16,12">
+                        <Grid RowDefinitions="20,6,14,6,30,8,1,14,48"
+                              Width="430"
                               HorizontalAlignment="Center">
-                            <TextBlock Grid.Row="0"
-                                       Text="Auto Totem"
-                                       Width="300"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       FontFamily="{StaticResource DisplayFont}"
-                                       FontSize="14"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource TextPrimary}" />
+                            <CheckBox Grid.Row="0"
+                                      Classes="addon-power-toggle"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="Auto Totem"
+                                      IsChecked="{Binding AutoTotemEnabled}"
+                                      FontFamily="{StaticResource DisplayFont}"
+                                      FontSize="13" />
 
                             <Grid Grid.Row="2"
-                                  ColumnDefinitions="132,36,132"
-                                  Width="300"
+                                  Grid.RowSpan="3"
+                                  ColumnDefinitions="168,32,168"
+                                  Width="368"
                                   HorizontalAlignment="Center">
-                                <TextBlock Grid.Column="0"
-                                           Text="Weather"
-                                           HorizontalAlignment="Center"
-                                           TextAlignment="Center"
-                                           FontSize="10"
-                                           Foreground="{StaticResource TextSecondary}" />
-                                <TextBlock Grid.Column="2"
-                                           Text="Secondary Weather"
-                                           HorizontalAlignment="Center"
-                                           TextAlignment="Center"
-                                           FontSize="10"
-                                           Foreground="{StaticResource TextSecondary}" />
-                            </Grid>
+                                <StackPanel Grid.Column="0"
+                                            Width="168"
+                                            Spacing="6"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="Weather"
+                                               Width="168"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               TextWrapping="NoWrap"
+                                               FontSize="10"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                    <Panel Width="168">
+                                        <Border x:Name="PrimaryTotemPicker"
+                                                Classes="totem-picker"
+                                                Height="30"
+                                                HorizontalAlignment="Stretch">
+                                            <Grid ColumnDefinitions="*,34">
+                                                <Border x:Name="PrimaryTotemField"
+                                                        Grid.Column="0"
+                                                        Background="Transparent"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch"
+                                                        Margin="0,0,-1,0">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Spacing="0"
+                                                                Margin="12,0,0,0"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding AutoTotem.SelectedTotem.DisplayPrimary}"
+                                                                   Classes="totem-picker-primary"
+                                                                   Foreground="{Binding AutoTotem.SelectedTotem.Brush}" />
+                                                        <TextBlock Text="{Binding AutoTotem.SelectedTotem.DisplaySuffix}"
+                                                                   Classes="totem-picker-suffix" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <Button Grid.Column="1"
+                                                        x:Name="PrimaryTotemDropdownButton"
+                                                        Classes="totem-picker-button"
+                                                        Click="PrimaryTotemDropdownButton_OnClick">
+                                                    <Path Width="10"
+                                                          Height="6"
+                                                          Stretch="Fill"
+                                                          Fill="{StaticResource AccentForeground}"
+                                                          Data="M 0 0 L 5 6 L 10 0 Z" />
+                                                </Button>
+                                            </Grid>
+                                        </Border>
+                                        <Popup x:Name="PrimaryTotemDropdownPopup"
+                                               PlacementTarget="{Binding #PrimaryTotemPicker}"
+                                               Placement="AnchorAndGravity"
+                                               PlacementAnchor="BottomLeft"
+                                               PlacementGravity="BottomRight"
+                                               IsLightDismissEnabled="True">
+                                            <Border x:Name="PrimaryTotemDropdownBorder"
+                                                    Classes="totem-dropdown-surface"
+                                                    Width="{Binding #PrimaryTotemPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                                    Margin="0,4,0,0">
+                                                <ScrollViewer MaxHeight="220"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                    <ListBox Classes="totem-dropdown"
+                                                             ItemsSource="{Binding AutoTotem.PrimaryTotemOptions}"
+                                                             SelectedItem="{Binding AutoTotem.SelectedTotem}"
+                                                             SelectionChanged="PrimaryTotemList_OnSelectionChanged">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                                                <StackPanel Orientation="Horizontal"
+                                                                            Spacing="0"
+                                                                            Margin="8,6">
+                                                                    <TextBlock Text="{Binding DisplayPrimary}"
+                                                                               Classes="totem-picker-primary"
+                                                                               Foreground="{Binding Brush}" />
+                                                                    <TextBlock Text="{Binding DisplaySuffix}"
+                                                                               Classes="totem-picker-suffix" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                    </ListBox>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </Popup>
+                                    </Panel>
+                                </StackPanel>
 
-                            <Grid Grid.Row="4"
-                                  ColumnDefinitions="132,36,132"
-                                  Width="300"
-                                  HorizontalAlignment="Center">
-                                <ComboBox Grid.Column="0"
-                                          Classes="app-select totem-select"
-                                          Width="118"
-                                          Height="30"
-                                          HorizontalAlignment="Center"
-                                          ItemsSource="{Binding AutoTotem.PrimaryTotemOptions}"
-                                          SelectedItem="{Binding AutoTotem.SelectedTotem}">
-                                    <ComboBox.SelectionBoxItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ColumnDefinitions="*,16">
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding}"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center"
-                                                           Foreground="{StaticResource TextPrimary}" />
+                                <StackPanel Grid.Column="2"
+                                            Width="168"
+                                            Spacing="6"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="Secondary Weather"
+                                               Width="168"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               TextWrapping="NoWrap"
+                                               FontSize="10"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                    <Panel Width="168">
+                                        <Border x:Name="SecondaryTotemPicker"
+                                                Classes="totem-picker"
+                                                Height="30"
+                                                HorizontalAlignment="Stretch">
+                                            <Grid ColumnDefinitions="*,34">
+                                                <Border x:Name="SecondaryTotemField"
+                                                        Grid.Column="0"
+                                                        Background="Transparent"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalAlignment="Stretch"
+                                                        Margin="0,0,-1,0">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Spacing="0"
+                                                                Margin="12,0,0,0"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding AutoTotem.SelectedSecondaryTotem.DisplayPrimary}"
+                                                                   Classes="totem-picker-primary"
+                                                                   Foreground="{Binding AutoTotem.SelectedSecondaryTotem.Brush}" />
+                                                        <TextBlock Text="{Binding AutoTotem.SelectedSecondaryTotem.DisplaySuffix}"
+                                                                   Classes="totem-picker-suffix" />
+                                                    </StackPanel>
+                                                </Border>
+                                                <Button Grid.Column="1"
+                                                        x:Name="SecondaryTotemDropdownButton"
+                                                        Classes="totem-picker-button"
+                                                        Click="SecondaryTotemDropdownButton_OnClick">
+                                                    <Path Width="10"
+                                                          Height="6"
+                                                          Stretch="Fill"
+                                                          Fill="{StaticResource AccentForeground}"
+                                                          Data="M 0 0 L 5 6 L 10 0 Z" />
+                                                </Button>
                                             </Grid>
-                                        </DataTemplate>
-                                    </ComboBox.SelectionBoxItemTemplate>
-                                </ComboBox>
-                                <ComboBox Grid.Column="2"
-                                          Classes="app-select totem-select"
-                                          Width="118"
-                                          Height="30"
-                                          HorizontalAlignment="Center"
-                                          ItemsSource="{Binding AutoTotem.SecondaryTotemOptions}"
-                                          SelectedItem="{Binding AutoTotem.SelectedSecondaryTotem}">
-                                    <ComboBox.SelectionBoxItemTemplate>
-                                        <DataTemplate>
-                                            <Grid ColumnDefinitions="*,16">
-                                                <TextBlock Grid.Column="0"
-                                                           Text="{Binding}"
-                                                           HorizontalAlignment="Center"
-                                                           TextAlignment="Center"
-                                                           Foreground="{StaticResource TextPrimary}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ComboBox.SelectionBoxItemTemplate>
-                                </ComboBox>
+                                        </Border>
+                                        <Popup x:Name="SecondaryTotemDropdownPopup"
+                                               PlacementTarget="{Binding #SecondaryTotemPicker}"
+                                               Placement="AnchorAndGravity"
+                                               PlacementAnchor="BottomLeft"
+                                               PlacementGravity="BottomRight"
+                                               IsLightDismissEnabled="True">
+                                            <Border x:Name="SecondaryTotemDropdownBorder"
+                                                    Classes="totem-dropdown-surface"
+                                                    Width="{Binding #SecondaryTotemPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                                    Margin="0,4,0,0">
+                                                <ScrollViewer MaxHeight="220"
+                                                              VerticalScrollBarVisibility="Auto">
+                                                    <ListBox Classes="totem-dropdown"
+                                                             ItemsSource="{Binding AutoTotem.SecondaryTotemOptions}"
+                                                             SelectedItem="{Binding AutoTotem.SelectedSecondaryTotem}"
+                                                             SelectionChanged="SecondaryTotemList_OnSelectionChanged">
+                                                        <ListBox.ItemTemplate>
+                                                            <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                                                <StackPanel Orientation="Horizontal"
+                                                                            Spacing="0"
+                                                                            Margin="8,6">
+                                                                    <TextBlock Text="{Binding DisplayPrimary}"
+                                                                               Classes="totem-picker-primary"
+                                                                               Foreground="{Binding Brush}" />
+                                                                    <TextBlock Text="{Binding DisplaySuffix}"
+                                                                               Classes="totem-picker-suffix" />
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ListBox.ItemTemplate>
+                                                    </ListBox>
+                                                </ScrollViewer>
+                                            </Border>
+                                        </Popup>
+                                    </Panel>
+                                </StackPanel>
                             </Grid>
 
                             <Border Grid.Row="6"
                                     Height="1"
-                                    Width="300"
+                                    Width="430"
                                     HorizontalAlignment="Center"
                                     Background="{StaticResource Border}"
                                     Opacity="0.45" />
 
-                            <TextBlock Grid.Row="8"
-                                       Text="Cycle Lock"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       FontSize="10"
-                                       Foreground="{StaticResource TextSecondary}" />
-
-                            <Grid Grid.Row="10"
-                                  ColumnDefinitions="Auto,*,Auto"
-                                  Width="300"
-                                  Height="24"
+                            <Grid Grid.Row="8"
+                                  Width="430"
+                                  ColumnDefinitions="1*,1,1*"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center">
-                                <CheckBox Grid.Column="0"
-                                          Classes="auto-totem-option"
-                                          HorizontalAlignment="Center"
-                                          Content="Stay Day"
-                                          IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
-                                          IsChecked="{Binding AutoTotem.StayDay}"
-                                          FontSize="11" />
-                                <CheckBox Grid.Column="2"
-                                          Classes="auto-totem-option"
-                                          HorizontalAlignment="Center"
-                                          Content="Stay Night"
-                                          IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
-                                          IsChecked="{Binding AutoTotem.StayNight}"
-                                          FontSize="11" />
+                                <StackPanel Grid.Column="0"
+                                            Spacing="6"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                    <TextBlock Text="Cycle Lock"
+                                               Width="176"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center"
+                                               TextWrapping="NoWrap"
+                                               FontSize="10"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                    <Grid Width="176"
+                                          ColumnDefinitions="*,Auto,16,Auto,*"
+                                          HorizontalAlignment="Center">
+                                        <CheckBox Grid.Column="1"
+                                                  Classes="auto-totem-option"
+                                                  HorizontalAlignment="Center"
+                                                  Content="Stay Day"
+                                                  IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
+                                                  IsChecked="{Binding AutoTotem.StayDay}"
+                                                  FontSize="10" />
+                                        <CheckBox Grid.Column="3"
+                                                  Classes="auto-totem-option"
+                                                  HorizontalAlignment="Center"
+                                                  Content="Stay Night"
+                                                  IsEnabled="{Binding AutoTotem.IsTimePreferenceEditable}"
+                                                  IsChecked="{Binding AutoTotem.StayNight}"
+                                                  FontSize="10" />
+                                    </Grid>
+                                </StackPanel>
+
+                                <Border Grid.Column="1"
+                                        Width="1"
+                                        Height="38"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Background="{StaticResource Border}"
+                                        Opacity="0.35" />
+
+                                <StackPanel Grid.Column="2"
+                                              Width="170"
+                                              Spacing="6"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center">
+                                      <TextBlock Text="Shiny / Sparkling / Mutation"
+                                                 Width="170"
+                                                 Margin="18,0,0,0"
+                                                 HorizontalAlignment="Center"
+                                                 TextAlignment="Center"
+                                                 TextWrapping="NoWrap"
+                                                 FontSize="9"
+                                                 Foreground="{StaticResource TextSecondary}" />
+                                      <Grid Width="170"
+                                            ColumnDefinitions="Auto,12,Auto,12,Auto"
+                                            HorizontalAlignment="Center">
+                                          <CheckBox Grid.Column="0"
+                                                      Classes="auto-totem-option"
+                                                      HorizontalAlignment="Center"
+                                                      Content="Shiny"
+                                                      IsChecked="{Binding AutoTotem.UseShinyTotem}"
+                                                      FontSize="10" />
+                                          <CheckBox Grid.Column="2"
+                                                      Classes="auto-totem-option"
+                                                      HorizontalAlignment="Center"
+                                                      Content="Sparkling"
+                                                      IsChecked="{Binding AutoTotem.UseSparklingTotem}"
+                                                      FontSize="10" />
+                                          <CheckBox Grid.Column="4"
+                                                      Classes="auto-totem-option"
+                                                      HorizontalAlignment="Center"
+                                                      Content="Mutation"
+                                                    IsChecked="{Binding AutoTotem.UseMutationTotem}"
+                                                    FontSize="10" />
+                                    </Grid>
+                                </StackPanel>
                             </Grid>
 
-                            <Border Grid.Row="12"
-                                    Height="1"
-                                    Width="300"
-                                    HorizontalAlignment="Center"
-                                    Background="{StaticResource Border}"
-                                    Opacity="0.45" />
-
-                            <TextBlock Grid.Row="14"
-                                       Text="Shiny / Sparkling / Mutation"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       FontSize="10"
-                                       Foreground="{StaticResource TextSecondary}" />
-
-                            <Grid Grid.Row="16"
-                                  ColumnDefinitions="Auto,*,Auto,*,Auto"
-                                  Width="300"
-                                  Height="24"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center">
-                                <CheckBox Grid.Column="0"
-                                          Classes="auto-totem-option"
-                                          HorizontalAlignment="Center"
-                                          Content="Shiny"
-                                          IsChecked="{Binding AutoTotem.UseShinyTotem}"
-                                          FontSize="11" />
-                                <CheckBox Grid.Column="2"
-                                          Classes="auto-totem-option"
-                                          HorizontalAlignment="Center"
-                                          Content="Sparkling"
-                                          IsChecked="{Binding AutoTotem.UseSparklingTotem}"
-                                          FontSize="11" />
-                                <CheckBox Grid.Column="4"
-                                          Classes="auto-totem-option"
-                                          HorizontalAlignment="Center"
-                                          Content="Mutation"
-                                          IsChecked="{Binding AutoTotem.UseMutationTotem}"
-                                          FontSize="11" />
-                            </Grid>
-
-                            <Border Grid.Row="18"
-                                    Height="1"
-                                    Width="300"
-                                    HorizontalAlignment="Center"
-                                    Background="{StaticResource Border}"
-                                    Opacity="0.45" />
-
-                            <Grid Grid.Row="20"
-                                  ColumnDefinitions="*,Auto,*"
-                                  Width="300"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center">
-                                <CheckBox Grid.Column="1"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Content="On"
-                                          IsChecked="{Binding AutoTotemEnabled}"
-                                          FontSize="12" />
-                            </Grid>
                         </Grid>
                     </Border>
 
-                    <Border Grid.Column="2"
-                            Grid.Row="2"
+                    <Grid Grid.Row="2"
+                          Width="560"
+                          ColumnDefinitions="*,8,*"
+                          HorizontalAlignment="Center">
+                        <Border Grid.Column="0"
                             Classes="app-header"
-                            Padding="10,7">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Sov Recharge"
-                                       HorizontalAlignment="Center"
-                                       FontFamily="{StaticResource DisplayFont}"
-                                       FontSize="14"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource TextPrimary}" />
-                            <Grid ColumnDefinitions="*,8,*">
-                                <StackPanel Grid.Column="0" Spacing="2">
-                                    <TextBlock Text="Min %" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                    <TextBox Classes="app-input" Height="30" MaxLength="3"
+                            Padding="12,10"
+                            Width="276"
+                            MinHeight="96">
+                            <Grid RowDefinitions="20,6,Auto"
+                                  Width="180"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <CheckBox Grid.Row="0"
+                                          Classes="addon-power-toggle"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="Auto Aquarium"
+                                          IsChecked="{Binding AutoAquariumEnabled}"
+                                          FontFamily="{StaticResource DisplayFont}"
+                                          FontSize="13" />
+                                <StackPanel Grid.Row="2"
+                                            Spacing="2"
+                                            HorizontalAlignment="Center">
+                                    <TextBlock Text="Cycle delay"
+                                               HorizontalAlignment="Center"
+                                               FontSize="10"
+                                               Foreground="{StaticResource TextSecondary}" />
+                                    <TextBox Classes="app-input"
+                                             Width="72"
+                                             Height="28"
+                                             HorizontalAlignment="Center"
                                              HorizontalContentAlignment="Center"
-                                             Text="{Binding AutoSovereignRecharge.MinimumPercentText}" />
-                                </StackPanel>
-                                <StackPanel Grid.Column="2" Spacing="2">
-                                    <TextBlock Text="Max %" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                    <TextBox Classes="app-input" Height="30" MaxLength="3"
-                                             HorizontalContentAlignment="Center"
-                                             Text="{Binding AutoSovereignRecharge.MaximumPercentText}" />
+                                             Text="{Binding AutoAquariumCycleDelayMinutes}"
+                                             PlaceholderText="Min" />
                                 </StackPanel>
                             </Grid>
-                            <CheckBox HorizontalAlignment="Center" Content="On"
-                                      IsChecked="{Binding AutoSovereignRechargeEnabled}" FontSize="12" />
-                        </StackPanel>
-                    </Border>
+                        </Border>
 
-                    <Border Grid.Column="2"
-                            Grid.Row="0"
+                        <Border Grid.Column="2"
                             Classes="app-header"
-                            Padding="10,7">
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="Auto Aquarium"
-                                       HorizontalAlignment="Center"
-                                       FontFamily="{StaticResource DisplayFont}"
-                                       FontSize="14"
-                                       FontWeight="SemiBold"
-                                       Foreground="{StaticResource TextPrimary}" />
-                            <StackPanel Spacing="2">
-                                <TextBlock Text="Cycle delay" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
-                                <TextBox Classes="app-input" Width="72" Height="30" MaxLength="3"
-                                         HorizontalAlignment="Center"
-                                         HorizontalContentAlignment="Center"
-                                         Text="{Binding AutoAquariumCycleDelayMinutes}"
-                                         PlaceholderText="Min" />
-                            </StackPanel>
-                            <CheckBox HorizontalAlignment="Center" Content="On"
-                                      IsChecked="{Binding AutoAquariumEnabled}" FontSize="12" />
-                        </StackPanel>
-                    </Border>
+                            Padding="12,10"
+                            Width="276"
+                            MinHeight="96">
+                            <Grid RowDefinitions="20,6,Auto"
+                                  Width="180"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center">
+                                <CheckBox Grid.Row="0"
+                                          Classes="addon-power-toggle"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Content="Sov Recharge"
+                                          IsChecked="{Binding AutoSovereignRechargeEnabled}"
+                                          FontFamily="{StaticResource DisplayFont}"
+                                          FontSize="13" />
+                                <Grid Grid.Row="2"
+                                      Width="180"
+                                      ColumnDefinitions="*,8,*"
+                                      HorizontalAlignment="Center">
+                                    <StackPanel Grid.Column="0" Spacing="2">
+                                        <TextBlock Text="Min %" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
+                                        <TextBox Classes="app-input"
+                                                 Width="86"
+                                                 Height="28"
+                                                 MaxLength="3"
+                                                 HorizontalContentAlignment="Center"
+                                                 Text="{Binding AutoSovereignRecharge.MinimumPercentText}" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="2">
+                                        <TextBlock Text="Max %" HorizontalAlignment="Center" FontSize="10" Foreground="{StaticResource TextSecondary}" />
+                                        <TextBox Classes="app-input"
+                                                 Width="86"
+                                                 Height="28"
+                                                 MaxLength="3"
+                                                 HorizontalContentAlignment="Center"
+                                                 Text="{Binding AutoSovereignRecharge.MaximumPercentText}" />
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
 
             </StackPanel>

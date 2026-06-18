@@ -69,8 +69,20 @@ public static class ThemeService
     {
         foreach (var (key, color) in palette)
         {
-            if (app.Resources.TryGetResource(key, null, out var resource) && resource is SolidColorBrush brush)
-                brush.Color = color;
+            if (!app.Resources.TryGetResource(key, null, out var resource))
+            {
+                continue;
+            }
+
+            switch (resource)
+            {
+                case SolidColorBrush brush:
+                    brush.Color = color;
+                    break;
+                case Color:
+                    app.Resources[key] = color;
+                    break;
+            }
         }
     }
 }

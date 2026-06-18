@@ -21,6 +21,75 @@
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
         </Style>
+        <Style Selector="Border.standalone-totem-picker">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="ClipToBounds" Value="True" />
+        </Style>
+        <Style Selector="Button.standalone-totem-picker-button">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="BorderThickness" Value="1,0,0,0" />
+            <Setter Property="CornerRadius" Value="0,6,6,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.standalone-totem-picker-button:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Button.standalone-totem-picker-button:pressed">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="Border.standalone-totem-dropdown-surface">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        <Style Selector="ListBox.standalone-totem-dropdown">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="ListBox.standalone-totem-dropdown ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="ListBox.standalone-totem-dropdown ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+        <Style Selector="ListBox.standalone-totem-dropdown ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="ListBox.standalone-totem-dropdown ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}" />
+        </Style>
     </UserControl.Styles>
 
     <Grid RowDefinitions="Auto,*"
@@ -31,32 +100,73 @@
             <StackPanel Spacing="10">
             <StackPanel Spacing="5">
                 <TextBlock Classes="section-label" Text="Totem" />
-                <ComboBox Classes="app-select"
-                          Width="213"
-                          Height="38"
-                          ItemsSource="{Binding TotemOptions}"
-                          SelectedItem="{Binding SelectedTotem}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
-                            <StackPanel Orientation="Horizontal" Spacing="0">
-                                <TextBlock Text="{Binding DisplayPrimary}"
-                                           Foreground="{Binding Brush}" />
-                                <TextBlock Text="{Binding DisplaySuffix}"
+                <Panel Width="213">
+                    <Border x:Name="StandaloneTotemPicker"
+                            Classes="standalone-totem-picker"
+                            Height="38">
+                        <Grid ColumnDefinitions="*,56">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="0"
+                                        Margin="12,0,8,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedTotem.DisplayPrimary}"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="12"
+                                           Foreground="{Binding SelectedTotem.Brush}" />
+                                <TextBlock Text="{Binding SelectedTotem.DisplaySuffix}"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="12"
                                            Foreground="{StaticResource TextPrimary}" />
                             </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                    <ComboBox.SelectionBoxItemTemplate>
-                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
-                            <StackPanel Orientation="Horizontal" Spacing="0">
-                                <TextBlock Text="{Binding DisplayPrimary}"
-                                           Foreground="{Binding Brush}" />
-                                <TextBlock Text="{Binding DisplaySuffix}"
-                                           Foreground="{StaticResource TextPrimary}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.SelectionBoxItemTemplate>
-                </ComboBox>
+                            <Button Grid.Column="1"
+                                    Classes="standalone-totem-picker-button"
+                                    Click="StandaloneTotemDropdownButton_OnClick">
+                                <Path Width="10"
+                                      Height="6"
+                                      Stretch="Fill"
+                                      Fill="{StaticResource AccentForeground}"
+                                      Data="M 0 0 L 5 6 L 10 0 Z" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Popup x:Name="StandaloneTotemDropdownPopup"
+                           PlacementTarget="{Binding #StandaloneTotemPicker}"
+                           Placement="AnchorAndGravity"
+                           PlacementAnchor="BottomLeft"
+                           PlacementGravity="BottomRight"
+                           IsLightDismissEnabled="True">
+                        <Border Classes="standalone-totem-dropdown-surface"
+                                Width="{Binding #StandaloneTotemPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                Margin="0,4,0,0">
+                            <ScrollViewer MaxHeight="220"
+                                          VerticalScrollBarVisibility="Auto">
+                                <ListBox Classes="standalone-totem-dropdown"
+                                         ItemsSource="{Binding TotemOptions}"
+                                         SelectedItem="{Binding SelectedTotem}"
+                                         SelectionChanged="StandaloneTotemList_OnSelectionChanged">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:TotemOptionViewModel">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="0"
+                                                        Margin="8,6">
+                                                <TextBlock Text="{Binding DisplayPrimary}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="12"
+                                                           Foreground="{Binding Brush}" />
+                                                <TextBlock Text="{Binding DisplaySuffix}"
+                                                           FontFamily="{StaticResource UIFont}"
+                                                           FontSize="12"
+                                                           Foreground="{StaticResource TextPrimary}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </ScrollViewer>
+                        </Border>
+                    </Popup>
+                </Panel>
             </StackPanel>
 
             <StackPanel Spacing="5">

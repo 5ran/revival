@@ -52,12 +52,13 @@
         <Style Selector="ComboBox.fish-select">
             <Setter Property="Background" Value="{StaticResource Surface}"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="6"/>
             <Setter Property="FontFamily" Value="{StaticResource UIFont}"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="ClipToBounds" Value="True"/>
         </Style>
         <Style Selector="ComboBox.fish-select:pointerover">
             <Setter Property="Background" Value="{StaticResource InputHoverSurface}"/>
@@ -66,6 +67,76 @@
         <Style Selector="ComboBox.fish-select:pointerover /template/ Border">
             <Setter Property="Background" Value="{StaticResource InputHoverSurface}"/>
             <Setter Property="BorderBrush" Value="{StaticResource InputHoverBorder}"/>
+        </Style>
+        <Style Selector="Border.fish-picker">
+            <Setter Property="Background" Value="{StaticResource Surface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+        </Style>
+        <Style Selector="Button.fish-picker-button">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="BorderThickness" Value="1,0,0,0"/>
+            <Setter Property="CornerRadius" Value="0,6,6,0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Button.fish-picker-button:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentHover}"/>
+        </Style>
+        <Style Selector="Button.fish-picker-button:pressed">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}"/>
+        </Style>
+        <Style Selector="Border.fish-dropdown-surface">
+            <Setter Property="Background" Value="{StaticResource Surface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="4"/>
+        </Style>
+        <Style Selector="ListBox.fish-dropdown">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style Selector="ListBox.fish-dropdown ListBoxItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBox.fish-dropdown ListBoxItem /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+        <Style Selector="ListBox.fish-dropdown ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+        </Style>
+        <Style Selector="ListBox.fish-dropdown ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource ToggleCheckedBackground}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ToggleCheckedBorder}"/>
         </Style>
         <Style Selector="TextBox.fish-input">
             <Setter Property="Background" Value="{StaticResource Surface}"/>
@@ -134,38 +205,75 @@
                            FontSize="14"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource TextPrimary}" />
-                <ComboBox Grid.Row="0"
-                          Grid.Column="2"
-                          Classes="fish-select"
-                          HorizontalAlignment="Stretch"
-                          Height="38"
-                          ItemsSource="{Binding TrackerOptions}"
-                          SelectedItem="{Binding SelectedTracker}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="vm:FishingTrackerOption">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="6">
-                                <TextBlock Text="{Binding Title}"
+                <Panel Grid.Row="0"
+                       Grid.Column="2"
+                       HorizontalAlignment="Stretch">
+                    <Border x:Name="TrackerPicker"
+                            Classes="fish-picker"
+                            Height="38"
+                            HorizontalAlignment="Stretch">
+                        <Grid ColumnDefinitions="*,56">
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        Margin="12,0,8,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedTracker.Title}"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="13"
                                            Foreground="{StaticResource TextPrimary}" />
-                                <TextBlock Text="{Binding Description}"
+                                <TextBlock Text="{Binding SelectedTracker.Description}"
+                                           FontFamily="{StaticResource UIFont}"
+                                           FontSize="13"
                                            Foreground="{StaticResource TextSecondary}"
-                                           Margin="{Binding DescriptionMargin}" />
+                                           Margin="{Binding SelectedTracker.DescriptionMargin}" />
                             </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                    <ComboBox.SelectionBoxItemTemplate>
-                        <DataTemplate x:DataType="vm:FishingTrackerOption">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="6">
-                                <TextBlock Text="{Binding Title}"
-                                           Foreground="{StaticResource TextPrimary}" />
-                                <TextBlock Text="{Binding Description}"
-                                           Foreground="{StaticResource TextSecondary}"
-                                           Margin="{Binding DescriptionMargin}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.SelectionBoxItemTemplate>
-                </ComboBox>
+                            <Button Grid.Column="1"
+                                    Classes="fish-picker-button"
+                                    Click="TrackerDropdownButton_OnClick">
+                                <Path Width="10"
+                                      Height="6"
+                                      Stretch="Fill"
+                                      Fill="{StaticResource AccentForeground}"
+                                      Data="M 0 0 L 5 6 L 10 0 Z" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Popup x:Name="TrackerDropdownPopup"
+                           PlacementTarget="{Binding #TrackerPicker}"
+                           Placement="AnchorAndGravity"
+                           PlacementAnchor="BottomLeft"
+                           PlacementGravity="BottomRight"
+                           IsLightDismissEnabled="True">
+                        <Border Classes="fish-dropdown-surface"
+                                Width="{Binding #TrackerPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                Margin="0,4,0,0">
+                            <ListBox Classes="fish-dropdown"
+                                     ItemsSource="{Binding TrackerOptions}"
+                                     SelectedItem="{Binding SelectedTracker}"
+                                     SelectionChanged="TrackerList_OnSelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FishingTrackerOption">
+                                        <StackPanel Orientation="Horizontal"
+                                                    Spacing="6"
+                                                    Margin="8,6">
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontFamily="{StaticResource UIFont}"
+                                                       FontSize="13"
+                                                       Foreground="{StaticResource TextPrimary}" />
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontFamily="{StaticResource UIFont}"
+                                                       FontSize="13"
+                                                       Foreground="{StaticResource TextSecondary}"
+                                                       Margin="{Binding DescriptionMargin}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Popup>
+                </Panel>
 
                 <TextBlock Grid.Row="2"
                            Grid.Column="0"
@@ -176,13 +284,59 @@
                            FontSize="14"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource TextPrimary}" />
-                <ComboBox Grid.Row="2"
-                          Grid.Column="2"
-                          Classes="fish-select"
-                          HorizontalAlignment="Stretch"
-                          Height="38"
-                          ItemsSource="{Binding CastingModes}"
-                          SelectedItem="{Binding SelectedCastingMode}" />
+                <Panel Grid.Row="2"
+                       Grid.Column="2"
+                       HorizontalAlignment="Stretch">
+                    <Border x:Name="CastingPicker"
+                            Classes="fish-picker"
+                            Height="38"
+                            HorizontalAlignment="Stretch">
+                        <Grid ColumnDefinitions="*,56">
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding SelectedCastingMode}"
+                                       Margin="12,0,8,0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       FontFamily="{StaticResource UIFont}"
+                                       FontSize="13"
+                                       Foreground="{StaticResource TextPrimary}" />
+                            <Button Grid.Column="1"
+                                    Classes="fish-picker-button"
+                                    Click="CastingDropdownButton_OnClick">
+                                <Path Width="10"
+                                      Height="6"
+                                      Stretch="Fill"
+                                      Fill="{StaticResource AccentForeground}"
+                                      Data="M 0 0 L 5 6 L 10 0 Z" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Popup x:Name="CastingDropdownPopup"
+                           PlacementTarget="{Binding #CastingPicker}"
+                           Placement="AnchorAndGravity"
+                           PlacementAnchor="BottomLeft"
+                           PlacementGravity="BottomRight"
+                           IsLightDismissEnabled="True">
+                        <Border Classes="fish-dropdown-surface"
+                                Width="{Binding #CastingPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                Margin="0,4,0,0">
+                            <ListBox Classes="fish-dropdown"
+                                     ItemsSource="{Binding CastingModes}"
+                                     SelectedItem="{Binding SelectedCastingMode}"
+                                     SelectionChanged="CastingList_OnSelectionChanged">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}"
+                                                   FontFamily="{StaticResource UIFont}"
+                                                   FontSize="13"
+                                                   Foreground="{StaticResource TextPrimary}"
+                                                   Margin="8,6" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Popup>
+                </Panel>
             </Grid>
         </Border>
 

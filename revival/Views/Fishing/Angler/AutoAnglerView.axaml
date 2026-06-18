@@ -24,6 +24,7 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <TextBlock Text="{Binding CurrentFishText}"
+                               Width="120"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
                                TextWrapping="Wrap"
@@ -60,6 +61,7 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <TextBlock Text="{Binding StatusText}"
+                               Width="120"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
                                TextWrapping="Wrap"

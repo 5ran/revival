@@ -55,6 +55,7 @@ public sealed class AppraiseViewModel : ViewModelBase
     private string _heldFishText = "---";
     private IReadOnlyList<ColoredTextLineViewModel> _statusLines = ColoredAppraiseText.BuildLines("---");
     private IReadOnlyList<ColoredTextLineViewModel> _heldFishLines = ColoredAppraiseText.BuildLines("---");
+    private IReadOnlyList<ColoredTextLineViewModel> _selectedMutationsLines = ColoredAppraiseText.BuildLines("None");
     private string _mutationSearchText = string.Empty;
     private string _newMutationText = string.Empty;
     private string _clickXText = string.Empty;
@@ -240,6 +241,12 @@ public sealed class AppraiseViewModel : ViewModelBase
     {
         get => _heldFishLines;
         private set => SetProperty(ref _heldFishLines, value);
+    }
+
+    public IReadOnlyList<ColoredTextLineViewModel> SelectedMutationsLines
+    {
+        get => _selectedMutationsLines;
+        private set => SetProperty(ref _selectedMutationsLines, value);
     }
 
     public bool IsGamepassMode
@@ -563,6 +570,8 @@ public sealed class AppraiseViewModel : ViewModelBase
             }
         }
 
+        var summary = SelectedMutationsSummary;
+        SelectedMutationsLines = ColoredAppraiseText.BuildLines(summary);
         OnPropertyChanged(nameof(SelectedMutationsSummary));
     }
 

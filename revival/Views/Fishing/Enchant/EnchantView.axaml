@@ -11,6 +11,7 @@
             <Setter Property="BorderBrush" Value="{StaticResource Border}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="ClipToBounds" Value="True" />
         </Style>
         <Style Selector="TextBox.enchant-picker-search">
             <Setter Property="Background" Value="Transparent" />
@@ -25,6 +26,19 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
         <Style Selector="Button.enchant-picker-button /template/ ContentPresenter">
             <Setter Property="Transitions">
@@ -37,7 +51,15 @@
             <Setter Property="Background" Value="{StaticResource AccentHover}" />
             <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
         </Style>
+        <Style Selector="Button.enchant-picker-button:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+        </Style>
         <Style Selector="Button.enchant-picker-button:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="Button.enchant-picker-button:pressed">
             <Setter Property="Background" Value="{StaticResource AccentPressed}" />
             <Setter Property="BorderBrush" Value="{StaticResource AccentPressed}" />
         </Style>
@@ -53,6 +75,19 @@
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
         <Style Selector="Button.enchant-add /template/ ContentPresenter">
             <Setter Property="Transitions">
@@ -64,7 +99,13 @@
         <Style Selector="Button.enchant-add:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{StaticResource AccentHover}" />
         </Style>
+        <Style Selector="Button.enchant-add:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
         <Style Selector="Button.enchant-add:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="Button.enchant-add:pressed">
             <Setter Property="Background" Value="{StaticResource AccentPressed}" />
         </Style>
         <Style Selector="ListBox.enchant-dropdown">
@@ -102,6 +143,7 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="12,0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="ClipToBounds" Value="True"/>
         </Style>
 
         <Style Selector="Border.enchant-segmented">
@@ -204,7 +246,9 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <controls:ColoredTextBlock Lines="{Binding EquippedRodLines}"
+                                               Width="120"
                                                HorizontalAlignment="Center"
+                                               TextAlignment="Center"
                                                TextWrapping="Wrap"
                                                FontFamily="{StaticResource DisplayFont}"
                                                FontSize="13"
@@ -238,7 +282,9 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <controls:ColoredTextBlock Lines="{Binding StatusLines}"
+                                               Width="120"
                                                HorizontalAlignment="Center"
+                                               TextAlignment="Center"
                                                TextWrapping="Wrap"
                                                FontFamily="{StaticResource DisplayFont}"
                                                FontSize="13"
@@ -304,40 +350,53 @@
                 <Grid Grid.Row="4"
                       ColumnDefinitions="*,12,*"
                       HorizontalAlignment="Stretch">
-                    <Panel Grid.Column="0">
-                        <Border x:Name="EnchantPicker"
-                                Classes="enchant-picker"
-                                Height="34"
-                                HorizontalAlignment="Stretch">
-                            <Grid ColumnDefinitions="*,64">
-                                <TextBox Grid.Column="0"
-                                         Classes="app-input enchant-picker-search"
-                                         Height="34"
-                                         PlaceholderText="Search"
-                                         Text="{Binding TargetSearchText}" />
-                                <Button Grid.Column="1"
-                                        Classes="enchant-picker-button"
-                                        Height="34"
-                                        Click="EnchantDropdownButton_OnClick">
-                                    <Path Width="10"
-                                          Height="6"
-                                          Stretch="Fill"
-                                          Fill="{StaticResource AccentForeground}"
-                                          Data="M 0 0 L 5 6 L 10 0 Z" />
-                                </Button>
-                            </Grid>
+                    <Grid Grid.Column="0"
+                          HorizontalAlignment="Stretch">
+                            <Border x:Name="EnchantPicker"
+                                    Classes="enchant-picker"
+                                    Height="34"
+                                    HorizontalAlignment="Stretch">
+                                <Grid ColumnDefinitions="*,64">
+                                    <Border x:Name="EnchantField"
+                                            Grid.Column="0"
+                                            Background="Transparent"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="0,0,-1,0">
+                                        <TextBox x:Name="EnchantSearchBox"
+                                                 Classes="app-input enchant-picker-search"
+                                                 Height="34"
+                                                 PlaceholderText="Search"
+                                                 Text="{Binding TargetSearchText}" />
+                                    </Border>
+                                    <Button Grid.Column="1"
+                                            x:Name="EnchantDropdownButton"
+                                            Classes="enchant-picker-button"
+                                            Height="34"
+                                            Click="EnchantDropdownButton_OnClick">
+                                        <Path Width="10"
+                                              Height="6"
+                                              Stretch="Fill"
+                                              Fill="{StaticResource AccentForeground}"
+                                              Data="M 0 0 L 5 6 L 10 0 Z" />
+                                    </Button>
+                                </Grid>
                         </Border>
 
                         <Popup x:Name="EnchantDropdownPopup"
                                PlacementTarget="{Binding #EnchantPicker}"
-                               Placement="BottomEdgeAlignedLeft"
+                               Placement="AnchorAndGravity"
+                               PlacementAnchor="BottomLeft"
+                               PlacementGravity="BottomRight"
                                IsLightDismissEnabled="True">
-                            <Border Background="{StaticResource Surface}"
+                            <Border x:Name="EnchantDropdownBorder"
+                                    Background="{StaticResource Surface}"
                                     BorderBrush="{StaticResource Border}"
                                     BorderThickness="1"
                                     CornerRadius="6"
                                     Padding="4"
-                                    Width="{Binding #EnchantPicker.Bounds.Width}"
+                                    Width="{Binding #EnchantPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                    HorizontalAlignment="Stretch"
                                     Margin="0,4,0,0">
                                 <ScrollViewer MaxHeight="220"
                                               VerticalScrollBarVisibility="Auto">
@@ -358,7 +417,7 @@
                                 </ScrollViewer>
                             </Border>
                         </Popup>
-                    </Panel>
+                    </Grid>
 
                     <Border Grid.Column="2"
                             Classes="enchant-picker"

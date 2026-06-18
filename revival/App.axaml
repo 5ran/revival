@@ -11,6 +11,18 @@
         <SolidColorBrush x:Key="AccentHover" Color="#FFFFFF" />
         <SolidColorBrush x:Key="AccentPressed" Color="#BFC3C9" />
         <SolidColorBrush x:Key="AccentForeground" Color="#090A0C" />
+        <controls:ScaledPopupWidthConverter x:Key="ScaledPopupWidthConverter" Scale="1.18" />
+        <Color x:Key="SystemAccentColor">#E7E9EC</Color>
+        <Color x:Key="SystemAccentColorDark1">#D6D8DC</Color>
+        <Color x:Key="SystemAccentColorDark2">#BFC3C9</Color>
+        <Color x:Key="SystemAccentColorDark3">#A4A8B0</Color>
+        <Color x:Key="SystemAccentColorLight1">#F1F3F5</Color>
+        <Color x:Key="SystemAccentColorLight2">#F8F9FA</Color>
+        <Color x:Key="SystemAccentColorLight3">#FFFFFF</Color>
+        <SolidColorBrush x:Key="ThemeAccentColor" Color="#E7E9EC" />
+        <SolidColorBrush x:Key="ThemeAccentBrush3" Color="#F1F3F5" />
+        <SolidColorBrush x:Key="ThemeAccentBrush4" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SystemControlHighlightListAccentLowBrush" Color="#BFC3C9" />
         <SolidColorBrush x:Key="TextPrimary" Color="#F5F5F6" />
         <SolidColorBrush x:Key="TextSecondary" Color="#A7AAB0" />
         <SolidColorBrush x:Key="Success" Color="#4ADE80" />
@@ -91,7 +103,7 @@
 
         <Style Selector="Border.app-card">
             <Setter Property="Background" Value="{StaticResource Surface}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="14" />
@@ -99,7 +111,7 @@
 
         <Style Selector="Border.app-header">
             <Setter Property="Background" Value="{StaticResource Surface}" />
-            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
             <Setter Property="Padding" Value="14,10" />
@@ -190,18 +202,20 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Padding" Value="12,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="ClipToBounds" Value="True" />
         </Style>
 
         <Style Selector="ComboBox.app-select">
             <Setter Property="Background" Value="{StaticResource Surface}" />
             <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Padding" Value="12,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="ClipToBounds" Value="True" />
         </Style>
 
         <Style Selector="ComboBox.app-select:pointerover">

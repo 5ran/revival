@@ -20,7 +20,7 @@
         <Grid RowDefinitions="42,1,56">
             <CheckBox Grid.Row="0"
                       IsChecked="{Binding AutoTreasureEnabled}"
-                      Content="Auto Treasure"
+                      Content="Auto Tressure Appraise"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       FontFamily="{StaticResource DisplayFont}"
@@ -89,9 +89,12 @@
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
                     <TextBlock Text="{Binding StatusText}"
+                               Width="120"
+                               Height="21"
                                HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
                                TextAlignment="Center"
-                               TextTrimming="CharacterEllipsis"
+                               TextWrapping="Wrap"
                                FontFamily="{StaticResource DisplayFont}"
                                FontSize="13"
                                FontWeight="SemiBold"

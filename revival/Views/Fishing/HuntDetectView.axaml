@@ -14,6 +14,7 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="6" />
             <Setter Property="Padding" Value="0" />
+            <Setter Property="ClipToBounds" Value="True" />
         </Style>
         <Style Selector="TextBox.hunt-action-input">
             <Setter Property="Background" Value="Transparent" />
@@ -30,6 +31,19 @@
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="ClipToBounds" Value="True" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
         </Style>
         <Style Selector="Button.hunt-action-primary /template/ ContentPresenter">
             <Setter Property="Transitions">
@@ -41,7 +55,13 @@
         <Style Selector="Button.hunt-action-primary:pointerover /template/ ContentPresenter">
             <Setter Property="Background" Value="{StaticResource AccentHover}" />
         </Style>
+        <Style Selector="Button.hunt-action-primary:pointerover">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
         <Style Selector="Button.hunt-action-primary:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
+        </Style>
+        <Style Selector="Button.hunt-action-primary:pressed">
             <Setter Property="Background" Value="{StaticResource AccentPressed}" />
         </Style>
         <Style Selector="Button.hunt-action-secondary:pointerover /template/ ContentPresenter">
