@@ -24,6 +24,7 @@ Desktop.ini
 *.tmp
 artifacts/
 OpenMacro-Xternal-0.0.9/
+exe.rar
 *.exe
 !exe/Client.exe
 

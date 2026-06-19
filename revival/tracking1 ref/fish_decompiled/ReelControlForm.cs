@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Client.Services.Fishing;
 
@@ -15,6 +16,7 @@ internal sealed class ReelControlForm : Form
 	private const uint VkF3 = 114u;
 
 	private const double AutoAquariumCycleDelaySeconds = 65 * 60;
+	private const double AutoSovThresholdPercent = 91.0;
 	private const int DefaultRodStartupHoldBiasMs = 3000;
 	private readonly Button toggleButton;
 
@@ -41,14 +43,17 @@ internal sealed class ReelControlForm : Form
 	private RodProfile currentRodProfile = new DefaultRodProfile();
 
 	private readonly AquariumSequenceRunner aquariumRunner = new AquariumSequenceRunner();
+	private readonly AutoSovereignRechargeRunner sovRunner;
 
 	private readonly TranquilityController tranquilityController;
 
 	private const double TrackingProbeDelaySeconds = 0.25;
 
 	private readonly CheckBox autoAquariumToggle;
+	private readonly CheckBox autoSovToggle;
 
 	private readonly CheckBox autoAuroraToggle;
+	private readonly CheckBox autoWindyDayToggle;
 	private readonly CheckBox fishSkipToggle;
 	private readonly CheckBox fishSkipNormalToggle;
 	private readonly CheckBox fishSkipLegendaryToggle;
@@ -60,6 +65,13 @@ internal sealed class ReelControlForm : Form
 
 	private readonly Label macroStatusLabel;
 	private readonly Label fishSkipSoundLabel;
+	private readonly Button notifyHeaderButton;
+	private readonly Panel notifyPanel;
+	private readonly CheckBox notifyEnabledToggle;
+	private readonly TextBox notifyWebhookInput;
+	private readonly Button notifyTestButton;
+	private readonly Label notifyWebhookLabel;
+	private readonly Label notifyCountdownLabel;
 
 	private readonly NumericUpDown rodSlotInput;
 	private readonly ComboBox castModeInput;
@@ -69,6 +81,12 @@ internal sealed class ReelControlForm : Form
 	private bool aquariumPending;
 
 	private bool aquariumDue;
+	private bool sovPending;
+
+	private bool sovDue;
+
+	private double nextSovCycleTime;
+	private bool weatherToggleSyncing;
 
 	private bool autoAuroraBlockedUntilCatchEnd;
 
@@ -82,7 +100,27 @@ internal sealed class ReelControlForm : Form
 
 	private long autoAuroraWaitStartedAt;
 
+	private bool autoWindyDayBlockedUntilCatchEnd;
+
+	private bool autoWindyDayNightCovered;
+
+	private bool autoWindyDayNeedsRodReequip;
+
+	private string autoWindyDayState = "IDLE";
+
+	private int autoWindyDayRetryCount;
+
+	private long autoWindyDayWaitStartedAt;
+
 	private bool wasInMinigame;
+	private bool notifySectionExpanded;
+	private bool notifySettingsLoading;
+	private bool notifySendInFlight;
+	private long notifyTrackingDeadlineAt;
+	private long notifyNextSendAt;
+
+	private const int NotifyIfStoppedDelayMs = 180000;
+	private const int NotifyIfStoppedRepeatMs = 60000;
 
 	private bool startupAssistActive;
 
@@ -132,6 +170,7 @@ internal sealed class ReelControlForm : Form
 	private FishSkipSoundSnapshot fishSkipSoundState = FishSkipSoundSnapshot.Empty;
 
 	private const int AutoAuroraWaitMs = 30000;
+	private const int AutoTotemActionDelayMs = 1000;
 
 	private bool versionMismatchShown;
 
@@ -141,10 +180,11 @@ internal sealed class ReelControlForm : Form
 
 	public ReelControlForm()
 	{
+	sovRunner = new AutoSovereignRechargeRunner(locator);
 	Text = "Reel Control v2";
-	base.Width = 220;
-	base.Height = 392;
-	MinimumSize = new Size(220, 392);
+	base.Width = 292;
+	base.Height = 415;
+	MinimumSize = new Size(292, 415);
 		base.StartPosition = FormStartPosition.CenterScreen;
 		base.TopMost = true;
 		BackColor = Color.FromArgb(24, 27, 31);
@@ -184,21 +224,53 @@ internal sealed class ReelControlForm : Form
 			BackColor = Color.FromArgb(24, 27, 31)
 		};
 		panel.Controls.Add(autoAquariumToggle);
-		autoAuroraToggle = new CheckBox
+		autoSovToggle = new CheckBox
 		{
-			Text = "Auto Aurora",
+			Text = "Auto Sov",
 			Left = 0,
 			Top = 67,
 			Width = 130,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31)
 		};
+		panel.Controls.Add(autoSovToggle);
+		autoSovToggle.Checked = false;
+		autoAuroraToggle = new CheckBox
+		{
+			Text = "Auto Aurora - place in hotbar",
+			Left = 0,
+			Top = 92,
+			Width = 250,
+			ForeColor = Color.White,
+			BackColor = Color.FromArgb(24, 27, 31)
+		};
 		panel.Controls.Add(autoAuroraToggle);
+		autoWindyDayToggle = new CheckBox
+		{
+			Text = "Auto Windy Day - place in hotbar",
+			Left = 0,
+			Top = 117,
+			Width = 250,
+			ForeColor = Color.White,
+			BackColor = Color.FromArgb(24, 27, 31)
+		};
+		autoWindyDayToggle.CheckedChanged += delegate
+		{
+			if (weatherToggleSyncing || !autoWindyDayToggle.Checked)
+			{
+				return;
+			}
+
+			weatherToggleSyncing = true;
+			autoAuroraToggle.Checked = false;
+			weatherToggleSyncing = false;
+		};
+		panel.Controls.Add(autoWindyDayToggle);
 		Label rodSlotLabel = new Label
 		{
 			Text = "Rod Slot",
 			Left = 0,
-			Top = 95,
+			Top = 145,
 			Width = 60,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31)
@@ -207,7 +279,7 @@ internal sealed class ReelControlForm : Form
 		rodSlotInput = new NumericUpDown
 		{
 			Left = 66,
-			Top = 92,
+			Top = 142,
 			Width = 60,
 			Minimum = 1m,
 			Maximum = 9m,
@@ -224,7 +296,7 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Cast Mode",
 			Left = 0,
-			Top = 120,
+			Top = 170,
 			Width = 70,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31)
@@ -233,7 +305,7 @@ internal sealed class ReelControlForm : Form
 		castModeInput = new ComboBox
 		{
 			Left = 72,
-			Top = 117,
+			Top = 167,
 			Width = 100,
 			DropDownStyle = ComboBoxStyle.DropDownList
 		};
@@ -248,7 +320,7 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Fish Skip",
 			Left = 0,
-			Top = 144,
+			Top = 195,
 			Width = 100,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31),
@@ -268,8 +340,8 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Skip Selected",
 			Left = 0,
-			Top = 169,
-			Width = 190,
+			Top = 192,
+			Width = 240,
 			Height = 62,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31),
@@ -292,9 +364,9 @@ internal sealed class ReelControlForm : Form
 		fishSkipLegendaryToggle = new CheckBox
 		{
 			Text = "Leg/Mythic",
-			Left = 84,
+			Left = 104,
 			Top = 24,
-			Width = 95,
+			Width = 124,
 			Checked = controlSettings.FishSkipLegendaryMythic,
 			ForeColor = Color.White,
 			BackColor = Color.FromArgb(24, 27, 31)
@@ -306,11 +378,117 @@ internal sealed class ReelControlForm : Form
 		fishSkipGroup.Controls.Add(fishSkipNormalToggle);
 		fishSkipGroup.Controls.Add(fishSkipLegendaryToggle);
 		panel.Controls.Add(fishSkipGroup);
+		notifyHeaderButton = new Button
+		{
+			Text = "Notify if stopped >",
+			Left = 0,
+			Top = 258,
+			Width = 160,
+			Height = 24,
+			FlatStyle = FlatStyle.Flat,
+			BackColor = Color.FromArgb(37, 42, 48),
+			ForeColor = Color.White
+		};
+		notifyHeaderButton.FlatAppearance.BorderSize = 0;
+		notifyHeaderButton.Click += delegate
+		{
+			SetNotifySectionExpanded(!notifySectionExpanded);
+		};
+		panel.Controls.Add(notifyHeaderButton);
+		notifyCountdownLabel = new Label
+		{
+			Text = "03:00",
+			Left = 168,
+			Top = 261,
+			Width = 50,
+			Height = 20,
+			ForeColor = Color.FromArgb(251, 191, 36),
+			BackColor = Color.FromArgb(24, 27, 31),
+			TextAlign = ContentAlignment.MiddleLeft
+		};
+		panel.Controls.Add(notifyCountdownLabel);
+		notifyPanel = new Panel
+		{
+			Left = 0,
+			Top = 286,
+			Width = 240,
+			Height = 88,
+			BorderStyle = BorderStyle.FixedSingle,
+			BackColor = Color.FromArgb(24, 27, 31),
+			Visible = false
+		};
+		notifyEnabledToggle = new CheckBox
+		{
+			Text = "On",
+			Left = 8,
+			Top = 7,
+			Width = 46,
+			ForeColor = Color.White,
+			BackColor = Color.FromArgb(24, 27, 31)
+		};
+		notifyEnabledToggle.CheckedChanged += delegate
+		{
+			if (notifySettingsLoading)
+			{
+				return;
+			}
+
+			SaveNotifySettings();
+		};
+		notifyPanel.Controls.Add(notifyEnabledToggle);
+		notifyWebhookLabel = new Label
+		{
+			Text = "Webhook",
+			Left = 64,
+			Top = 9,
+			Width = 70,
+			ForeColor = Color.White,
+			BackColor = Color.FromArgb(24, 27, 31)
+		};
+		notifyPanel.Controls.Add(notifyWebhookLabel);
+		notifyWebhookInput = new TextBox
+		{
+			Left = 8,
+			Top = 31,
+			Width = 220,
+			Height = 23,
+			BackColor = Color.FromArgb(17, 24, 39),
+			ForeColor = Color.White,
+			BorderStyle = BorderStyle.FixedSingle
+		};
+		notifyWebhookInput.TextChanged += delegate
+		{
+			if (notifySettingsLoading)
+			{
+				return;
+			}
+
+			SaveNotifySettings();
+		};
+		notifyPanel.Controls.Add(notifyWebhookInput);
+		notifyTestButton = new Button
+		{
+			Text = "Test",
+			Left = 8,
+			Top = 58,
+			Width = 72,
+			Height = 24,
+			FlatStyle = FlatStyle.Flat,
+			BackColor = Color.FromArgb(47, 129, 247),
+			ForeColor = Color.White
+		};
+		notifyTestButton.FlatAppearance.BorderSize = 0;
+		notifyTestButton.Click += async delegate
+		{
+			await SendWebhookTestAsync().ConfigureAwait(true);
+		};
+		notifyPanel.Controls.Add(notifyTestButton);
+		panel.Controls.Add(notifyPanel);
 		offsetsStatusLabel = new Label
 		{
 			Text = "Disconnected",
 			Left = 0,
-			Top = 238,
+			Top = 261,
 			Width = 120,
 			Height = 20,
 			ForeColor = Color.FromArgb(248, 113, 113),
@@ -321,7 +499,7 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Rod: Unknown",
 			Left = 0,
-			Top = 266,
+			Top = 289,
 			Width = 150,
 			Height = 20,
 			ForeColor = Color.FromArgb(148, 163, 184),
@@ -332,7 +510,7 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Status: Idle",
 			Left = 0,
-			Top = 290,
+			Top = 313,
 			Width = 170,
 			Height = 20,
 			ForeColor = Color.FromArgb(148, 163, 184),
@@ -343,7 +521,7 @@ internal sealed class ReelControlForm : Form
 		{
 			Text = "Sounds: none",
 			Left = 0,
-			Top = 314,
+			Top = 337,
 			Width = 190,
 			Height = 34,
 			ForeColor = Color.FromArgb(148, 163, 184),
@@ -351,6 +529,12 @@ internal sealed class ReelControlForm : Form
 		};
 		panel.Controls.Add(fishSkipSoundLabel);
 		base.Controls.Add(panel);
+		var savedNotifySettings = DiscordRoleGate.LoadWebhookSettings();
+		notifySettingsLoading = true;
+		notifyEnabledToggle.Checked = savedNotifySettings.Enabled;
+		notifyWebhookInput.Text = savedNotifySettings.WebhookUrl;
+		notifySettingsLoading = false;
+		SetNotifySectionExpanded(false);
 		timer = new Timer
 		{
 			Interval = Math.Max(1, controlSettings.UpdateRateMs)
@@ -373,12 +557,21 @@ internal sealed class ReelControlForm : Form
 		{
 			ForceTopMost();
 		};
+		base.Shown += delegate
+		{
+			if (!running && (autoAquariumToggle.Checked || autoSovToggle.Checked || autoAuroraToggle.Checked || autoWindyDayToggle.Checked))
+			{
+				DebugLog.Write("ReelControlForm.Shown", "auto-start overlay");
+				StartOverlay();
+			}
+		};
 		base.Activated += delegate
 		{
 			ForceTopMost();
 		};
 		base.FormClosed += delegate
 		{
+			SaveNotifySettings();
 			UnregisterHotKey(base.Handle, 21041);
 			topMostTimer.Stop();
 			timer.Stop();
@@ -420,6 +613,126 @@ internal sealed class ReelControlForm : Form
 		}
 	}
 
+	private void SetNotifySectionExpanded(bool expanded)
+	{
+		notifySectionExpanded = expanded;
+		notifyPanel.Visible = expanded;
+		notifyHeaderButton.Text = expanded ? "Notify if stopped v" : "Notify if stopped >";
+
+		var offset = expanded ? 121 : 28;
+		offsetsStatusLabel.Top = 261 + offset;
+		rodStatusLabel.Top = 289 + offset;
+		macroStatusLabel.Top = 313 + offset;
+		fishSkipSoundLabel.Top = 337 + offset;
+
+		base.Height = expanded ? 520 : 415;
+		MinimumSize = new Size(292, expanded ? 520 : 415);
+	}
+
+	private void SaveNotifySettings()
+	{
+		if (notifySettingsLoading)
+		{
+			return;
+		}
+
+		DiscordRoleGate.SaveWebhookSettings(notifyEnabledToggle.Checked, notifyWebhookInput.Text.Trim());
+	}
+
+	private void UpdateStoppedNotification(bool trackingNow)
+	{
+		if (!running)
+		{
+			UpdateNotifyCountdownLabel(0);
+			return;
+		}
+
+		if (trackingNow)
+		{
+			notifyTrackingDeadlineAt = 0;
+			notifyNextSendAt = 0;
+			notifySendInFlight = false;
+			UpdateNotifyCountdownLabel(NotifyIfStoppedDelayMs);
+			return;
+		}
+
+		if (!notifyEnabledToggle.Checked)
+		{
+			UpdateNotifyCountdownLabel(NotifyIfStoppedDelayMs);
+			return;
+		}
+
+		if (string.IsNullOrWhiteSpace(notifyWebhookInput.Text))
+		{
+			UpdateNotifyCountdownLabel(NotifyIfStoppedDelayMs);
+			return;
+		}
+
+		var now = Environment.TickCount64;
+		if (notifyTrackingDeadlineAt == 0)
+		{
+			notifyTrackingDeadlineAt = now + NotifyIfStoppedDelayMs;
+			notifyNextSendAt = notifyTrackingDeadlineAt;
+		}
+
+		var remainingMs = notifyTrackingDeadlineAt - now;
+		UpdateNotifyCountdownLabel(remainingMs);
+		if (remainingMs > 0 || notifySendInFlight)
+		{
+			return;
+		}
+
+		notifyNextSendAt = now;
+		var webhookUrl = notifyWebhookInput.Text.Trim();
+		notifySendInFlight = true;
+		_ = SendStoppedNotificationAsync(webhookUrl);
+	}
+
+	private void UpdateNotifyCountdownLabel(long remainingMs)
+	{
+		var clamped = Math.Max(0L, remainingMs);
+		var totalSeconds = (int)Math.Ceiling(clamped / 1000.0);
+		var minutes = totalSeconds / 60;
+		var seconds = totalSeconds % 60;
+		notifyCountdownLabel.Text = $"{minutes:00}:{seconds:00}";
+		notifyCountdownLabel.ForeColor = clamped == 0 ? Color.FromArgb(248, 113, 113) : Color.FromArgb(251, 191, 36);
+	}
+
+	private async Task SendStoppedNotificationAsync(string webhookUrl)
+	{
+		try
+		{
+			await DiscordWebhookNotifier.SendStoppedAsync(webhookUrl, "Prolly Disconnected meowmeowbark", default).ConfigureAwait(true);
+		}
+		catch (Exception ex)
+		{
+			DebugLog.Write("ReelControlForm.Notify", $"send failed: {ex.Message}");
+		}
+		finally
+		{
+			notifySendInFlight = false;
+		}
+	}
+
+	private async Task SendWebhookTestAsync()
+	{
+		var webhookUrl = notifyWebhookInput.Text.Trim();
+		notifyTestButton.Enabled = false;
+		try
+		{
+			await DiscordWebhookNotifier.SendTestAsync(webhookUrl, default).ConfigureAwait(true);
+			MessageBox.Show(this, "Test webhook sent.", "Notify if stopped", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			MessageBox.Show(this, ex.Message, "Webhook Test Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+		finally
+		{
+			notifyTestButton.Enabled = true;
+		}
+	}
+
 	private void StartOverlay()
 	{
 		running = true;
@@ -429,9 +742,16 @@ internal sealed class ReelControlForm : Form
 		nextProbeTime = 0.0;
 		nextAquariumCycleTime = 0.0;
 		aquariumDue = false;
+		nextSovCycleTime = 0.0;
+		sovDue = autoSovToggle.Checked;
 		wasInMinigame = false;
+		notifyTrackingDeadlineAt = Environment.TickCount64 + NotifyIfStoppedDelayMs;
+		notifyNextSendAt = notifyTrackingDeadlineAt;
+		notifySendInFlight = false;
 		aquariumPending = autoAquariumToggle.Checked;
+		sovPending = autoSovToggle.Checked;
 		aquariumRunner.Reset();
+		sovRunner.Reset();
 		tranquilityController.Reset();
 		autoAuroraBlockedUntilCatchEnd = false;
 		autoAuroraNightCovered = false;
@@ -439,6 +759,12 @@ internal sealed class ReelControlForm : Form
 		autoAuroraState = "IDLE";
 		autoAuroraRetryCount = 0;
 		autoAuroraWaitStartedAt = 0;
+		autoWindyDayBlockedUntilCatchEnd = false;
+		autoWindyDayNightCovered = false;
+		autoWindyDayNeedsRodReequip = false;
+		autoWindyDayState = "IDLE";
+		autoWindyDayRetryCount = 0;
+		autoWindyDayWaitStartedAt = 0;
 		startupAssistController.Reset();
 		startupAssistActive = false;
 		startupAssistStartedAt = 0;
@@ -477,6 +803,7 @@ internal sealed class ReelControlForm : Form
 		ForceBellonaRightPhysicalUp();
 		fishingGate.Reset();
 		aquariumRunner.Reset();
+		sovRunner.Reset();
 		locator.ResetRodState();
 		currentRodProfile.Reset();
 		startupAssistController.Reset();
@@ -495,15 +822,27 @@ internal sealed class ReelControlForm : Form
 		lastShakedAt = 0;
 		shakeInputActive = false;
 		hadMetricsLastTick = false;
+		notifyTrackingDeadlineAt = 0;
+		notifyNextSendAt = 0;
+		notifySendInFlight = false;
 		locator.ResetTargets();
 		aquariumDue = false;
 		nextAquariumCycleTime = 0.0;
+		sovDue = autoSovToggle.Checked;
+		sovPending = autoSovToggle.Checked;
+		nextSovCycleTime = 0.0;
 		autoAuroraBlockedUntilCatchEnd = false;
 		autoAuroraNightCovered = false;
 		autoAuroraNeedsRodReequip = false;
 		autoAuroraState = "IDLE";
 		autoAuroraRetryCount = 0;
 		autoAuroraWaitStartedAt = 0;
+		autoWindyDayBlockedUntilCatchEnd = false;
+		autoWindyDayNightCovered = false;
+		autoWindyDayNeedsRodReequip = false;
+		autoWindyDayState = "IDLE";
+		autoWindyDayRetryCount = 0;
+		autoWindyDayWaitStartedAt = 0;
 		fishSkipDetector.Reset();
 		toggleButton.Text = "Start (F3)";
 		toggleButton.BackColor = Color.FromArgb(47, 129, 247);
@@ -522,7 +861,7 @@ internal sealed class ReelControlForm : Form
 		}
 
 		double totalSeconds = stopwatch.Elapsed.TotalSeconds;
-		DebugLog.Write("ReelControlForm.RunTick", $"tick time={totalSeconds:0.000} aquariumPending={aquariumPending} aquariumDue={aquariumDue} wasInMinigame={wasInMinigame} nextProbe={nextProbeTime:0.000}");
+		DebugLog.Write("ReelControlForm.RunTick", $"tick time={totalSeconds:0.000} aquariumPending={aquariumPending} aquariumDue={aquariumDue} sovPending={sovPending} sovDue={sovDue} wasInMinigame={wasInMinigame} nextProbe={nextProbeTime:0.000}");
 		try
 		{
 			var rodKind = currentRodKind;
@@ -562,6 +901,11 @@ internal sealed class ReelControlForm : Form
 					return;
 				}
 
+				if (autoWindyDayToggle.Checked && UpdateAutoWindyDay(totalSeconds))
+				{
+					return;
+				}
+
 				if (autoAquariumToggle.Checked && aquariumPending)
 				{
 				try
@@ -588,6 +932,43 @@ internal sealed class ReelControlForm : Form
 					locator.ResetTargets();
 					nextProbeTime = totalSeconds + TrackingProbeDelaySeconds;
 					DebugLog.Write("ReelControlForm.RunTick", "branch=aquarium failed");
+				}
+			}
+			if (autoSovToggle.Checked && sovPending && !locator.HasTargets)
+			{
+				try
+				{
+					AutoSovereignRechargeResult sovSequenceResult = sovRunner.Step(91.0, 99.7);
+					DebugLog.Write("ReelControlForm.RunTick", $"branch=sov status={sovSequenceResult.Status} power={(sovSequenceResult.CurrentPowerPercent?.ToString("0.0") ?? "null")} completed={sovSequenceResult.Completed} failed={sovSequenceResult.Failed}");
+					if (sovSequenceResult.Completed)
+					{
+						sovPending = false;
+						sovDue = false;
+						nextSovCycleTime = 0.0;
+						wasInMinigame = false;
+						locator.ResetTargets();
+						nextProbeTime = totalSeconds + TrackingProbeDelaySeconds;
+						DebugLog.Write("ReelControlForm.RunTick", "branch=sov completed");
+						return;
+					}
+
+					if (!sovSequenceResult.Failed && sovSequenceResult.Status.StartsWith("Power healthy", StringComparison.OrdinalIgnoreCase))
+					{
+						sovPending = false;
+						sovDue = false;
+						sovRunner.Reset();
+						return;
+					}
+				}
+				catch
+				{
+					sovRunner.Reset();
+					sovPending = false;
+					sovDue = false;
+					nextSovCycleTime = 0.0;
+					locator.ResetTargets();
+					nextProbeTime = totalSeconds + TrackingProbeDelaySeconds;
+					DebugLog.Write("ReelControlForm.RunTick", "branch=sov failed");
 				}
 			}
 			if (autoAquariumToggle.Checked && !aquariumDue && nextAquariumCycleTime > 0.0 && totalSeconds >= nextAquariumCycleTime)
@@ -655,6 +1036,11 @@ internal sealed class ReelControlForm : Form
 				snapshot = locator.ReadSnapshot();
 			}
 			locator.TryGetFishingCompletionPercent(out var progress);
+			if (autoSovToggle.Checked && locator.TryGetSovereignPowerPercent(out var powerPercent) && powerPercent.HasValue && powerPercent.Value <= AutoSovThresholdPercent && !sovPending && !sovDue)
+			{
+				sovDue = true;
+				DebugLog.Write("ReelControlForm.AutoSov", $"due power={powerPercent:0.0} threshold={AutoSovThresholdPercent:0.0}");
+			}
 			var noteTarget = rodKind == RodKind.Pinion ? locator.GetActiveNoteTarget() : null;
 			var adjustedSnapshot = rodKind == RodKind.Pinion ? currentRodProfile.AdjustTarget(snapshot, noteTarget) : snapshot;
 			DebugLog.Write("ReelControlForm.RunTick", $"snapshot fish={snapshot.FishCenter:0.000000} bar={snapshot.PlayerbarCenter:0.000000} width={snapshot.PlayerbarWidth:0.000000} note={(noteTarget is null ? "null" : $"{noteTarget.Value.Sx:0.000000},{noteTarget.Value.Sy:0.000000}")} progress={(progress?.ToString("0.0") ?? "null")}");
@@ -734,11 +1120,11 @@ internal sealed class ReelControlForm : Form
 			}
 			fishSkipSoundState = FishSkipSoundSnapshot.Empty;
 			nextFishSkipPollAt = 0;
-			fishSkipEvadeActive = false;
-			fishSkipEvadeLegendary = false;
-			fishSkipRequiemNextClickAt = 0;
-			fishSkipRequiemClickDown = false;
-			perfectCastReadyAt = controlSettings.CastMode.Equals("perfect", StringComparison.OrdinalIgnoreCase) ? Environment.TickCount64 + 3000 : 0;
+		fishSkipEvadeActive = false;
+		fishSkipEvadeLegendary = false;
+		fishSkipRequiemNextClickAt = 0;
+		fishSkipRequiemClickDown = false;
+		perfectCastReadyAt = controlSettings.CastMode.Equals("perfect", StringComparison.OrdinalIgnoreCase) ? Environment.TickCount64 + 3000 : 0;
 			DebugLog.Write("ReelControlForm.RunTick", $"branch=no-minigame wasTracking={wasTracking} perfectCastReadyAt={(perfectCastReadyAt == 0 ? "0" : perfectCastReadyAt.ToString())}");
 			nextProbeTime = totalSeconds + TrackingProbeDelaySeconds;
 				if (autoAuroraBlockedUntilCatchEnd && !locator.HasTargets)
@@ -755,6 +1141,25 @@ internal sealed class ReelControlForm : Form
 					controller.Reset();
 					locator.ResetTargets();
 					nextProbeTime = 0.0;
+					return;
+				}
+				if (autoSovToggle.Checked && sovDue && wasInMinigame)
+				{
+					wasInMinigame = false;
+					sovPending = true;
+					sovDue = false;
+					nextSovCycleTime = 0.0;
+					sovRunner.Reset();
+					controller.Reset();
+					locator.ResetTargets();
+					nextProbeTime = 0.0;
+					return;
+				}
+				if (autoSovToggle.Checked && (sovPending || sovDue))
+				{
+					controller.Reset();
+					ResetBellonaRightControlState(releaseInput: true);
+					ApplyFishingHold(false, null);
 					return;
 				}
 				wasInMinigame = false;
@@ -813,6 +1218,42 @@ internal sealed class ReelControlForm : Form
 		return true;
 	}
 
+	private bool UpdateAutoWindyDay(double totalSeconds)
+	{
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"tick time={totalSeconds:0.000} checked={autoWindyDayToggle.Checked} state={autoWindyDayState} night={locator.IsNightCycle()} windy={locator.IsWindyActive()} blocked={autoWindyDayBlockedUntilCatchEnd} covered={autoWindyDayNightCovered} hasTargets={locator.HasTargets} inputReady={(fishingInputReadyAt != 0)} wasInMinigame={wasInMinigame}");
+
+		if (!autoWindyDayToggle.Checked)
+		{
+			ResetAutoWindyDayControl();
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "disabled -> reset");
+			return false;
+		}
+
+		if (autoWindyDayState != "IDLE")
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", $"state-advance from={autoWindyDayState}");
+			UpdateAutoWindyDayState(totalSeconds);
+			return true;
+		}
+
+		if (autoWindyDayBlockedUntilCatchEnd)
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "blocked-until-catch-end");
+			return false;
+		}
+
+		if (locator.IsWindyActive() && !locator.IsNightCycle())
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "windy-already-active -> complete");
+			CompleteAutoWindyDayWorkflow(true);
+			return false;
+		}
+
+		DebugLog.Write("ReelControlForm.AutoWindyDay", "begin workflow");
+		BeginAutoWindyDayWorkflow(totalSeconds);
+		return true;
+	}
+
 	private void BeginAutoAuroraWorkflow(double totalSeconds)
 	{
 		autoAuroraRetryCount = 0;
@@ -858,10 +1299,240 @@ internal sealed class ReelControlForm : Form
 		DebugLog.Write("ReelControlForm.AutoAurora", $"step=sundial wait={AutoAuroraWaitMs}ms time={totalSeconds:0.000}");
 	}
 
+	private void BeginAutoWindyDayWorkflow(double totalSeconds)
+	{
+		autoWindyDayRetryCount = 0;
+		autoWindyDayWaitStartedAt = 0;
+		autoWindyDayNeedsRodReequip = false;
+		autoWindyDayState = "WORKFLOW";
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"begin time={totalSeconds:0.000} night={locator.IsNightCycle()} windy={locator.IsWindyActive()} hasTargets={locator.HasTargets} inputReady={(fishingInputReadyAt != 0)} wasInMinigame={wasInMinigame}");
+		RunAutoWindyDayWorkflowStep(totalSeconds);
+	}
+
+	private void RunAutoWindyDayWorkflowStep(double totalSeconds)
+	{
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"workflow-step time={totalSeconds:0.000} state={autoWindyDayState} night={locator.IsNightCycle()} windy={locator.IsWindyActive()} retry={autoWindyDayRetryCount} reEquip={autoWindyDayNeedsRodReequip}");
+
+		if (locator.IsNightCycle())
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "workflow-step night -> sundial");
+			if (!locator.TryUseHotbarItem("Sundial Totem"))
+			{
+				DebugLog.Write("ReelControlForm.AutoWindyDay", "workflow-step sundial failed");
+				CompleteAutoWindyDayWorkflow(false);
+				return;
+			}
+
+			autoWindyDayNeedsRodReequip = true;
+			autoWindyDayState = "WAIT_DAY";
+			autoWindyDayWaitStartedAt = Environment.TickCount64;
+			DebugLog.Write("ReelControlForm.AutoWindyDay", $"step=sundial wait={AutoAuroraWaitMs}ms time={totalSeconds:0.000}");
+			return;
+		}
+
+		if (locator.IsWindyActive())
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "workflow-step windy-active -> complete");
+			CompleteAutoWindyDayWorkflow(true);
+			return;
+		}
+
+		DebugLog.Write("ReelControlForm.AutoWindyDay", "workflow-step day -> windset");
+		if (!TryUseWindyTotem())
+		{
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "workflow-step windset failed");
+			CompleteAutoWindyDayWorkflow(false);
+			return;
+		}
+
+		autoWindyDayNeedsRodReequip = true;
+		autoWindyDayState = "WAIT_WINDY";
+		autoWindyDayWaitStartedAt = Environment.TickCount64;
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"step=windset wait={AutoAuroraWaitMs}ms time={totalSeconds:0.000}");
+	}
+
+	private void UpdateAutoWindyDayState(double totalSeconds)
+	{
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"state-tick time={totalSeconds:0.000} state={autoWindyDayState} night={locator.IsNightCycle()} windy={locator.IsWindyActive()} retry={autoWindyDayRetryCount} waitFor={(Environment.TickCount64 - autoWindyDayWaitStartedAt)}ms");
+
+		if (autoWindyDayState == "WAIT_REEQUIP")
+		{
+			if (Environment.TickCount64 - autoWindyDayWaitStartedAt < AutoTotemActionDelayMs)
+			{
+				DebugLog.Write("ReelControlForm.AutoWindyDay", "state=WAIT_REEQUIP waiting");
+				return;
+			}
+
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "state=WAIT_REEQUIP -> complete");
+			CompleteAutoWindyDayWorkflow(locator.IsWindyActive());
+			return;
+		}
+
+		if (locator.IsWindyActive() && !locator.IsNightCycle())
+		{
+			if (autoWindyDayNeedsRodReequip)
+			{
+				autoWindyDayState = "WAIT_REEQUIP";
+				autoWindyDayWaitStartedAt = Environment.TickCount64;
+				DebugLog.Write("ReelControlForm.AutoWindyDay", $"step=finish wait={AutoTotemActionDelayMs}ms time={totalSeconds:0.000}");
+				return;
+			}
+
+			DebugLog.Write("ReelControlForm.AutoWindyDay", "state tick windy-active -> complete");
+			CompleteAutoWindyDayWorkflow(true);
+			return;
+		}
+
+		switch (autoWindyDayState)
+		{
+			case "WAIT_DAY":
+				DebugLog.Write("ReelControlForm.AutoWindyDay", "state=WAIT_DAY");
+				if (!locator.IsNightCycle())
+				{
+					autoWindyDayRetryCount = 0;
+					if (locator.IsWindyActive())
+					{
+						DebugLog.Write("ReelControlForm.AutoWindyDay", "day detected and already windy -> complete");
+						CompleteAutoWindyDayWorkflow(true);
+						return;
+					}
+
+					if (!TryUseWindyTotem())
+					{
+						DebugLog.Write("ReelControlForm.AutoWindyDay", "day detected but windset failed");
+						CompleteAutoWindyDayWorkflow(false);
+						return;
+					}
+
+					autoWindyDayNeedsRodReequip = true;
+					autoWindyDayState = "WAIT_WINDY";
+					autoWindyDayWaitStartedAt = Environment.TickCount64;
+					DebugLog.Write("ReelControlForm.AutoWindyDay", $"retry=windset time={totalSeconds:0.000}");
+					return;
+				}
+
+				if (Environment.TickCount64 - autoWindyDayWaitStartedAt < AutoAuroraWaitMs)
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "waiting for day after sundial");
+					return;
+				}
+
+				if (autoWindyDayRetryCount >= 1)
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "sundial retry limit reached");
+					CompleteAutoWindyDayWorkflow(false);
+					return;
+				}
+
+				if (!locator.TryUseHotbarItem("Sundial Totem"))
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "sundial retry failed");
+					CompleteAutoWindyDayWorkflow(false);
+					return;
+				}
+
+				autoWindyDayRetryCount += 1;
+				autoWindyDayWaitStartedAt = Environment.TickCount64;
+				DebugLog.Write("ReelControlForm.AutoWindyDay", $"retry=sundial count={autoWindyDayRetryCount}");
+				return;
+
+			case "WAIT_WINDY":
+				DebugLog.Write("ReelControlForm.AutoWindyDay", "state=WAIT_WINDY");
+				if (Environment.TickCount64 - autoWindyDayWaitStartedAt < AutoAuroraWaitMs)
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "waiting for windy after windset");
+					return;
+				}
+
+				if (autoWindyDayRetryCount >= 1)
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "windset retry limit reached");
+					CompleteAutoWindyDayWorkflow(false);
+					return;
+				}
+
+				if (!TryUseWindyTotem())
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "windset retry failed");
+					CompleteAutoWindyDayWorkflow(false);
+					return;
+				}
+
+				autoWindyDayRetryCount += 1;
+				autoWindyDayWaitStartedAt = Environment.TickCount64;
+				DebugLog.Write("ReelControlForm.AutoWindyDay", $"retry=windset count={autoWindyDayRetryCount}");
+				return;
+
+			case "WAIT_REEQUIP":
+				if (Environment.TickCount64 - autoWindyDayWaitStartedAt < AutoTotemActionDelayMs)
+				{
+					DebugLog.Write("ReelControlForm.AutoWindyDay", "waiting for rod re-equip");
+					return;
+				}
+
+				CompleteAutoWindyDayWorkflow(locator.IsWindyActive());
+				return;
+		}
+	}
+
+	private void CompleteAutoWindyDayWorkflow(bool success)
+	{
+		var needsRodReequip = autoWindyDayNeedsRodReequip;
+		autoWindyDayState = "IDLE";
+		autoWindyDayWaitStartedAt = 0;
+		autoWindyDayRetryCount = 0;
+		autoWindyDayNeedsRodReequip = false;
+
+		autoWindyDayBlockedUntilCatchEnd = false;
+		autoWindyDayNightCovered = false;
+
+		if (needsRodReequip)
+		{
+			locator.TryEnsureRodEquipped();
+		}
+
+		DebugLog.Write("ReelControlForm.AutoWindyDay", $"complete success={success} blocked={autoWindyDayBlockedUntilCatchEnd} nightCovered={autoWindyDayNightCovered}");
+	}
+
+	private void ResetAutoWindyDayControl()
+	{
+		autoWindyDayState = "IDLE";
+		autoWindyDayWaitStartedAt = 0;
+		autoWindyDayRetryCount = 0;
+		autoWindyDayBlockedUntilCatchEnd = false;
+		autoWindyDayNightCovered = false;
+		autoWindyDayNeedsRodReequip = false;
+		DebugLog.Write("ReelControlForm.AutoWindyDay", "reset");
+	}
+
+	private bool TryUseWindyTotem()
+	{
+		return locator.TryUseHotbarItem("Windset Totem") || locator.TryUseHotbarItem("Windy Totem");
+	}
+
 	private void UpdateAutoAuroraState(double totalSeconds)
 	{
+		if (autoAuroraState == "WAIT_REEQUIP")
+		{
+			if (Environment.TickCount64 - autoAuroraWaitStartedAt < AutoTotemActionDelayMs)
+			{
+				return;
+			}
+
+			CompleteAutoAuroraWorkflow(locator.IsAuroraActive());
+			return;
+		}
+
 		if (locator.IsAuroraActive())
 		{
+			if (autoAuroraNeedsRodReequip)
+			{
+				autoAuroraState = "WAIT_REEQUIP";
+				autoAuroraWaitStartedAt = Environment.TickCount64;
+				DebugLog.Write("ReelControlForm.AutoAurora", $"step=finish wait={AutoTotemActionDelayMs}ms time={totalSeconds:0.000}");
+				return;
+			}
+
 			CompleteAutoAuroraWorkflow(true);
 			return;
 		}
@@ -928,6 +1599,15 @@ internal sealed class ReelControlForm : Form
 				autoAuroraRetryCount += 1;
 				autoAuroraWaitStartedAt = Environment.TickCount64;
 				DebugLog.Write("ReelControlForm.AutoAurora", $"retry=aurora count={autoAuroraRetryCount}");
+				return;
+
+			case "WAIT_REEQUIP":
+				if (Environment.TickCount64 - autoAuroraWaitStartedAt < AutoTotemActionDelayMs)
+				{
+					return;
+				}
+
+				CompleteAutoAuroraWorkflow(locator.IsAuroraActive());
 				return;
 		}
 	}
@@ -1074,7 +1754,7 @@ internal sealed class ReelControlForm : Form
 
 		rodStatusLabel.Text = "Rod: Unequipped";
 		rodStatusLabel.ForeColor = Color.FromArgb(248, 113, 113);
-		if (running)
+		if (running && !(autoSovToggle.Checked && (sovPending || sovDue || sovRunner.IsActive)))
 		{
 			locator.TryEnsureRodEquipped();
 		}
@@ -1087,10 +1767,16 @@ internal sealed class ReelControlForm : Form
 
 		if (running)
 		{
-			if (autoAuroraToggle.Checked && autoAuroraState != "IDLE")
+			if ((autoAuroraToggle.Checked && autoAuroraState != "IDLE") ||
+				(autoWindyDayToggle.Checked && autoWindyDayState != "IDLE"))
 			{
 				statusText = "Totem";
 				statusColor = Color.FromArgb(251, 191, 36);
+			}
+			else if (autoSovToggle.Checked && (sovPending || sovDue))
+			{
+				statusText = "Sov";
+				statusColor = Color.FromArgb(96, 165, 250);
 			}
 			else if (autoAquariumToggle.Checked && (aquariumPending || aquariumDue))
 			{
@@ -1116,6 +1802,7 @@ internal sealed class ReelControlForm : Form
 
 		macroStatusLabel.Text = $"Status: {statusText}";
 		macroStatusLabel.ForeColor = statusColor;
+		UpdateStoppedNotification(statusText == "Tracking");
 	}
 
 	private void UpdateFishSkipStatus()

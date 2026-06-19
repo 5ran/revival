@@ -92,6 +92,24 @@ internal static class DiscordRoleGate
 		return authResult.Result;
 	}
 
+	internal static DiscordWebhookSettings LoadWebhookSettings()
+	{
+		var cache = LoadCache();
+		return new DiscordWebhookSettings
+		{
+			Enabled = cache?.NotifyIfStoppedEnabled ?? false,
+			WebhookUrl = cache?.NotifyIfStoppedWebhookUrl ?? string.Empty,
+		};
+	}
+
+	internal static void SaveWebhookSettings(bool enabled, string webhookUrl)
+	{
+		var cache = LoadCache() ?? new DiscordAuthCache();
+		cache.NotifyIfStoppedEnabled = enabled;
+		cache.NotifyIfStoppedWebhookUrl = webhookUrl ?? string.Empty;
+		SaveCache(cache);
+	}
+
 	private static async Task<DiscordAuthOutcome> ValidateAccessTokenAsync(
 		string accessToken,
 		string refreshToken,
@@ -302,6 +320,16 @@ internal static class DiscordRoleGate
 	{
 		try
 		{
+			var existing = LoadCache();
+			if (existing is not null)
+			{
+				cache.NotifyIfStoppedEnabled ??= existing.NotifyIfStoppedEnabled;
+				if (string.IsNullOrWhiteSpace(cache.NotifyIfStoppedWebhookUrl))
+				{
+					cache.NotifyIfStoppedWebhookUrl = existing.NotifyIfStoppedWebhookUrl;
+				}
+			}
+
 			var json = JsonSerializer.Serialize(cache, JsonOptions());
 			var protectedBytes = ProtectedData.Protect(Encoding.UTF8.GetBytes(json), CacheEntropy, DataProtectionScope.CurrentUser);
 			File.WriteAllBytes(CachePath, protectedBytes);
@@ -665,6 +693,16 @@ internal sealed class DiscordAuthCache
 	public string GuildId { get; set; } = string.Empty;
 	[JsonPropertyName("role_id")]
 	public string RoleId { get; set; } = string.Empty;
+	[JsonPropertyName("notify_if_stopped_enabled")]
+	public bool? NotifyIfStoppedEnabled { get; set; }
+	[JsonPropertyName("notify_if_stopped_webhook_url")]
+	public string NotifyIfStoppedWebhookUrl { get; set; } = string.Empty;
+}
+
+internal sealed class DiscordWebhookSettings
+{
+	public bool Enabled { get; set; }
+	public string WebhookUrl { get; set; } = string.Empty;
 }
 
 internal sealed record DiscordAuthOutcome(DiscordAuthResult Result, DiscordAuthCache Cache);

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -230,6 +231,11 @@ internal sealed class ReelLocator : IDisposable
 	{
 		return GetCurrentMeteorological().IndexOf("aurora", StringComparison.OrdinalIgnoreCase) >= 0 ||
 			GetCurrentWeather().IndexOf("aurora", StringComparison.OrdinalIgnoreCase) >= 0;
+	}
+
+	public bool IsWindyActive()
+	{
+		return GetCurrentWeather().IndexOf("windy", StringComparison.OrdinalIgnoreCase) >= 0;
 	}
 
 	public bool IsTotemBlocked()
@@ -634,6 +640,117 @@ internal sealed class ReelLocator : IDisposable
 			DebugLog.Write("ReelLocator.TryGetFishingCompletionPercent", "failed");
 			return false;
 		}
+	}
+
+	public bool TryGetSovereignPowerPercent(out double? percent)
+	{
+		percent = null;
+		try
+		{
+			var label = ResolveSovereignPowerLabel();
+			if (label == 0)
+			{
+				return false;
+			}
+
+			var text = ReadGuiText(label);
+			if (string.IsNullOrWhiteSpace(text))
+			{
+				return false;
+			}
+
+			var match = Regex.Match(text, @"([0-9]+(?:\.[0-9]+)?)\s*%", RegexOptions.CultureInvariant);
+			if (!match.Success)
+			{
+				return false;
+			}
+
+			if (!double.TryParse(match.Groups[1].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed))
+			{
+				return false;
+			}
+
+			percent = Math.Clamp(parsed, 0, 100);
+			DebugLog.Write("ReelLocator.TryGetSovereignPowerPercent", $"power={percent:0.0}");
+			return true;
+		}
+		catch
+		{
+			DebugLog.Write("ReelLocator.TryGetSovereignPowerPercent", "failed");
+			return false;
+		}
+	}
+
+	private ulong ResolveSovereignPowerLabel()
+	{
+		var playerGui = FindPlayerGui();
+		if (playerGui == 0)
+		{
+			return 0;
+		}
+
+		var powerLabel = FindByPath(playerGui, "backpack", "hotbar", "Folder", "Frame", "Frame", "powerbar", "bar", "powerLabel");
+		if (powerLabel != 0)
+		{
+			return powerLabel;
+		}
+
+		return FindByPath(playerGui, "backpack", "hotbar", "powerLabel", "TextLabel", "powerbar", "bar");
+	}
+
+	public bool TryClickGuiCenter(ulong instance)
+	{
+		if (!TryReadGuiBounds(instance, out var position, out var size))
+		{
+			return false;
+		}
+
+		var point = new Point((int)Math.Round(position.X + size.X / 2f), (int)Math.Round(position.Y + size.Y / 2f));
+		NativeMouse.ClickAt(point.X, point.Y);
+		return true;
+	}
+
+	public bool TryOpenInventory()
+	{
+		NativeKeyboard.PressG(robloxWindow);
+		return true;
+	}
+
+	public bool TryPrepareSovereignInventoryTargets(out ulong searchFrame, out ulong itemContainer)
+	{
+		searchFrame = 0;
+		itemContainer = 0;
+
+		var inventoryFrame = ResolveInventoryFrame();
+		if (inventoryFrame == 0)
+		{
+			DebugLog.Write("ReelLocator.TryPrepareSovereignInventoryTargets", "inventoryFrame=0");
+			return false;
+		}
+
+		searchFrame = ResolveInventorySearchFrame(inventoryFrame);
+		itemContainer = ResolveInventoryItemContainer(inventoryFrame);
+		DebugLog.Write(
+			"ReelLocator.TryPrepareSovereignInventoryTargets",
+			$"inventory=0x{inventoryFrame:X} search=0x{searchFrame:X} itemContainer=0x{itemContainer:X}");
+		return searchFrame != 0 && itemContainer != 0;
+	}
+
+	public bool TrySelectInventoryItem(ulong itemContainer, string itemName)
+	{
+		var target = FindInventoryItemTarget(itemContainer, itemName);
+		if (target == 0)
+		{
+			return false;
+		}
+
+		return TryClickGuiCenter(target);
+	}
+
+	public bool TryClickEnchantButton()
+	{
+		var enchantButton = EnsureEnchantTarget();
+		return enchantButton != 0 && TryClickGuiCenter(enchantButton);
 	}
 
 	public ulong GetTranquilityRoot()
@@ -1659,6 +1776,165 @@ internal sealed class ReelLocator : IDisposable
 		return powerGui == 0 ? 0 : FindDescendantFrameByName(powerGui, "bar");
 	}
 
+	private ulong ResolveInventoryFrame()
+	{
+		var localPlayer = GetLocalPlayer();
+		if (localPlayer == 0)
+		{
+			return 0;
+		}
+
+		var playerGui = FindDescendantByClass(localPlayer, "PlayerGui");
+		if (playerGui == 0)
+		{
+			playerGui = FindDescendantByName(localPlayer, "PlayerGui");
+		}
+
+		var backpack = playerGui == 0 ? 0 : FindDescendantByName(playerGui, "backpack");
+		return backpack == 0 ? 0 : FindDescendantByName(backpack, "inventory");
+	}
+
+	private ulong ResolveInventorySearchFrame(ulong inventory)
+	{
+		var byPath = FindByPath(inventory, "Search", "Frame", "topbar", "search");
+		if (byPath != 0)
+		{
+			return byPath;
+		}
+
+		var byDescendant = FindDescendantByName(inventory, "search");
+		if (byDescendant != 0)
+		{
+			return byDescendant;
+		}
+
+		return FindByPath(inventory, "Search", string.Empty, "topbar");
+	}
+
+	private ulong ResolveInventoryItemContainer(ulong inventory)
+	{
+		var byName = FindChildByName(inventory, "itemContainer");
+		if (byName != 0)
+		{
+			return byName;
+		}
+
+		var byDescendant = FindDescendantByName(inventory, "itemContainer");
+		if (byDescendant != 0)
+		{
+			return byDescendant;
+		}
+
+		return FindByPath(inventory, "itemContainer", "Frame");
+	}
+
+	private ulong FindInventoryItemTarget(ulong itemContainer, string itemName)
+	{
+		var needle = NormalizeLoose(itemName);
+		ulong partialMatch = 0;
+		foreach (var node in Traverse(itemContainer, 32))
+		{
+			var cls = ReadClass(node);
+			if (!cls.Contains("Text", StringComparison.OrdinalIgnoreCase))
+			{
+				continue;
+			}
+
+			var text = NormalizeLoose(ReadGuiText(node));
+			if (text.Length == 0)
+			{
+				continue;
+			}
+
+			var exact = IsInventoryItemExactMatch(text, needle);
+			var contains = text.Contains(needle, StringComparison.OrdinalIgnoreCase);
+			if (!exact && !contains)
+			{
+				continue;
+			}
+
+			var clickable = FindInventoryClickableAncestor(node, itemContainer);
+			if (clickable == 0)
+			{
+				continue;
+			}
+
+			if (exact)
+			{
+				return clickable;
+			}
+
+			if (partialMatch == 0)
+			{
+				partialMatch = clickable;
+			}
+		}
+
+		return partialMatch;
+	}
+
+	private bool IsInventoryItemExactMatch(string text, string needle)
+	{
+		if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(needle))
+		{
+			return false;
+		}
+
+		var normalized = text.Replace("\r", "\n", StringComparison.Ordinal).Trim();
+		return string.Equals(normalized, needle, StringComparison.OrdinalIgnoreCase);
+	}
+
+	private ulong EnsureEnchantTarget()
+	{
+		var playerGui = FindPlayerGui();
+		if (playerGui == 0)
+		{
+			return 0;
+		}
+
+		var enchantButton = FindByPath(playerGui, "Enchant", "Button", "backpack", "inventory", "topbuttons", "textbutton", "enchant");
+		if (enchantButton == 0)
+		{
+			enchantButton = FindByPath(playerGui, string.Empty, "Button", "backpack", "inventory", "topbuttons", "enchant");
+		}
+
+		if (enchantButton == 0)
+		{
+			enchantButton = FindByNameClass(playerGui, "Enchant", "Button");
+		}
+
+		return enchantButton;
+	}
+
+	private ulong FindByNameClass(ulong root, string name, string classNeedle)
+	{
+		foreach (var item in Traverse(root, 256))
+		{
+			if (string.Equals(ReadName(item), name, StringComparison.OrdinalIgnoreCase) &&
+				ClassMatches(ReadClass(item), classNeedle))
+			{
+				return item;
+			}
+		}
+
+		return 0;
+	}
+
+	private bool ClassMatches(string value, string classNeedle)
+	{
+		return value.IndexOf(classNeedle, StringComparison.OrdinalIgnoreCase) >= 0;
+	}
+
+	private static string NormalizeLoose(string text)
+	{
+		if (string.IsNullOrWhiteSpace(text))
+		{
+			return string.Empty;
+		}
+
+		return text.Replace("\r", "\n").Trim();
+	}
+
 	private ulong ResolveCounterAttackFrame()
 	{
 		var playerGui = FindPlayerGui();
@@ -1736,6 +2012,64 @@ internal sealed class ReelLocator : IDisposable
 		return 0;
 	}
 
+	private ulong FindInventoryClickableAncestor(ulong node, ulong stopRoot)
+	{
+		ulong frameFallback = 0;
+		var current = node;
+		for (var i = 0; i < 10 && ProcessMemory.IsLikelyUserModeAddress(current); i++)
+		{
+			var cls = ReadClass(current);
+			if (cls.Contains("Button", StringComparison.OrdinalIgnoreCase))
+			{
+				if (TryReadGuiBounds(current, out _, out var size) && size.X > 10 && size.Y > 10)
+				{
+					return current;
+				}
+			}
+			else if (cls.Contains("Frame", StringComparison.OrdinalIgnoreCase) &&
+				TryReadGuiBounds(current, out _, out var bounds) &&
+				bounds.X > 10 && bounds.Y > 10 && bounds.X <= 500 && bounds.Y <= 110)
+			{
+				frameFallback = current;
+			}
+
+			if (current == stopRoot)
+			{
+				break;
+			}
+
+			var parent = memory.ReadPtr(current + offsets.Get("Instance", "Parent"));
+			if (!ProcessMemory.IsLikelyUserModeAddress(parent) || parent == current)
+			{
+				break;
+			}
+
+			current = parent;
+		}
+
+		return frameFallback;
+	}
+
+	private ulong FindByPath(ulong root, params string[] path)
+	{
+		var current = root;
+		foreach (var segment in path)
+		{
+			if (string.IsNullOrWhiteSpace(segment))
+			{
+				continue;
+			}
+
+			current = FindDescendantByName(current, segment);
+			if (current == 0)
+			{
+				return 0;
+			}
+		}
+
+		return current;
+	}
+
 	private string BuildPath(ulong instance)
 	{
 		List<string> segments = new List<string>();
@@ -1759,16 +2093,6 @@ internal sealed class ReelLocator : IDisposable
 
 		segments.Reverse();
 		return string.Join("/", segments.ToArray());
-	}
-
-	private static string NormalizeLoose(string text)
-	{
-		if (string.IsNullOrWhiteSpace(text))
-		{
-			return string.Empty;
-		}
-
-		return text.Replace("\r", "\n").Trim();
 	}
 
 	private Point GetClickPoint(ulong instance)

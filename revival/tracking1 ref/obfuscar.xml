@@ -4,14 +4,25 @@
   <Var name="OutPath" value="obfuscated" />
   <Var name="KeepPublicApi" value="true" />
   <Var name="HidePrivateApi" value="true" />
-  <Var name="RenameProperties" value="true" />
-  <Var name="RenameEvents" value="true" />
-  <Var name="RenameFields" value="true" />
+  <Var name="RenameProperties" value="false" />
+  <Var name="RenameEvents" value="false" />
+  <Var name="RenameFields" value="false" />
+  <Var name="RenameMethods" value="false" />
   <Var name="UseUnicodeNames" value="true" />
   <Var name="HideStrings" value="true" />
-  <Var name="OptimizeMethods" value="true" />
+  <Var name="OptimizeMethods" value="false" />
   <Var name="SuppressIldasm" value="true" />
   <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.NETCore.App.Ref\8.0.28\ref\net8.0" />
   <AssemblySearchPath path="C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.28\ref\net8.0" />
+  <SkipType name="Client.Services.Fishing.RodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.DefaultRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.MasterlineRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.PinionRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.TranquilityRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.DreambreakerRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.RequiemRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.SplitbranchTwigRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.MiguRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
+  <SkipType name="Client.Services.Fishing.BellonaWaraxeRodProfile" skipMethods="true" skipProperties="true" skipFields="true" skipEvents="true" />
   <Module file="$(InPath)\fish_new.dll" />
 </Obfuscator>

@@ -98,14 +98,17 @@ internal sealed class AquariumSequenceRunner
 	{
 		EnsureConnected();
 		double totalSeconds = stopwatch.Elapsed.TotalSeconds;
+		DebugLog.Write("AquariumSequenceRunner.Step", $"phase={phase} time={totalSeconds:0.000} nextAction={nextActionTime:0.000} feedUntil={feedUntilTime:0.000} nextScroll={nextScrollTime:0.000} nextFeedClick={nextFeedClickTime:0.000}");
 		if (totalSeconds < nextActionTime)
 		{
+			DebugLog.Write("AquariumSequenceRunner.Step", "waiting");
 			return AquariumSequenceResult.Running;
 		}
 		if (phase == AquariumSequencePhase.Resolve)
 		{
 			EnsureTargets();
 			phase = AquariumSequencePhase.OpenAquarium;
+			DebugLog.Write("AquariumSequenceRunner.Step", "resolve -> open");
 			return AquariumSequenceResult.Running;
 		}
 		if (phase == AquariumSequencePhase.OpenAquarium)
@@ -113,6 +116,7 @@ internal sealed class AquariumSequenceRunner
 			ClickCenter(aquariumButton, visibleRequired: true);
 			phase = AquariumSequencePhase.WaitAfterOpen;
 			nextActionTime = totalSeconds + Math.Max(0.5, clickDelaySeconds);
+			DebugLog.Write("AquariumSequenceRunner.Step", "open -> wait-after-open");
 			return AquariumSequenceResult.Running;
 		}
 		if (phase == AquariumSequencePhase.WaitAfterOpen)
@@ -120,6 +124,7 @@ internal sealed class AquariumSequenceRunner
 			if (feedAnchor == 0 && !RefreshFeedAnchor())
 			{
 				nextActionTime = totalSeconds + 0.1;
+				DebugLog.Write("AquariumSequenceRunner.Step", "wait-after-open -> refresh-feed-anchor");
 				return AquariumSequenceResult.Running;
 			}
 			RectangleF bounds = ReadBounds(feedAnchor, visibleRequired: false);
@@ -132,6 +137,7 @@ internal sealed class AquariumSequenceRunner
 			didFastScrollUp = false;
 			phase = AquariumSequencePhase.Feeding;
 			nextActionTime = totalSeconds + clickDelaySeconds;
+			DebugLog.Write("AquariumSequenceRunner.Step", "wait-after-open -> feeding");
 			return AquariumSequenceResult.Running;
 		}
 		if (phase == AquariumSequencePhase.Feeding)
@@ -140,6 +146,7 @@ internal sealed class AquariumSequenceRunner
 			{
 				phase = AquariumSequencePhase.CloseAquarium;
 				nextActionTime = totalSeconds;
+				DebugLog.Write("AquariumSequenceRunner.Step", "feeding -> close");
 				return AquariumSequenceResult.Running;
 			}
 			Point cursor = GetCursorPosPoint();
@@ -161,10 +168,12 @@ internal sealed class AquariumSequenceRunner
 					didFastScrollUp = true;
 					nextScrollTime = totalSeconds + 0.5;
 					nextActionTime = Math.Min(nextFeedClickTime, nextScrollTime);
+					DebugLog.Write("AquariumSequenceRunner.Step", "feeding fast-scroll");
 					return AquariumSequenceResult.Running;
 				}
 				NativeMouse.ScrollDown();
 				nextScrollTime = totalSeconds + Math.Max(0.15, clickDelaySeconds * 0.675);
+				DebugLog.Write("AquariumSequenceRunner.Step", "feeding scroll-down");
 			}
 			nextActionTime = Math.Min(nextFeedClickTime, nextScrollTime);
 			return AquariumSequenceResult.Running;
@@ -174,12 +183,14 @@ internal sealed class AquariumSequenceRunner
 			ClickCenter(aquariumButton, visibleRequired: true);
 			phase = AquariumSequencePhase.CenterClick;
 			nextActionTime = totalSeconds + clickDelaySeconds;
+			DebugLog.Write("AquariumSequenceRunner.Step", "close -> center-click");
 			return AquariumSequenceResult.Running;
 		}
 		Rectangle clientScreenRectangle = GetClientScreenRectangle(robloxWindow);
 		NativeMouse.ClickAt(clientScreenRectangle.Left + clientScreenRectangle.Width / 2, clientScreenRectangle.Top + clientScreenRectangle.Height / 2);
 		phase = AquariumSequencePhase.Resolve;
 		nextActionTime = totalSeconds + clickDelaySeconds;
+		DebugLog.Write("AquariumSequenceRunner.Step", "center-click -> done");
 		return AquariumSequenceResult.Done;
 	}
 
