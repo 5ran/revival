@@ -248,7 +248,7 @@
                         <Path Name="NavShadow"
                               Margin="2,3,0,0"
                               Stretch="Fill"
-                              Fill="#40000000"
+                              Fill="{StaticResource ShellShadow}"
                               Data="M 8 0 L 178 0 Q 186 0 186 8 L 186 46 Q 186 54 178 54 L 8 54 Q 0 54 0 46 L 0 8 Q 0 0 8 0 Z" />
                         <Path Name="NavGlow"
                               Stretch="Fill"
@@ -320,7 +320,7 @@
 
         <Style Selector="Button.nav-button.selected /template/ Path#NavShadow">
             <Setter Property="Data" Value="M 16 0 L 179 0 Q 186 0 186 7 L 186 47 Q 186 54 179 54 L 16 54 L 0 27 Z" />
-            <Setter Property="Fill" Value="#60000000" />
+            <Setter Property="Fill" Value="{StaticResource ShellSelectedShadow}" />
             <Setter Property="Margin" Value="4,5,0,0" />
         </Style>
 
@@ -345,7 +345,7 @@
                         <Path Name="EditTagShadow"
                               Margin="2,3,0,0"
                               Stretch="Fill"
-                              Fill="#40000000"
+                              Fill="{StaticResource ShellShadow}"
                               Data="M 3 0 L 75 0 Q 78 0 78 3 L 78 17 Q 78 19 76.5 20.5 L 70.5 26.5 Q 69 28 66.5 28 L 11.5 28 Q 9 28 7.5 26.5 L 1.5 20.5 Q 0 19 0 17 L 0 3 Q 0 0 3 0 Z" />
                         <Path Name="EditTagShape"
                               Stretch="Fill"

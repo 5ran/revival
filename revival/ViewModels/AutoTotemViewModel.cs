@@ -506,21 +506,28 @@ public sealed class AutoTotemViewModel : ViewModelBase
 
     private static IBrush GetWeatherBrush(string weather)
     {
-        return weather switch
+        var color = weather switch
         {
-            "Clear" => new SolidColorBrush(Color.FromArgb(255, 240, 240, 240)),
-            "Foggy" => new SolidColorBrush(Color.FromArgb(255, 120, 170, 190)),
-            "Windy" => new SolidColorBrush(Color.FromArgb(255, 150, 180, 255)),
-            "Rain" => new SolidColorBrush(Color.FromArgb(255, 70, 120, 255)),
-            "Eclipse" => new SolidColorBrush(Color.FromArgb(255, 255, 120, 0)),
-            "Starfall" => new SolidColorBrush(Color.FromArgb(255, 170, 120, 255)),
-            "Aurora Borealis" => new SolidColorBrush(Color.FromArgb(255, 120, 255, 220)),
-            "Rainbow" => new SolidColorBrush(Color.FromArgb(255, 255, 140, 200)),
-            "Shiny Surge" => new SolidColorBrush(Color.FromArgb(255, 255, 245, 180)),
-            "Sparkling Surge" => new SolidColorBrush(Color.FromArgb(255, 255, 240, 170)),
-            "Mutation Surge" => new SolidColorBrush(Color.FromArgb(255, 120, 255, 120)),
-            _ => GetTextPrimary(),
+            "Clear" => Color.FromArgb(255, 240, 240, 240),
+            "Foggy" => Color.FromArgb(255, 120, 170, 190),
+            "Windy" => Color.FromArgb(255, 150, 180, 255),
+            "Rain" => Color.FromArgb(255, 70, 120, 255),
+            "Eclipse" => Color.FromArgb(255, 255, 120, 0),
+            "Starfall" => Color.FromArgb(255, 170, 120, 255),
+            "Aurora Borealis" => Color.FromArgb(255, 120, 255, 220),
+            "Rainbow" => Color.FromArgb(255, 255, 140, 200),
+            "Shiny Surge" => Color.FromArgb(255, 255, 245, 180),
+            "Sparkling Surge" => Color.FromArgb(255, 255, 240, 170),
+            "Mutation Surge" => Color.FromArgb(255, 120, 255, 120),
+            _ => default,
         };
+
+        if (color == default)
+        {
+            return GetTextPrimary();
+        }
+
+        return new SolidColorBrush(ThemeContrast.AdjustForReadableAccentText(color));
     }
 
     internal static IBrush GetStatusBrush(string weather)

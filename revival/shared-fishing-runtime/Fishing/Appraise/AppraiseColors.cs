@@ -65,6 +65,6 @@ internal static class AppraiseColors
     public static IBrush GetAppraiseBrush(string? mutationName)
     {
         var color = GetAppraiseColor(mutationName);
-        return new SolidColorBrush(Color.FromRgb(color.R, color.G, color.B));
+        return new SolidColorBrush(ThemeContrast.AdjustForReadableAccentText(Color.FromRgb(color.R, color.G, color.B)));
     }
 }

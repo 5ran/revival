@@ -31,6 +31,7 @@
             <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#0B1220" />
             <Setter Property="ClipToBounds" Value="True" />
             <Setter Property="Template">
                 <ControlTemplate>
@@ -38,28 +39,20 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}">
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   FontWeight="{TemplateBinding FontWeight}"
+                                   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                   TextAlignment="Center" />
                     </Border>
                 </ControlTemplate>
             </Setter>
         </Style>
-        <Style Selector="Button.hunt-action-primary /template/ ContentPresenter">
-            <Setter Property="Transitions">
-                <Transitions>
-                    <BrushTransition Property="Background" Duration="0:0:0.12" />
-                </Transitions>
-            </Setter>
-        </Style>
-        <Style Selector="Button.hunt-action-primary:pointerover /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentHover}" />
-        </Style>
         <Style Selector="Button.hunt-action-primary:pointerover">
             <Setter Property="Background" Value="{StaticResource AccentHover}" />
-        </Style>
-        <Style Selector="Button.hunt-action-primary:pressed /template/ ContentPresenter">
-            <Setter Property="Background" Value="{StaticResource AccentPressed}" />
         </Style>
         <Style Selector="Button.hunt-action-primary:pressed">
             <Setter Property="Background" Value="{StaticResource AccentPressed}" />
@@ -219,7 +212,7 @@
                         Classes="hunt-action-field"
                         Height="34"
                         Margin="12,0,0,0">
-                    <Grid ColumnDefinitions="*,42">
+                    <Grid ColumnDefinitions="*,62">
                         <TextBox Grid.Column="0"
                                  Classes="app-input hunt-action-input"
                                  Height="34"

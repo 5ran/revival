@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Avalonia;
 using Avalonia.Media;
+using Client.Services;
 
 namespace Client.ViewModels;
 
@@ -283,7 +284,7 @@ public static class HuntDetectColors
 
     private static IBrush Brush(Color color)
     {
-        return new SolidColorBrush(color);
+        return new SolidColorBrush(ThemeContrast.AdjustForReadableAccentText(color));
     }
 
     private static Color Rgb(byte r, byte g, byte b)
@@ -299,9 +300,9 @@ public static class HuntDetectColors
             EndPoint = new RelativePoint(1, 0.5, RelativeUnit.Relative),
             GradientStops =
             [
-                new GradientStop(left, 0),
-                new GradientStop(middle, 0.5),
-                new GradientStop(right, 1),
+                new GradientStop(ThemeContrast.AdjustForReadableAccentText(left), 0),
+                new GradientStop(ThemeContrast.AdjustForReadableAccentText(middle), 0.5),
+                new GradientStop(ThemeContrast.AdjustForReadableAccentText(right), 1),
             ],
         };
     }

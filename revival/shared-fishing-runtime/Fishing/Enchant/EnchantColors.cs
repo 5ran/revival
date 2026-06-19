@@ -125,14 +125,14 @@ internal static class EnchantColors
                 EndPoint = new RelativePoint(1, 0.5, RelativeUnit.Relative),
                 GradientStops =
                 {
-                    new GradientStop(gradient.Start, 0),
-                    new GradientStop(gradient.End, 1),
+                    new GradientStop(ThemeContrast.AdjustForReadableAccentText(gradient.Start), 0),
+                    new GradientStop(ThemeContrast.AdjustForReadableAccentText(gradient.End), 1),
                 },
             };
         }
 
         var color = GetEnchantColor(enchantName);
-        return new SolidColorBrush(Color.FromRgb(color.R, color.G, color.B));
+        return new SolidColorBrush(ThemeContrast.AdjustForReadableAccentText(Color.FromRgb(color.R, color.G, color.B)));
     }
 
     public static string FindEnchantName(string? text)
