@@ -30,10 +30,10 @@ public sealed class FishingViewModel : ViewModelBase
     private FishingTrackerOption _selectedTracker;
     private FishingCastingMode _selectedCastingMode = FishingCastingMode.Normal;
     private string _selectedFishSkipMode = "Off";
-    private bool _fishSkipCommonSelected = true;
-    private bool _fishSkipLegendaryMythicSelected = true;
-    private bool _fishSkipExoticSecretSelected = true;
-    private bool _fishSkipSpecialSelected = true;
+    private bool _fishSkipCommonSelected;
+    private bool _fishSkipLegendaryMythicSelected;
+    private bool _fishSkipExoticSecretSelected;
+    private bool _fishSkipSpecialSelected;
     private FishingTrackerStatus _status = new(false, "OFF", "Ready.", null, false);
     private bool _autoAquariumEnabled;
     private bool _aquariumPending;

@@ -122,13 +122,13 @@ public sealed class FishingSettingsSnapshot
 
     public string? FishSkipMode { get; set; }
 
-    public bool FishSkipCommonSelected { get; set; } = true;
+    public bool FishSkipCommonSelected { get; set; }
 
-    public bool FishSkipLegendaryMythicSelected { get; set; } = true;
+    public bool FishSkipLegendaryMythicSelected { get; set; }
 
-    public bool FishSkipExoticSecretSelected { get; set; } = true;
+    public bool FishSkipExoticSecretSelected { get; set; }
 
-    public bool FishSkipSpecialSelected { get; set; } = true;
+    public bool FishSkipSpecialSelected { get; set; }
 
     public bool AutoAquariumEnabled { get; set; }
 

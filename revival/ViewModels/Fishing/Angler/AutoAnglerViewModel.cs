@@ -28,6 +28,8 @@ public sealed class AutoAnglerViewModel : ViewModelBase
     private bool _autoAnglerEnabled;
     private bool _isRunning;
     private string _statusText = "---";
+    private string _statusPrimaryText = "---";
+    private string _statusDetailText = string.Empty;
     private string _currentFishText = "None";
     private string _clickXText = string.Empty;
     private string _clickYText = string.Empty;
@@ -78,8 +80,28 @@ public sealed class AutoAnglerViewModel : ViewModelBase
     public string StatusText
     {
         get => _statusText;
-        private set => SetProperty(ref _statusText, value);
+        private set
+        {
+            if (SetProperty(ref _statusText, value))
+            {
+                UpdateStatusDisplay(value);
+            }
+        }
     }
+
+    public string StatusPrimaryText
+    {
+        get => _statusPrimaryText;
+        private set => SetProperty(ref _statusPrimaryText, value);
+    }
+
+    public string StatusDetailText
+    {
+        get => _statusDetailText;
+        private set => SetProperty(ref _statusDetailText, value);
+    }
+
+    public bool HasStatusDetailText => !string.IsNullOrWhiteSpace(StatusDetailText);
 
     public string CurrentFishText
     {
@@ -245,7 +267,7 @@ public sealed class AutoAnglerViewModel : ViewModelBase
             ClickXText = x.ToString();
             ClickYText = y.ToString();
             _captureNextClick = false;
-            StatusText = $"Click Location set: {x}, {y}.";
+            StatusText = $"Click location set:|x {x}, y {y}.";
         }
 
         _lastLeftDown = isDown;
@@ -322,5 +344,20 @@ public sealed class AutoAnglerViewModel : ViewModelBase
         }
 
         return "---";
+    }
+
+    private void UpdateStatusDisplay(string status)
+    {
+        if (string.IsNullOrWhiteSpace(status))
+        {
+            StatusPrimaryText = "---";
+            StatusDetailText = string.Empty;
+            return;
+        }
+
+        var parts = status.Split('|', 2, StringSplitOptions.TrimEntries);
+        StatusPrimaryText = parts[0];
+        StatusDetailText = parts.Length > 1 ? parts[1] : string.Empty;
+        OnPropertyChanged(nameof(HasStatusDetailText));
     }
 }

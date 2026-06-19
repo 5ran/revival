@@ -8,7 +8,7 @@
             Width="550"
             HorizontalAlignment="Center"
             Padding="0">
-        <Grid RowDefinitions="64,1,84">
+        <Grid RowDefinitions="84,1,100">
             <Grid Grid.Row="0"
                   ColumnDefinitions="145,12,1,12,170,12,1,12,145"
                   HorizontalAlignment="Center"
@@ -60,7 +60,7 @@
                                FontFamily="{StaticResource UIFont}"
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
-                    <TextBlock Text="{Binding StatusText}"
+                    <TextBlock Text="{Binding StatusPrimaryText}"
                                Width="120"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
@@ -69,6 +69,16 @@
                                FontSize="13"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource TextPrimary}" />
+                    <TextBlock Text="{Binding StatusDetailText}"
+                               Width="120"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontFamily="{StaticResource DisplayFont}"
+                               FontSize="13"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimary}"
+                               IsVisible="{Binding HasStatusDetailText}" />
                 </StackPanel>
             </Grid>
 
@@ -76,52 +86,37 @@
                     Background="{StaticResource Border}" />
 
             <Grid Grid.Row="2"
-                  ColumnDefinitions="Auto,12,Auto,18,Auto"
+                  ColumnDefinitions="Auto"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Column="0"
-                            Spacing="4"
+                            Spacing="5"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center">
-                    <TextBlock Text="Click X"
+                    <TextBlock Text="Apply the clickpoint to the first voiceline in angler"
+                               Width="320"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
+                               TextWrapping="Wrap"
                                FontFamily="{StaticResource UIFont}"
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
-                    <TextBox Classes="app-input"
-                             Width="92"
-                             Height="30"
-                             HorizontalContentAlignment="Center"
-                             Text="{Binding ClickXText}" />
-                </StackPanel>
-
-                <StackPanel Grid.Column="2"
-                            Spacing="4"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">
-                    <TextBlock Text="Click Y"
+                    <TextBlock Text='1. [&quot;What&apos;s the job?&quot;]'
+                               Width="320"
                                HorizontalAlignment="Center"
                                TextAlignment="Center"
+                               TextWrapping="Wrap"
                                FontFamily="{StaticResource UIFont}"
                                FontSize="10"
                                Foreground="{StaticResource TextSecondary}" />
-                    <TextBox Classes="app-input"
-                             Width="92"
-                             Height="30"
-                             HorizontalContentAlignment="Center"
-                             Text="{Binding ClickYText}" />
+                    <Button Classes="app-secondary"
+                            Width="156"
+                            Height="30"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Cursor Click Point"
+                            Command="{Binding UseCursorPositionCommand}" />
                 </StackPanel>
-
-                <Button Grid.Column="4"
-                        Classes="app-secondary"
-                        Width="132"
-                        Height="30"
-                        Margin="0,14,0,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Content="Use Cursor"
-                        Command="{Binding UseCursorPositionCommand}" />
             </Grid>
         </Grid>
     </Border>

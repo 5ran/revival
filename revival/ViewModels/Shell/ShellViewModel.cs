@@ -424,10 +424,20 @@ public sealed class ShellViewModel : ViewModelBase
                 _fishingViewModel.SelectedFishSkipMode = _fishingViewModel.FishSkipModes.First(
                     mode => string.Equals(mode, saved.Fishing.FishSkipMode, StringComparison.OrdinalIgnoreCase));
             }
-            _fishingViewModel.FishSkipCommonSelected = saved.Fishing.FishSkipCommonSelected;
-            _fishingViewModel.FishSkipLegendaryMythicSelected = saved.Fishing.FishSkipLegendaryMythicSelected;
-            _fishingViewModel.FishSkipExoticSecretSelected = saved.Fishing.FishSkipExoticSecretSelected;
-            _fishingViewModel.FishSkipSpecialSelected = saved.Fishing.FishSkipSpecialSelected;
+            if (_fishingViewModel.FishSkipEnabled)
+            {
+                _fishingViewModel.FishSkipCommonSelected = saved.Fishing.FishSkipCommonSelected;
+                _fishingViewModel.FishSkipLegendaryMythicSelected = saved.Fishing.FishSkipLegendaryMythicSelected;
+                _fishingViewModel.FishSkipExoticSecretSelected = saved.Fishing.FishSkipExoticSecretSelected;
+                _fishingViewModel.FishSkipSpecialSelected = saved.Fishing.FishSkipSpecialSelected;
+            }
+            else
+            {
+                _fishingViewModel.FishSkipCommonSelected = false;
+                _fishingViewModel.FishSkipLegendaryMythicSelected = false;
+                _fishingViewModel.FishSkipExoticSecretSelected = false;
+                _fishingViewModel.FishSkipSpecialSelected = false;
+            }
 
             _fishingViewModel.AutoAquariumEnabled = saved.Fishing.AutoAquariumEnabled;
             _fishingViewModel.AutoAquariumCycleDelayMinutes = saved.Fishing.AutoAquariumCycleDelayMinutes;
