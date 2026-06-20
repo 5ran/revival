@@ -118,56 +118,9 @@
                         <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
                     </Style>
                 </StackPanel.Styles>
-                <TextBlock Text="Fishing Setup"
-                           Classes="tab-section-title"
-                           Margin="0" />
-
-                <Border Classes="app-header"
-                        Width="560"
-                        Padding="12,6">
-                    <Grid Width="536"
-                          ColumnDefinitions="*,Auto,58,8,64,26,Auto,8,64,*"
-                          VerticalAlignment="Center">
-                        <TextBlock Grid.Column="1"
-                                   Text="Hotkey"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource TextSecondary}" />
-                        <TextBlock Grid.Column="2"
-                                   Text="{Binding General.HotkeyText}"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Center"
-                                   FontFamily="{StaticResource MonoFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource TextPrimary}" />
-                        <Button Grid.Column="4"
-                                Classes="app-secondary"
-                                Height="26"
-                                Padding="6,0"
-                                FontSize="10"
-                                Content="{Binding General.RebindButtonText}"
-                                Command="{Binding General.RebindHotkeyCommand}" />
-
-                        <TextBlock Grid.Column="6"
-                                   Text="Rod Slot"
-                                   VerticalAlignment="Center"
-                                   FontFamily="{StaticResource UIFont}"
-                                   FontSize="10"
-                                   Foreground="{StaticResource TextSecondary}" />
-                        <TextBox Grid.Column="8"
-                                 Classes="app-input"
-                                 Width="42"
-                                 Height="26"
-                                 MaxLength="1"
-                                 HorizontalContentAlignment="Center"
-                                 Text="{Binding General.RodSlotText}" />
-                    </Grid>
-                </Border>
-
                 <TextBlock Text="Automation Settings"
                            Classes="tab-section-title"
-                           Margin="0,2,0,0" />
+                           Margin="0,0,0,0" />
 
                 <Grid Width="560"
                       RowDefinitions="Auto,8,Auto"

@@ -274,39 +274,25 @@
     </UserControl.Styles>
 
     <Grid Margin="22,10"
-          RowDefinitions="64,8,Auto,6,164,8,Auto,6,*">
+          MaxWidth="730"
+          HorizontalAlignment="Center"
+          RowDefinitions="142,10,Auto,10,Auto">
         <Border Grid.Row="0"
                 Classes="fishing-panel"
-                Padding="12,8">
-            <Grid ColumnDefinitions="120,*,120"
+                Padding="12,16">
+            <Grid RowDefinitions="Auto,10,1,18,34"
                   VerticalAlignment="Center">
-                <Grid Grid.Column="2"
-                      Width="40"
-                      Height="40"
-                      HorizontalAlignment="Right"
-                      Margin="0,0,8,0">
-                    <Ellipse Stroke="{StaticResource Accent}"
-                             StrokeThickness="1.5"
-                             Fill="Transparent" />
-                    <Border Width="12"
-                            Height="12"
+                <StackPanel Grid.Row="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Background="{StaticResource Accent}"
-                            CornerRadius="2" />
-                </Grid>
-
-                <StackPanel Grid.Column="1"
+                            Spacing="8">
+                    <Button Classes="fishing-primary"
+                            Width="104"
+                            Height="36"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Spacing="2">
-                    <TextBlock Text="{Binding RunStateText}"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center"
-                               FontFamily="{StaticResource DisplayFont}"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimary}" />
+                            Content="{Binding StartStopButtonText}"
+                            Command="{Binding ToggleMacroCommand}" />
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Center"
                                 Spacing="8">
@@ -325,170 +311,243 @@
                     </StackPanel>
                 </StackPanel>
 
-                <Button Grid.Column="0"
-                        Classes="fishing-primary"
-                        Width="104"
-                        Height="36"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Content="{Binding StartStopButtonText}"
-                        Command="{Binding ToggleMacroCommand}" />
+                <Border Grid.Row="2"
+                        Height="1"
+                        Margin="12,0"
+                        Background="{StaticResource Border}"
+                        Opacity="0.45" />
+
+                <Grid Grid.Row="4"
+                      Width="600"
+                      Height="34"
+                      Margin="0,0,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      ColumnDefinitions="200,200,200">
+                    <Grid Grid.Column="0"
+                          Width="180"
+                          ColumnDefinitions="Auto,10,40,10,58"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Hotkey"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="9"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBlock Grid.Column="2"
+                                   Text="{Binding HotkeyText}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   FontFamily="{StaticResource MonoFont}"
+                                   FontSize="9"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimary}" />
+                        <Button Grid.Column="4"
+                                Classes="fishing-secondary"
+                                Width="58"
+                                Height="26"
+                                Padding="7,0"
+                                FontSize="9"
+                                Content="{Binding RebindButtonText}"
+                                Command="{Binding RebindHotkeyCommand}" />
+                    </Grid>
+
+                    <Grid Grid.Column="1"
+                          Width="180"
+                          ColumnDefinitions="Auto,10,124"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Casting"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="9"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <Panel Grid.Column="2"
+                               Width="124"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <Border x:Name="CastingPicker"
+                                    Classes="fishing-picker"
+                                    Height="26"
+                                    ClipToBounds="True">
+                                <Grid ColumnDefinitions="*,28">
+                                    <Border Grid.Column="0"
+                                            Background="Transparent"
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            Margin="0">
+                                        <TextBlock Text="{Binding Fishing.SelectedCastingMode}"
+                                                   Margin="10,0,4,0"
+                                                   HorizontalAlignment="Left"
+                                                   VerticalAlignment="Center"
+                                                   Classes="fishing-picker-primary"
+                                                   FontSize="9" />
+                                    </Border>
+                                    <Button Grid.Column="1"
+                                            x:Name="CastingDropdownButton"
+                                            Classes="fishing-picker-button"
+                                            Height="24"
+                                            VerticalAlignment="Center"
+                                            Click="CastingDropdownButton_OnClick">
+                                        <Path Width="9"
+                                              Height="5"
+                                              Stretch="Fill"
+                                              Fill="{StaticResource AccentForeground}"
+                                              Data="M 0 0 L 4.5 5 L 9 0 Z" />
+                                    </Button>
+                                </Grid>
+                            </Border>
+                            <Popup x:Name="CastingDropdownPopup"
+                                   PlacementTarget="{Binding #CastingPicker}"
+                                   Placement="AnchorAndGravity"
+                                   PlacementAnchor="BottomLeft"
+                                   PlacementGravity="BottomRight"
+                                   IsLightDismissEnabled="True">
+                                <Border Classes="fishing-dropdown-surface"
+                                        Width="{Binding #CastingPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
+                                        Margin="0,4,0,0">
+                                    <ListBox Classes="fishing-dropdown"
+                                             ItemsSource="{Binding Fishing.CastingModes}"
+                                             SelectedItem="{Binding Fishing.SelectedCastingMode}"
+                                             SelectionChanged="CastingList_OnSelectionChanged">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           Classes="fishing-picker-primary"
+                                                           Margin="8,6" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </Border>
+                            </Popup>
+                        </Panel>
+                    </Grid>
+
+                    <Grid Grid.Column="2"
+                          Width="180"
+                          ColumnDefinitions="58,10,58"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <TextBlock Grid.Column="0"
+                                   Text="Rod Slot"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{StaticResource UIFont}"
+                                   FontSize="9"
+                                   Foreground="{StaticResource TextSecondary}" />
+                        <TextBox Grid.Column="2"
+                                 Classes="fishing-input"
+                                 Width="58"
+                                 MinWidth="0"
+                                 MinHeight="0"
+                                 Height="26"
+                                 Padding="0"
+                                 FontSize="9"
+                                 MaxLength="1"
+                                 HorizontalContentAlignment="Center"
+                                 Text="{Binding RodSlotText}" />
+                    </Grid>
+                </Grid>
             </Grid>
         </Border>
 
-        <TextBlock Grid.Row="2"
-                   Text="Controls"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   FontFamily="{StaticResource DisplayFont}"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   Foreground="{StaticResource TextPrimary}" />
+        <Grid Grid.Row="2"
+              HorizontalAlignment="Stretch"
+              ColumnDefinitions="*,*,*"
+              ColumnSpacing="10">
+            <Border Grid.Column="0" Classes="fishing-card" Padding="10,9">
+                <Grid RowDefinitions="22,20,20,18"
+                      RowSpacing="2"
+                      Height="92"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="20" Height="20" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 6 1.5 L 12 1.5 L 13 5 L 13 6.5 L 16 7.5 L 14 10 L 12 10 L 12 16.5 L 6 16.5 L 6 10 L 4 10 L 2 7.5 L 5 6.5 L 5 5 Z M 7.5 3.5 L 7.5 5.5 M 10.5 3.5 L 10.5 5.5 M 7 8 L 10.5 8 L 8 10.5 L 11 10.5"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Auto Totem" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Enable automatic totem use" Classes="fishing-copy"
+                               MaxWidth="154"
+                               Margin="0,-3,0,0"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoTotemEnabled}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Classes="fishing-card" Padding="10,9">
+                <Grid RowDefinitions="22,20,20,18"
+                      RowSpacing="2"
+                      Height="92"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="20" Height="20" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 9 1 L 11.2 5.2 L 14.6 2.8 L 13.2 7.2 L 17 8.4 L 13.3 10.6 L 15.5 15.6 L 10.8 13.1 L 9 17 L 7.2 13.1 L 2.5 15.6 L 4.7 10.6 L 1 8.4 L 4.8 7.2 L 3.4 2.8 L 6.8 5.2 Z M 9 4.6 L 11.8 8.8 L 9 13.4 L 6.2 8.8 Z M 4.8 7.2 L 6.2 8.8 M 13.2 7.2 L 11.8 8.8 M 4.7 10.6 L 7.2 13.1 M 13.3 10.6 L 10.8 13.1"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Sov Recharge" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Recharge between catches" Classes="fishing-copy"
+                               MaxWidth="154"
+                               Margin="0,-3,0,0"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoSovereignRechargeEnabled}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Classes="fishing-card" Padding="10,9">
+                <Grid RowDefinitions="22,20,20,18"
+                      RowSpacing="2"
+                      Height="92"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="23" Height="23" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Canvas Width="24" Height="24">
+                            <Path Data="M 9 2.5 L 15 2.5 M 10 5 L 14 5 M 10 5 C 8 7 5.5 8.5 5 13.5 L 4.5 19.5 Q 12 22 19.5 19.5 L 19 13.5 C 18.5 8.5 16 7 14 5 M 5.2 12.8 C 7.3 11.7 9.6 13.7 12 12.8 C 14.4 11.9 16.7 13.5 18.8 12.8"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
+                            <Path Data="M 8.8 17.2 C 10 16.1 12.1 16.1 13.4 17.2 C 12.1 18.3 10 18.3 8.8 17.2 Z M 13.4 17.2 L 15.1 16.3 L 15.1 18.1 Z"
+                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
+                            <Ellipse Width="1.2"
+                                     Height="1.2"
+                                     Canvas.Left="9.75"
+                                     Canvas.Top="16.6"
+                                     Fill="{StaticResource Accent}" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1" Text="Auto Aquarium" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
+                    <TextBlock Grid.Row="2" Text="Feed aquarium while macroing" Classes="fishing-copy"
+                               MaxWidth="154"
+                               Margin="0,-3,0,0"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <CheckBox Grid.Row="3"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding FishingAddons.AutoAquariumEnabled}" />
+                </Grid>
+            </Border>
+        </Grid>
 
         <Border Grid.Row="4"
                 Classes="fishing-card"
+                MaxWidth="730"
                 HorizontalAlignment="Stretch"
-                Padding="20,0">
-            <Grid RowDefinitions="40,1,82,1,40">
-                <Grid Grid.Row="4" ColumnDefinitions="225,60,225">
-                    <TextBlock Grid.Column="0" Text="Tracking Method" Classes="fishing-heading"
-                               HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
-                    <Panel Grid.Column="2"
-                           Width="142"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center">
-                        <Border x:Name="TrackingMethodPicker"
-                                Classes="fishing-picker"
-                                Height="30"
-                                ClipToBounds="True">
-                            <Grid ColumnDefinitions="*,32">
-                                <Border Grid.Column="0"
-                                        Background="Transparent"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Margin="0">
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="2"
-                                                Margin="10,0,6,0"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Fishing.SelectedTracker.Title}"
-                                                   Classes="fishing-picker-primary" />
-                                        <TextBlock Text="{Binding Fishing.SelectedTracker.Description}"
-                                                   Classes="fishing-picker-secondary" />
-                                    </StackPanel>
-                                </Border>
-                                <Button Grid.Column="1"
-                                        x:Name="TrackingMethodDropdownButton"
-                                        Classes="fishing-picker-button"
-                                        Height="28"
-                                        VerticalAlignment="Center"
-                                        Click="TrackingMethodDropdownButton_OnClick">
-                                    <Path Width="10"
-                                          Height="6"
-                                          Stretch="Fill"
-                                          Fill="{StaticResource AccentForeground}"
-                                          Data="M 0 0 L 5 6 L 10 0 Z" />
-                                </Button>
-                            </Grid>
-                        </Border>
-                        <Popup x:Name="TrackingMethodDropdownPopup"
-                               PlacementTarget="{Binding #TrackingMethodPicker}"
-                               Placement="AnchorAndGravity"
-                               PlacementAnchor="BottomLeft"
-                               PlacementGravity="BottomRight"
-                               IsLightDismissEnabled="True">
-                            <Border Classes="fishing-dropdown-surface"
-                                    Width="{Binding #TrackingMethodPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
-                                    Margin="0,4,0,0">
-                                <ListBox Classes="fishing-dropdown"
-                                         ItemsSource="{Binding Fishing.TrackerOptions}"
-                                         SelectedItem="{Binding Fishing.SelectedTracker}"
-                                         SelectionChanged="TrackingMethodList_OnSelectionChanged">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:FishingTrackerOption">
-                                            <StackPanel Orientation="Horizontal"
-                                                        Spacing="4"
-                                                        Margin="8,6">
-                                                <TextBlock Text="{Binding Title}"
-                                                           Classes="fishing-picker-primary" />
-                                                <TextBlock Text="{Binding Description}"
-                                                           Classes="fishing-picker-secondary" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
-                        </Popup>
-                    </Panel>
-                </Grid>
-                <Border Grid.Row="1" Background="{StaticResource Border}" />
-                <Grid Grid.Row="0" ColumnDefinitions="225,60,225">
-                    <TextBlock Grid.Column="0" Text="Casting" Classes="fishing-heading"
-                               HorizontalAlignment="Right" VerticalAlignment="Center" TextAlignment="Right" />
-                    <Panel Grid.Column="2"
-                           Width="142"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center">
-                        <Border x:Name="CastingPicker"
-                                Classes="fishing-picker"
-                                Height="30"
-                                ClipToBounds="True">
-                            <Grid ColumnDefinitions="*,32">
-                                <Border Grid.Column="0"
-                                        Background="Transparent"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Margin="0">
-                                    <TextBlock Text="{Binding Fishing.SelectedCastingMode}"
-                                               Margin="10,0,6,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Center"
-                                               Classes="fishing-picker-primary" />
-                                </Border>
-                                <Button Grid.Column="1"
-                                        x:Name="CastingDropdownButton"
-                                        Classes="fishing-picker-button"
-                                        Height="28"
-                                        VerticalAlignment="Center"
-                                        Click="CastingDropdownButton_OnClick">
-                                    <Path Width="10"
-                                          Height="6"
-                                          Stretch="Fill"
-                                          Fill="{StaticResource AccentForeground}"
-                                          Data="M 0 0 L 5 6 L 10 0 Z" />
-                                </Button>
-                            </Grid>
-                        </Border>
-                        <Popup x:Name="CastingDropdownPopup"
-                               PlacementTarget="{Binding #CastingPicker}"
-                               Placement="AnchorAndGravity"
-                               PlacementAnchor="BottomLeft"
-                               PlacementGravity="BottomRight"
-                               IsLightDismissEnabled="True">
-                            <Border Classes="fishing-dropdown-surface"
-                                    Width="{Binding #CastingPicker.Bounds.Width, Converter={StaticResource ScaledPopupWidthConverter}}"
-                                    Margin="0,4,0,0">
-                                <ListBox Classes="fishing-dropdown"
-                                         ItemsSource="{Binding Fishing.CastingModes}"
-                                         SelectedItem="{Binding Fishing.SelectedCastingMode}"
-                                         SelectionChanged="CastingList_OnSelectionChanged">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding}"
-                                                       Classes="fishing-picker-primary"
-                                                       Margin="8,6" />
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                            </Border>
-                        </Popup>
-                    </Panel>
-                </Grid>
-                <Border Grid.Row="3" Background="{StaticResource Border}" />
-                <Grid Grid.Row="2"
+                Padding="20,6">
+            <Grid RowDefinitions="Auto"
+                  VerticalAlignment="Center">
+                <Grid Grid.Row="0"
                       RowDefinitions="Auto,3,Auto"
-                      Margin="16,6">
+                      Margin="16,0"
+                      VerticalAlignment="Center">
                     <StackPanel Grid.Row="0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -539,97 +598,5 @@
                 </Grid>
             </Grid>
         </Border>
-
-        <TextBlock Grid.Row="6"
-                   Text="Shortcuts"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   FontFamily="{StaticResource DisplayFont}"
-                   FontSize="14"
-                   FontWeight="SemiBold"
-                   Foreground="{StaticResource TextPrimary}" />
-
-        <Grid Grid.Row="8"
-              ColumnDefinitions="*,*,*"
-              ColumnSpacing="10">
-            <Border Grid.Column="0" Classes="fishing-card" Padding="10,6">
-                <Grid RowDefinitions="20,18,16,18"
-                      RowSpacing="2"
-                      Height="75"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Viewbox Grid.Row="0" Width="20" Height="20" HorizontalAlignment="Center">
-                        <Canvas Width="18" Height="18">
-                            <Path Data="M 6 1.5 L 12 1.5 L 13 5 L 13 6.5 L 16 7.5 L 14 10 L 12 10 L 12 16.5 L 6 16.5 L 6 10 L 4 10 L 2 7.5 L 5 6.5 L 5 5 Z M 7.5 3.5 L 7.5 5.5 M 10.5 3.5 L 10.5 5.5 M 7 8 L 10.5 8 L 8 10.5 L 11 10.5"
-                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
-                        </Canvas>
-                    </Viewbox>
-                    <TextBlock Grid.Row="1" Text="Auto Totem" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
-                    <TextBlock Grid.Row="2" Text="Enable automatic totem use" Classes="fishing-copy"
-                               MaxWidth="154"
-                               Margin="0,-3,0,0"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-                    <CheckBox Grid.Row="3"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              IsChecked="{Binding FishingAddons.AutoTotemEnabled}" />
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="1" Classes="fishing-card" Padding="10,6">
-                <Grid RowDefinitions="20,18,16,18"
-                      RowSpacing="2"
-                      Height="75"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Viewbox Grid.Row="0" Width="20" Height="20" HorizontalAlignment="Center">
-                        <Canvas Width="18" Height="18">
-                            <Path Data="M 9 1 L 11.2 5.2 L 14.6 2.8 L 13.2 7.2 L 17 8.4 L 13.3 10.6 L 15.5 15.6 L 10.8 13.1 L 9 17 L 7.2 13.1 L 2.5 15.6 L 4.7 10.6 L 1 8.4 L 4.8 7.2 L 3.4 2.8 L 6.8 5.2 Z M 9 4.6 L 11.8 8.8 L 9 13.4 L 6.2 8.8 Z M 4.8 7.2 L 6.2 8.8 M 13.2 7.2 L 11.8 8.8 M 4.7 10.6 L 7.2 13.1 M 13.3 10.6 L 10.8 13.1"
-                                  Stroke="{StaticResource Accent}" StrokeThickness="1.4" StrokeLineCap="Round" Fill="Transparent" />
-                        </Canvas>
-                    </Viewbox>
-                    <TextBlock Grid.Row="1" Text="Sov Recharge" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
-                    <TextBlock Grid.Row="2" Text="Recharge between catches" Classes="fishing-copy"
-                               MaxWidth="154"
-                               Margin="0,-3,0,0"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-                    <CheckBox Grid.Row="3"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              IsChecked="{Binding FishingAddons.AutoSovereignRechargeEnabled}" />
-                </Grid>
-            </Border>
-
-            <Border Grid.Column="2" Classes="fishing-card" Padding="10,6">
-                <Grid RowDefinitions="20,18,16,18"
-                      RowSpacing="2"
-                      Height="75"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Viewbox Grid.Row="0" Width="23" Height="23" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <Canvas Width="24" Height="24">
-                            <Path Data="M 9 2.5 L 15 2.5 M 10 5 L 14 5 M 10 5 C 8 7 5.5 8.5 5 13.5 L 4.5 19.5 Q 12 22 19.5 19.5 L 19 13.5 C 18.5 8.5 16 7 14 5 M 5.2 12.8 C 7.3 11.7 9.6 13.7 12 12.8 C 14.4 11.9 16.7 13.5 18.8 12.8"
-                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
-                            <Path Data="M 8.8 17.2 C 10 16.1 12.1 16.1 13.4 17.2 C 12.1 18.3 10 18.3 8.8 17.2 Z M 13.4 17.2 L 15.1 16.3 L 15.1 18.1 Z"
-                                  Stroke="{StaticResource Accent}" StrokeThickness="1.7" StrokeLineCap="Round" Fill="Transparent" />
-                            <Ellipse Width="1.2"
-                                     Height="1.2"
-                                     Canvas.Left="9.75"
-                                     Canvas.Top="16.6"
-                                     Fill="{StaticResource Accent}" />
-                        </Canvas>
-                    </Viewbox>
-                    <TextBlock Grid.Row="1" Text="Auto Aquarium" Classes="fishing-heading" HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" />
-                    <TextBlock Grid.Row="2" Text="Feed aquarium while macroing" Classes="fishing-copy"
-                               MaxWidth="154"
-                               Margin="0,-3,0,0"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
-                    <CheckBox Grid.Row="3"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              IsChecked="{Binding FishingAddons.AutoAquariumEnabled}" />
-                </Grid>
-            </Border>
-        </Grid>
     </Grid>
 </UserControl>

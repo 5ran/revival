@@ -32,13 +32,13 @@ public sealed class ShellViewModel : ViewModelBase
     private readonly HuntDetectViewModel _huntDetectViewModel = new();
     private readonly FishingAddonsViewModel _fishingAddonsViewModel;
     private readonly AutoAnglerViewModel _autoAnglerViewModel = new();
+    private readonly DashboardViewModel _systemsViewModel = new();
     private readonly GeneralViewModel _generalViewModel;
     private readonly AppraiseViewModel _appraiseViewModel = new();
     private readonly TreasureAppraiseViewModel _treasureAppraiseViewModel = new();
     private readonly EnchantViewModel _enchantViewModel = new();
     private readonly OtherAutomationViewModel _otherAutomationViewModel;
     private readonly AnglerAutomationViewModel _anglerAutomationViewModel;
-    private readonly AppraiseAutomationViewModel _appraiseAutomationViewModel;
     private readonly SettingsViewModel _settingsViewModel = new();
     private readonly UserSettingsStore _userSettingsStore = new();
     private bool _applyingSavedSettings;
@@ -78,7 +78,6 @@ public sealed class ShellViewModel : ViewModelBase
         };
         _otherAutomationViewModel = new OtherAutomationViewModel(_enchantViewModel);
         _anglerAutomationViewModel = new AnglerAutomationViewModel(_autoAnglerViewModel);
-        _appraiseAutomationViewModel = new AppraiseAutomationViewModel(_appraiseViewModel, _treasureAppraiseViewModel);
         LoadSavedSettings();
         HookSettingsPersistence();
         _enchantViewModel.PropertyChanged += (_, e) =>
@@ -170,20 +169,34 @@ public sealed class ShellViewModel : ViewModelBase
             new ShellNavigationItemViewModel("Fishing", _generalViewModel, Navigate),
             new ShellNavigationItemViewModel("Fishing Settings", _fishingAddonsViewModel, Navigate),
             new ShellNavigationItemViewModel("Auto Enchant", _otherAutomationViewModel, Navigate),
-            new ShellNavigationItemViewModel("Auto Appraise", _appraiseAutomationViewModel, Navigate),
+            new ShellNavigationItemViewModel("Auto Appraise", _appraiseViewModel, Navigate),
+            new ShellNavigationItemViewModel("Treasure Appraise", _treasureAppraiseViewModel, Navigate),
             new ShellNavigationItemViewModel("Auto Angler", _anglerAutomationViewModel, Navigate),
+            new ShellNavigationItemViewModel("Systems", _systemsViewModel, Navigate),
             new ShellNavigationItemViewModel("Hunt Detect", _huntDetectViewModel, Navigate),
             new ShellNavigationItemViewModel("Edit", _settingsViewModel, Navigate),
         };
-        MainNavigationItems = NavigationItems.Take(5).ToArray();
-        HuntDetectNavigationItem = NavigationItems[5];
-        EditNavigationItem = NavigationItems[6];
+        MainNavigationItems =
+        [
+            NavigationItems[0],
+            NavigationItems[1],
+            NavigationItems[6],
+        ];
+        HuntDetectNavigationItem = NavigationItems[7];
+        EditNavigationItem = NavigationItems[8];
 
         var fishingAddonsItem = NavigationItems[1];
         _fishingViewModel.NavigateToAutoTotemAction = () =>
         {
             Navigate(fishingAddonsItem);
         };
+
+        _systemsViewModel.OpenAutoEnchantAction = () => Navigate(NavigationItems[2]);
+        _systemsViewModel.OpenAutoAppraiseAction = () => Navigate(NavigationItems[3]);
+        _systemsViewModel.OpenTreasureAppraiseAction = () => Navigate(NavigationItems[4]);
+        _systemsViewModel.OpenAutoAnglerAction = () => Navigate(NavigationItems[5]);
+        _systemsViewModel.OpenHuntDetectAction = () => Navigate(HuntDetectNavigationItem);
+        _systemsViewModel.OpenEditAction = () => Navigate(EditNavigationItem);
 
         _currentPage = _generalViewModel;
         NavigationItems[0].IsSelected = true;
@@ -205,9 +218,7 @@ public sealed class ShellViewModel : ViewModelBase
 
     public ShellNavigationItemViewModel SelectedNavigationItem => _selectedNavigationItem;
 
-    public bool IsMainNavigationSelected =>
-        !ReferenceEquals(_selectedNavigationItem, HuntDetectNavigationItem) &&
-        !ReferenceEquals(_selectedNavigationItem, EditNavigationItem);
+    public bool IsMainNavigationSelected => MainNavigationItems.Contains(_selectedNavigationItem);
 
     public double SelectedNavigationOffset => Array.IndexOf(MainNavigationItems.ToArray(), _selectedNavigationItem) * 60;
 

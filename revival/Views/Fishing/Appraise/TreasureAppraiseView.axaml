@@ -16,6 +16,7 @@
     <Border Classes="app-card"
             Width="550"
             HorizontalAlignment="Center"
+            VerticalAlignment="Center"
             Padding="20,0">
         <Grid RowDefinitions="42,1,56">
             <CheckBox Grid.Row="0"

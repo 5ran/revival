@@ -1,1 +1,256 @@
-<UserControl xmlns="https://github.com/avaloniaui"              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"              xmlns:vm="using:Client.ViewModels"              x:Class="Client.Views.DashboardView"              x:DataType="vm:DashboardViewModel"              Width="900"              Height="568"              Background="{StaticResource Background}">     <Grid Margin="34"           RowDefinitions="Auto,Auto,*">         <TextBlock Grid.Row="0"                    Text="Dashboard"                    FontFamily="{StaticResource DisplayFont}"                    FontSize="24"                    FontWeight="SemiBold"                    Foreground="{StaticResource TextPrimary}" />          <Border Grid.Row="1"                 Margin="0,20,0,0"                 Width="430"                 HorizontalAlignment="Left"                 Classes="app-card">             <StackPanel Spacing="8">                 <TextBlock Text="Overview"                            FontFamily="{StaticResource UIFont}"                            FontSize="12"                            Foreground="{StaticResource TextSecondary}" />                 <TextBlock Text="Dashboard modules are being expanded."                            FontFamily="{StaticResource DisplayFont}"                            FontSize="18"                            FontWeight="SemiBold"                            Foreground="{StaticResource TextPrimary}" />             </StackPanel>         </Border>     </Grid> </UserControl>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Client.ViewModels"
+             x:Class="Client.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel"
+             Background="{StaticResource Background}">
+    <UserControl.Styles>
+        <Style Selector="Border.systems-card">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+
+        <Style Selector="TextBlock.systems-heading">
+            <Setter Property="FontFamily" Value="{StaticResource DisplayFont}" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+        </Style>
+
+        <Style Selector="TextBlock.systems-copy">
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="Foreground" Value="{StaticResource TextSecondary}" />
+        </Style>
+
+        <Style Selector="Button.systems-open">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="Foreground" Value="{StaticResource TextPrimary}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Border}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="FontFamily" Value="{StaticResource UIFont}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="0,0,0,2" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style Selector="Button.systems-open:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource InputHoverSurface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="22,18"
+              RowDefinitions="Auto,12,Auto,10,Auto,10,Auto">
+            <TextBlock Grid.Row="0"
+                       Text="Systems"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       FontFamily="{StaticResource DisplayFont}"
+                       FontSize="14"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}" />
+
+            <Grid Grid.Row="2"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="10"
+                  HorizontalAlignment="Stretch">
+                <Border Grid.Column="0" Classes="systems-card" Padding="10,6">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="4"
+                      MinHeight="82"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 7 1.5 L 8.2 6.8 L 13.5 8 L 8.2 9.2 L 7 14.5 L 5.8 9.2 L 0.5 8 L 5.8 6.8 Z M 14 9.5 L 14.7 12.3 L 17.5 13 L 14.7 13.7 L 14 16.5 L 13.3 13.7 L 10.5 13 L 13.3 12.3 Z"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1"
+                               Text="Auto Enchant"
+                               Classes="systems-heading"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center" />
+                    <Button Grid.Row="2"
+                            Classes="systems-open"
+                            Width="86"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open"
+                            Command="{Binding OpenAutoEnchantCommand}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Classes="systems-card" Padding="10,6">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="4"
+                      MinHeight="82"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 5 1 L 13 1 L 17 5 L 17 13 L 13 17 L 5 17 L 1 13 L 1 5 Z M 8 6.7 C 7.4 6.3 6.7 6.1 6 6.1 C 4.6 6.1 3.7 7.2 3.7 9 C 3.7 10.8 4.6 11.9 6 11.9 C 6.7 11.9 7.4 11.7 8 11.3 M 11.8 5.5 L 11.8 12.5 M 14 6.8 C 13.5 6.4 12.8 6.1 12 6.1 C 10.9 6.1 10.2 6.6 10.2 7.4 C 10.2 8.2 10.8 8.5 12.1 8.8 C 13.4 9.1 14 9.5 14 10.3 C 14 11.2 13.2 11.9 12 11.9 C 11.2 11.9 10.5 11.6 9.9 11.2"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.35"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1"
+                               Text="Auto Appraise"
+                               Classes="systems-heading"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center" />
+                    <Button Grid.Row="2"
+                            Classes="systems-open"
+                            Width="86"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open"
+                            Command="{Binding OpenAutoAppraiseCommand}" />
+                </Grid>
+            </Border>
+            </Grid>
+
+            <Grid Grid.Row="4"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="10"
+                  HorizontalAlignment="Stretch">
+            <Border Grid.Column="0" Classes="systems-card" Padding="10,6">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="4"
+                      MinHeight="82"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 4 2 L 4 10.3 C 4 13.4 6.1 15.5 9.1 15.5 C 12 15.5 14.2 13.4 14.2 10.8 C 14.2 8.8 12.9 7.4 11.2 7.4 C 9.7 7.4 8.6 8.5 8.6 9.8 C 8.6 11 9.4 11.8 10.5 11.8 M 2 4 L 6 4"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.55"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1"
+                               Text="Auto Angler"
+                               Classes="systems-heading"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center" />
+                    <Button Grid.Row="2"
+                            Classes="systems-open"
+                            Width="86"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open"
+                            Command="{Binding OpenAutoAnglerCommand}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Classes="systems-card" Padding="10,6">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="4"
+                      MinHeight="82"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Ellipse Width="12"
+                                     Height="12"
+                                     Canvas.Left="3"
+                                     Canvas.Top="3"
+                                     Stroke="{StaticResource Accent}"
+                                     StrokeThickness="1.5"
+                                     Fill="Transparent" />
+                            <Ellipse Width="4.5"
+                                     Height="4.5"
+                                     Canvas.Left="6.75"
+                                     Canvas.Top="6.75"
+                                     Stroke="{StaticResource Accent}"
+                                     StrokeThickness="1.5"
+                                     Fill="Transparent" />
+                            <Path Data="M 9 0.8 L 9 4.2 M 9 13.8 L 9 17.2 M 0.8 9 L 4.2 9 M 13.8 9 L 17.2 9"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.5"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1"
+                               Text="Hunt Detect"
+                               Classes="systems-heading"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center" />
+                    <Button Grid.Row="2"
+                            Classes="systems-open"
+                            Width="86"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open"
+                            Command="{Binding OpenHuntDetectCommand}" />
+                </Grid>
+            </Border>
+            </Grid>
+
+            <Border Grid.Row="6"
+                    Width="260"
+                    HorizontalAlignment="Center"
+                    Classes="systems-card"
+                    Padding="10,6">
+                <Grid RowDefinitions="Auto,Auto,Auto"
+                      RowSpacing="4"
+                      MinHeight="82"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center">
+                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                        <Canvas Width="18" Height="18">
+                            <Path Data="M 5 2.2 L 11.8 2.2 L 14.8 5.2 L 14.8 13.6 L 11.8 16.4 L 5 16.4 L 2.2 13.6 L 2.2 5.2 Z M 11.2 2.6 L 11.2 6.1 L 14.3 6.1"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.35"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                            <Path Data="M 5.1 8.2 L 11.9 8.2 M 5.1 10.7 L 11.9 10.7 M 5.1 13.2 L 9.4 13.2"
+                                  Stroke="{StaticResource Accent}"
+                                  StrokeThickness="1.35"
+                                  StrokeLineCap="Round"
+                                  Fill="Transparent" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Grid.Row="1"
+                               Text="Treasure Appraise"
+                               Classes="systems-heading"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextAlignment="Center" />
+                    <Button Grid.Row="2"
+                            Classes="systems-open"
+                            Width="86"
+                            Height="28"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="Open"
+                            Command="{Binding OpenTreasureAppraiseCommand}" />
+                </Grid>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

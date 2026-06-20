@@ -51,6 +51,8 @@ public sealed class ShellNavigationItemViewModel : ViewModelBase, IDisposable
 
     public bool ShowsHuntDetectIcon => Name == "Hunt Detect";
 
+    public bool ShowsSystemsIcon => Name == "Systems";
+
     public bool ShowsEditIcon => Name == "Edit";
 
     /// <summary>

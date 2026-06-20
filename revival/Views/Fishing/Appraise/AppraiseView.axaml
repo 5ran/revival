@@ -232,14 +232,15 @@
 
     <Grid>
         <Border Classes="app-card"
-                Width="550"
+                Width="500"
                 BorderBrush="{StaticResource Accent}"
                 HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 Padding="0">
             <Grid RowDefinitions="54,1,42,1,128,1,46">
                 <Grid Grid.Row="0"
-                      Width="518"
-                      ColumnDefinitions="148,10,1,10,180,10,1,10,148"
+                      Width="468"
+                      ColumnDefinitions="130,10,1,10,156,10,1,10,130"
                       HorizontalAlignment="Center"
                       Margin="0,7">
                 <StackPanel Grid.Column="0"
