@@ -69,7 +69,8 @@
           HorizontalAlignment="Left"
           VerticalAlignment="Top"
           RenderTransformOrigin="0,0"
-          Background="Transparent">
+          Background="Transparent"
+          PointerPressed="DragSurface_OnPointerPressed">
         <Grid.RenderTransform>
             <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
         </Grid.RenderTransform>

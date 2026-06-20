@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Client.ViewModels;
 
@@ -9,8 +11,17 @@ public sealed class AnglerAutomationViewModel : ViewModelBase
     public AnglerAutomationViewModel(AutoAnglerViewModel autoAnglerViewModel)
     {
         _autoAnglerViewModel = autoAnglerViewModel;
+        NavigateBackToSystemsCommand = new RelayCommand(_ =>
+        {
+            NavigateBackToSystemsAction?.Invoke();
+            return Task.CompletedTask;
+        });
         _autoAnglerViewModel.PropertyChanged += HandleAutoAnglerPropertyChanged;
     }
+
+    public Action? NavigateBackToSystemsAction { get; set; }
+
+    public RelayCommand NavigateBackToSystemsCommand { get; }
 
     public bool AutoAnglerEnabled
     {

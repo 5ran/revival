@@ -4,14 +4,25 @@
              x:Class="Client.Views.AnglerAutomationView"
              x:DataType="vm:AnglerAutomationViewModel"
              Background="{StaticResource Background}">
-    <ScrollViewer Margin="0"
-                  VerticalContentAlignment="Center"
-                  VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="8"
-                    Width="550"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <ContentControl Content="{Binding ActiveAutomation}" />
-        </StackPanel>
-    </ScrollViewer>
+    <Grid>
+        <ScrollViewer Margin="0"
+                      VerticalContentAlignment="Center"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Width="550"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                <ContentControl Content="{Binding ActiveAutomation}" />
+            </StackPanel>
+        </ScrollViewer>
+        <Button Classes="app-secondary"
+                Width="34"
+                Height="30"
+                Margin="8,8,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="16"
+                Padding="0"
+                Content="←"
+                Command="{Binding NavigateBackToSystemsCommand}" />
+    </Grid>
 </UserControl>

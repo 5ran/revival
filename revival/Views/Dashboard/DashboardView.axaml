@@ -211,46 +211,49 @@
             </Border>
             </Grid>
 
-            <Border Grid.Row="6"
-                    Width="260"
-                    HorizontalAlignment="Center"
-                    Classes="systems-card"
-                    Padding="10,6">
-                <Grid RowDefinitions="Auto,Auto,Auto"
-                      RowSpacing="4"
-                      MinHeight="82"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center">
-                    <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
-                        <Canvas Width="18" Height="18">
-                            <Path Data="M 5 2.2 L 11.8 2.2 L 14.8 5.2 L 14.8 13.6 L 11.8 16.4 L 5 16.4 L 2.2 13.6 L 2.2 5.2 Z M 11.2 2.6 L 11.2 6.1 L 14.3 6.1"
-                                  Stroke="{StaticResource Accent}"
-                                  StrokeThickness="1.35"
-                                  StrokeLineCap="Round"
-                                  Fill="Transparent" />
-                            <Path Data="M 5.1 8.2 L 11.9 8.2 M 5.1 10.7 L 11.9 10.7 M 5.1 13.2 L 9.4 13.2"
-                                  Stroke="{StaticResource Accent}"
-                                  StrokeThickness="1.35"
-                                  StrokeLineCap="Round"
-                                  Fill="Transparent" />
-                        </Canvas>
-                    </Viewbox>
-                    <TextBlock Grid.Row="1"
-                               Text="Treasure Appraise"
-                               Classes="systems-heading"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"
-                               TextAlignment="Center" />
-                    <Button Grid.Row="2"
-                            Classes="systems-open"
-                            Width="86"
-                            Height="28"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Content="Open"
-                            Command="{Binding OpenTreasureAppraiseCommand}" />
-                </Grid>
-            </Border>
+            <Grid Grid.Row="6"
+                  ColumnDefinitions="*,*"
+                  ColumnSpacing="10"
+                  HorizontalAlignment="Stretch">
+                <Border Grid.Column="0"
+                        Classes="systems-card"
+                        Padding="10,6">
+                    <Grid RowDefinitions="Auto,Auto,Auto"
+                          RowSpacing="4"
+                          MinHeight="82"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center">
+                        <Viewbox Grid.Row="0" Width="18" Height="18" Margin="0,3,0,0" HorizontalAlignment="Center">
+                            <Canvas Width="18" Height="18">
+                                <Path Data="M 5 2.2 L 11.8 2.2 L 14.8 5.2 L 14.8 13.6 L 11.8 16.4 L 5 16.4 L 2.2 13.6 L 2.2 5.2 Z M 11.2 2.6 L 11.2 6.1 L 14.3 6.1"
+                                      Stroke="{StaticResource Accent}"
+                                      StrokeThickness="1.35"
+                                      StrokeLineCap="Round"
+                                      Fill="Transparent" />
+                                <Path Data="M 5.1 8.2 L 11.9 8.2 M 5.1 10.7 L 11.9 10.7 M 5.1 13.2 L 9.4 13.2"
+                                      Stroke="{StaticResource Accent}"
+                                      StrokeThickness="1.35"
+                                      StrokeLineCap="Round"
+                                      Fill="Transparent" />
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock Grid.Row="1"
+                                   Text="Treasure Appraise"
+                                   Classes="systems-heading"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextAlignment="Center" />
+                        <Button Grid.Row="2"
+                                Classes="systems-open"
+                                Width="86"
+                                Height="28"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Content="Open"
+                                Command="{Binding OpenTreasureAppraiseCommand}" />
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </ScrollViewer>
 </UserControl>

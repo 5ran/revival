@@ -149,6 +149,10 @@ public sealed class HuntDetectViewModel : ViewModelBase
         "Earthquake",
     ];
 
+    public Action? NavigateBackToSystemsAction { get; set; }
+
+    public RelayCommand NavigateBackToSystemsCommand { get; }
+
     private readonly List<HuntDetectTargetOptionViewModel> _allTargets;
     private readonly object _scanSync = new();
     private readonly HuntDetectWebhookManager _webhookManager = new();
@@ -167,6 +171,11 @@ public sealed class HuntDetectViewModel : ViewModelBase
 
     public HuntDetectViewModel()
     {
+        NavigateBackToSystemsCommand = new RelayCommand(_ =>
+        {
+            NavigateBackToSystemsAction?.Invoke();
+            return Task.CompletedTask;
+        });
         _allTargets = DefaultTargets
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Select(name => new HuntDetectTargetOptionViewModel(name))

@@ -88,8 +88,17 @@ public sealed class AppraiseViewModel : ViewModelBase
         Mutations = new ObservableCollection<AppraiseMutationOptionViewModel>(_allMutations);
         AddMutationCommand = new RelayCommand(_ => AddMutationAsync());
         UseCursorPositionCommand = new RelayCommand(_ => UseCursorPositionAsync());
+        NavigateBackToSystemsCommand = new RelayCommand(_ =>
+        {
+            NavigateBackToSystemsAction?.Invoke();
+            return Task.CompletedTask;
+        });
         _timer = new Timer(_ => Tick(), null, TimeSpan.FromMilliseconds(120), TimeSpan.FromMilliseconds(120));
     }
+
+    public Action? NavigateBackToSystemsAction { get; set; }
+
+    public RelayCommand NavigateBackToSystemsCommand { get; }
 
     public ObservableCollection<AppraiseMutationOptionViewModel> Mutations { get; }
 

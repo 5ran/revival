@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Client.Services.Fishing;
@@ -328,6 +329,15 @@ internal sealed class HotbarRodReader : IDisposable
             }
         }
 
+        foreach (var line in cleanText.Split('\n'))
+        {
+            var trimmed = line.Trim();
+            if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                return trimmed;
+            }
+        }
+
         return string.Empty;
     }
 
@@ -356,12 +366,13 @@ internal sealed class HotbarRodReader : IDisposable
         var equippedPure = NormalizeLoose(ExtractPureRodName(equippedToolName));
         if (selectedPure.Length == 0 || equippedPure.Length == 0)
         {
-            return false;
+            return HasMeaningfulTokenOverlap(selectedRodName, equippedToolName);
         }
 
         return string.Equals(selectedPure, equippedPure, StringComparison.OrdinalIgnoreCase) ||
             selectedPure.Contains(equippedPure, StringComparison.OrdinalIgnoreCase) ||
-            equippedPure.Contains(selectedPure, StringComparison.OrdinalIgnoreCase);
+            equippedPure.Contains(selectedPure, StringComparison.OrdinalIgnoreCase) ||
+            HasMeaningfulTokenOverlap(selectedPure, equippedPure);
     }
 
     private static bool IsPinionRodText(string text)
@@ -386,6 +397,34 @@ internal sealed class HotbarRodReader : IDisposable
     private static string NormalizeLoose(string text)
     {
         return NormalizeRodDisplayText(text).ToLowerInvariant();
+    }
+
+    private static bool HasMeaningfulTokenOverlap(string left, string right)
+    {
+        var leftTokens = GetMeaningfulTokens(left);
+        var rightTokens = GetMeaningfulTokens(right);
+        if (leftTokens.Count == 0 || rightTokens.Count == 0)
+        {
+            return false;
+        }
+
+        return leftTokens.IsSupersetOf(rightTokens) ||
+            rightTokens.IsSupersetOf(leftTokens) ||
+            leftTokens.Overlaps(rightTokens);
+    }
+
+    private static HashSet<string> GetMeaningfulTokens(string text)
+    {
+        var normalized = NormalizeRodDisplayText(text).ToLowerInvariant();
+        normalized = Regex.Replace(normalized, @"[^a-z0-9]+", " ", RegexOptions.CultureInvariant);
+
+        var tokens = normalized
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(token => token.Length >= 4)
+            .Where(token => token is not "rod" and not "the" and not "with" and not "from")
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        return tokens;
     }
 
     private string ReadSlotText(ulong slot)

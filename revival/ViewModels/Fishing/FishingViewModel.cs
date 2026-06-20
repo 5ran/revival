@@ -570,7 +570,10 @@ public sealed class FishingViewModel : ViewModelBase
         try
         {
             var snapshot = _rodReader.GetSnapshot();
-            SetRodState(snapshot.RodName, snapshot.IsEquipped ? "Equipped" : "Unequipped");
+            var displayRodText = snapshot.IsEquipped && !string.IsNullOrWhiteSpace(snapshot.EquippedToolName) && !string.Equals(snapshot.EquippedToolName, "---", StringComparison.Ordinal)
+                ? snapshot.EquippedToolName
+                : snapshot.RodName;
+            SetRodState(displayRodText, snapshot.IsEquipped ? "Equipped" : "Unequipped");
             var masterlineNames = _rodReader.GetMasterlineOverlayRodNames();
             SetMasterlineRodNames(masterlineNames);
         }

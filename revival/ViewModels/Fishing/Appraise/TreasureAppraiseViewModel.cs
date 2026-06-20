@@ -22,8 +22,17 @@ public sealed class TreasureAppraiseViewModel : ViewModelBase
 
     public TreasureAppraiseViewModel()
     {
+        NavigateBackToSystemsCommand = new RelayCommand(_ =>
+        {
+            NavigateBackToSystemsAction?.Invoke();
+            return Task.CompletedTask;
+        });
         _timer = new Timer(_ => Tick(), null, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(50));
     }
+
+    public Action? NavigateBackToSystemsAction { get; set; }
+
+    public RelayCommand NavigateBackToSystemsCommand { get; }
 
     public bool AutoTreasureEnabled
     {

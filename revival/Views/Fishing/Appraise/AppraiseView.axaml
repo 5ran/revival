@@ -519,5 +519,15 @@
                 </Grid>
             </Grid>
         </Border>
+        <Button Classes="app-secondary"
+                Width="34"
+                Height="30"
+                Margin="8,8,0,0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                FontSize="16"
+                Padding="0"
+                Content="←"
+                Command="{Binding NavigateBackToSystemsCommand}" />
     </Grid>
 </UserControl>

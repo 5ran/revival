@@ -197,6 +197,11 @@ public sealed class ShellViewModel : ViewModelBase
         _systemsViewModel.OpenAutoAnglerAction = () => Navigate(NavigationItems[5]);
         _systemsViewModel.OpenHuntDetectAction = () => Navigate(HuntDetectNavigationItem);
         _systemsViewModel.OpenEditAction = () => Navigate(EditNavigationItem);
+        _otherAutomationViewModel.NavigateBackToSystemsAction = () => Navigate(NavigationItems[6]);
+        _appraiseViewModel.NavigateBackToSystemsAction = () => Navigate(NavigationItems[6]);
+        _treasureAppraiseViewModel.NavigateBackToSystemsAction = () => Navigate(NavigationItems[6]);
+        _anglerAutomationViewModel.NavigateBackToSystemsAction = () => Navigate(NavigationItems[6]);
+        _huntDetectViewModel.NavigateBackToSystemsAction = () => Navigate(NavigationItems[6]);
 
         _currentPage = _generalViewModel;
         NavigationItems[0].IsSelected = true;

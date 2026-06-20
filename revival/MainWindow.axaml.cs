@@ -172,9 +172,19 @@ public partial class MainWindow : Window
 
     private static int ToPixels(double value, double scale) => (int)Math.Round(value * scale);
 
+    private void DragSurface_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        TryBeginWindowDrag(e);
+    }
+
     private void TitleBar_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (e.Source is Control source && source.FindAncestorOfType<Button>() is not null)
+        TryBeginWindowDrag(e);
+    }
+
+    private void TryBeginWindowDrag(PointerPressedEventArgs e)
+    {
+        if (e.Source is Control source && IsInteractiveControl(source))
         {
             return;
         }
@@ -184,6 +194,18 @@ public partial class MainWindow : Window
         {
             BeginMoveDrag(e);
         }
+    }
+
+    private static bool IsInteractiveControl(Control source)
+    {
+        return source is Button or ToggleButton or ToggleSwitch or TextBox or ComboBox or Slider or ScrollBar
+            || source.FindAncestorOfType<Button>() is not null
+            || source.FindAncestorOfType<ToggleButton>() is not null
+            || source.FindAncestorOfType<ToggleSwitch>() is not null
+            || source.FindAncestorOfType<TextBox>() is not null
+            || source.FindAncestorOfType<ComboBox>() is not null
+            || source.FindAncestorOfType<Slider>() is not null
+            || source.FindAncestorOfType<ScrollBar>() is not null;
     }
 
     private void MinimizeButton_OnClick(object? sender, RoutedEventArgs e)

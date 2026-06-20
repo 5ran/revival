@@ -273,14 +273,16 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid Margin="22,10"
+    <Grid Margin="22,16"
           MaxWidth="730"
           HorizontalAlignment="Center"
-          RowDefinitions="142,10,Auto,10,Auto">
+          RowDefinitions="158,10,Auto,10,Auto">
         <Border Grid.Row="0"
                 Classes="fishing-panel"
+                MaxWidth="730"
+                HorizontalAlignment="Stretch"
                 Padding="12,16">
-            <Grid RowDefinitions="Auto,10,1,18,34"
+            <Grid RowDefinitions="Auto,12,1,18,34"
                   VerticalAlignment="Center">
                 <StackPanel Grid.Row="0"
                             HorizontalAlignment="Center"
@@ -293,18 +295,17 @@
                             VerticalAlignment="Center"
                             Content="{Binding StartStopButtonText}"
                             Command="{Binding ToggleMacroCommand}" />
-                    <StackPanel Orientation="Horizontal"
+                    <StackPanel
                                 HorizontalAlignment="Center"
-                                Spacing="8">
+                                Spacing="4">
                         <TextBlock Text="{Binding Fishing.RodHeaderText}"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
                                    Classes="fishing-copy"
                                    FontWeight="SemiBold" />
                         <controls:ColoredTextBlock Lines="{Binding Fishing.EquippedRodLines}"
-                                                   Width="116"
-                                                   IsVisible="{Binding Fishing.HasEquippedRodDisplay}"
                                                    HorizontalAlignment="Center"
                                                    TextAlignment="Center"
-                                                   TextTrimming="CharacterEllipsis"
                                                    FontFamily="{StaticResource DisplayFont}"
                                                    FontSize="10"
                                                    FontWeight="SemiBold" />
@@ -318,16 +319,16 @@
                         Opacity="0.45" />
 
                 <Grid Grid.Row="4"
-                      Width="600"
                       Height="34"
-                      Margin="0,0,0,0"
+                      Width="548"
+                      Margin="44,-18,0,0"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Center"
-                      ColumnDefinitions="200,200,200">
+                      ColumnDefinitions="160,18,178,42,150">
                     <Grid Grid.Column="0"
-                          Width="180"
-                          ColumnDefinitions="Auto,10,40,10,58"
-                          HorizontalAlignment="Center"
+                          Width="160"
+                          ColumnDefinitions="Auto,12,32,8,58"
+                          HorizontalAlignment="Left"
                           VerticalAlignment="Center">
                         <TextBlock Grid.Column="0"
                                    Text="Hotkey"
@@ -353,13 +354,15 @@
                                 Command="{Binding RebindHotkeyCommand}" />
                     </Grid>
 
-                    <Grid Grid.Column="1"
-                          Width="180"
-                          ColumnDefinitions="Auto,10,124"
-                          HorizontalAlignment="Center"
+                    <Grid Grid.Column="2"
+                          Width="166"
+                          ColumnDefinitions="Auto,16,124"
+                          Margin="0"
+                          HorizontalAlignment="Right"
                           VerticalAlignment="Center">
                         <TextBlock Grid.Column="0"
                                    Text="Casting"
+                                   HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource UIFont}"
                                    FontSize="9"
@@ -425,14 +428,14 @@
                         </Panel>
                     </Grid>
 
-                    <Grid Grid.Column="2"
-                          Width="180"
-                          ColumnDefinitions="58,10,58"
-                          HorizontalAlignment="Center"
+                    <Grid Grid.Column="4"
+                          Width="150"
+                          ColumnDefinitions="Auto,16,58"
+                          HorizontalAlignment="Right"
                           VerticalAlignment="Center">
                         <TextBlock Grid.Column="0"
                                    Text="Rod Slot"
-                                   HorizontalAlignment="Center"
+                                   HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    FontFamily="{StaticResource UIFont}"
                                    FontSize="9"
@@ -454,6 +457,7 @@
         </Border>
 
         <Grid Grid.Row="2"
+              MaxWidth="730"
               HorizontalAlignment="Stretch"
               ColumnDefinitions="*,*,*"
               ColumnSpacing="10">
@@ -546,7 +550,7 @@
                   VerticalAlignment="Center">
                 <Grid Grid.Row="0"
                       RowDefinitions="Auto,3,Auto"
-                      Margin="16,0"
+                      Margin="16,6,16,0"
                       VerticalAlignment="Center">
                     <StackPanel Grid.Row="0"
                                 HorizontalAlignment="Center"

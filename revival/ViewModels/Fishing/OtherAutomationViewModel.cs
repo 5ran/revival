@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Client.ViewModels;
 
@@ -10,10 +12,19 @@ public sealed class OtherAutomationViewModel : ViewModelBase
     public OtherAutomationViewModel(EnchantViewModel enchantViewModel)
     {
         _enchantViewModel = enchantViewModel;
+        NavigateBackToSystemsCommand = new RelayCommand(_ =>
+        {
+            NavigateBackToSystemsAction?.Invoke();
+            return Task.CompletedTask;
+        });
 
         _enchantViewModel.PropertyChanged += HandleEnchantPropertyChanged;
         UpdateActiveAutomation();
     }
+
+    public Action? NavigateBackToSystemsAction { get; set; }
+
+    public RelayCommand NavigateBackToSystemsCommand { get; }
 
     public bool EnchantEnabled
     {
